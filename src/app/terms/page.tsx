@@ -180,7 +180,7 @@ const SECTIONS = [
 export default function TermsPage() {
   return (
     <div className="relative min-h-screen bg-white">
-      <NavBar />
+      <NavBar variant="transparent" />
 
       <main className="relative z-[1] pt-28 sm:pt-32 pb-20 px-5 sm:px-8">
         <article className="mx-auto max-w-3xl">
