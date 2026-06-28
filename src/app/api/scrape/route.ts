@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       },
     })
   } catch (error) {
-    console.error("Scrape error:", error)
+    console.error("[tadan] Scrape failed")
     const message =
       error instanceof Error ? error.message : "Internal server error"
     return NextResponse.json({ error: message }, { status: 500 })

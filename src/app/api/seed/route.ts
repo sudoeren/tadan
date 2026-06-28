@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       upserted: result.upserted,
     })
   } catch (error) {
-    console.error("Seed error:", error)
+    console.error("[tadan] Seed failed")
     const message = error instanceof Error ? error.message : "Seed failed"
     return NextResponse.json({ error: message }, { status: 500 })
   }
