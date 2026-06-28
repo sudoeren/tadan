@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { authClient } from "@/lib/auth-client"
+import { markHasAuthed } from "@/lib/auth-state"
 import { ArrowUp, AlertTriangle, Shield } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { NavBar } from "@/components/nav-bar"
@@ -25,6 +26,7 @@ export default function LoginPage() {
       setLoading(false)
       return
     }
+    markHasAuthed()
     router.push("/analyzer")
     router.refresh()
   }
