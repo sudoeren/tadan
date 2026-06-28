@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "tadan — Ad Compliance AI",
-  description: "AI-powered ad compliance analysis and optimization across Meta, Google, and Taboola.",
+  description:
+    "Scan ad copy against Meta, Google, and Taboola policies. Get instant risk scores, violations, and safe alternatives.",
 }
 
 export default function RootLayout({
@@ -28,7 +29,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
         <NavBar />
         <main className="flex-1">{children}</main>
       </body>

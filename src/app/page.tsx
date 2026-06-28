@@ -1,256 +1,226 @@
 "use client"
 
-import { useState } from "react"
 import { useSession } from "@/lib/auth-client"
 import Link from "next/link"
-import { AdInput } from "@/components/ad-input"
-import { RiskGauge } from "@/components/risk-gauge"
-import { ViolationsTable } from "@/components/violations-table"
-import { VariantCard } from "@/components/variant-card"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import type { Platform, Violation } from "@/types"
+import { Sparkles, PanelLeft, ChevronLeft, ChevronRight, Monitor, RotateCw, Share, Plus, Copy, Grid, Compass, ListTodo, Layers } from "lucide-react"
 
-interface Result {
-  id: string
-  riskScore: number
-  violations: Violation[]
-  variants: {
-    text: string
-    complianceScore: number
-    hookPreservation: number
-  }[]
-}
-
-type State = "idle" | "loading" | "result" | "error"
-
-export default function AnalyzerPage() {
-  const { data: session, isPending: sessionLoading } = useSession()
-  const [state, setState] = useState<State>("idle")
-  const [result, setResult] = useState<Result | null>(null)
-  const [error, setError] = useState("")
-  const [progress, setProgress] = useState("")
-
-  async function handleAnalyze(input: {
-    inputType: "text" | "url"
-    content?: string
-    url?: string
-    platforms: Platform[]
-  }) {
-    setState("loading")
-    setError("")
-    setProgress("Scanning against platform policies...")
-
-    try {
-      const response = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...input, stream: true }),
-      })
-
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || "Analysis failed")
-      }
-
-      const reader = response.body?.getReader()
-      if (!reader) throw new Error("No response stream")
-
-      const decoder = new TextDecoder()
-      let buffer = ""
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split("\n")
-        buffer = lines.pop() || ""
-
-        for (const line of lines) {
-          if (line.startsWith("event: ")) {
-            const event = line.slice(7).trim()
-            continue
-          }
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6))
-              const lastEvent = buffer ? "result" : ""
-              if (data.stage) {
-                setProgress(data.message || data.stage)
-              } else if (data.riskScore !== undefined) {
-                setResult(data)
-                setState("result")
-              } else if (data.message) {
-                throw new Error(data.message)
-              }
-            } catch {
-              // skip malformed lines
-            }
-          }
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
-      setState("error")
-    }
-  }
-
-  if (sessionLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-      </div>
-    )
-  }
-
-  if (!session) {
-    return (
-      <div className="flex flex-col items-center justify-center flex-1 px-4 max-w-6xl mx-auto w-full">
-        <div className="flex flex-col items-center gap-8 py-24 text-center">
-          <div className="flex flex-col items-center gap-2">
-            <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-              Alpha
-            </span>
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              Ship compliant ads, not banned accounts
-            </h1>
-            <p className="max-w-lg text-muted-foreground text-lg leading-relaxed">
-              Scan your ad copy against Meta, Google, and Taboola policies.
-              Get instant risk scores, violations, and safe alternatives that
-              preserve your marketing hook.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2 min-[400px]:flex-row">
-            <Link
-              href="/login"
-              className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
-            >
-              Get started
-            </Link>
-            <Link
-              href="/login"
-              className="inline-flex h-10 items-center justify-center rounded-lg border px-6 text-sm font-medium transition-colors hover:bg-muted"
-            >
-              Sign in
-            </Link>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-            <div className="flex items-center gap-2 rounded-lg border px-4 py-3">
-              <div className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span className="text-sm">Meta Ads</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg border px-4 py-3">
-              <div className="h-2 w-2 rounded-full bg-blue-500" />
-              <span className="text-sm">Google Ads</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg border px-4 py-3">
-              <div className="h-2 w-2 rounded-full bg-violet-500" />
-              <span className="text-sm">Taboola</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
+/* ---- DASHBOARD MOCKUP ---- */
+function DashboardMockup() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 w-full">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Ad Compliance Analyzer
-          </h1>
-          <p className="text-muted-foreground">
-            Paste your ad copy or landing page URL to scan for policy
-            violations across platforms.
-          </p>
+    <div className="animate-hero-rise [animation-delay:620ms] relative z-0 w-[92%] sm:w-[84%] lg:w-[72%] max-w-4xl mx-auto shrink-0 -mb-10 sm:-mb-20 lg:-mb-32">
+      <div className="rounded-t-2xl overflow-hidden bg-[#1a1a1c] shadow-[0_-20px_80px_rgba(0,0,0,0.35)] ring-1 ring-white/10 text-left">
+        {/* Title bar */}
+        <div className="bg-[#242427] border-b border-white/5 px-4 py-2.5 flex items-center gap-3">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          <PanelLeft className="w-3.5 h-3.5 text-white/40 ml-2" />
+          <ChevronLeft className="w-3.5 h-3.5 text-white/25" />
+          <ChevronRight className="w-3.5 h-3.5 text-white/25" />
+          <div className="flex-1 flex justify-center">
+            <div className="bg-[#1a1a1c] rounded-md px-6 py-1 flex items-center gap-1.5 text-[10px] text-white/60">
+              <Monitor className="w-3 h-3" />
+              tadan.ai
+            </div>
+          </div>
+          <RotateCw className="w-3.5 h-3.5 text-white/40" />
+          <Share className="w-3.5 h-3.5 text-white/40" />
+          <Plus className="w-3.5 h-3.5 text-white/40" />
+          <Copy className="w-3.5 h-3.5 text-white/40" />
         </div>
 
-        <Card>
-          <CardContent className="pt-6">
-            <AdInput onAnalyze={handleAnalyze} loading={state === "loading"} />
-          </CardContent>
-        </Card>
+        <div className="flex">
+          {/* Sidebar */}
+          <div className="w-[22%] border-r border-white/5 bg-[#1e1e21] px-3 py-3.5 flex flex-col gap-4">
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-sm font-semibold text-white/80">tadan</span>
+              <Grid className="w-3.5 h-3.5 text-white/30 ml-auto" />
+            </div>
+            <div className="flex items-center gap-2 px-1">
+              <span className="w-4 h-4 rounded bg-[#e8553f] flex items-center justify-center text-[9px] font-bold text-white">T</span>
+              <span className="text-[10px] text-white/80">tadan</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2 px-2 py-1 rounded text-[10px] text-white/80 bg-white/5">
+                <Compass className="w-3 h-3 text-white/50" />
+                Scan
+              </div>
+              <div className="flex items-center gap-2 px-2 py-1 rounded text-[10px] text-white/60">
+                <Layers className="w-3 h-3 text-white/30" />
+                History
+              </div>
+              <div className="flex items-center gap-2 px-2 py-1 rounded text-[10px] text-white/60">
+                <ListTodo className="w-3 h-3 text-white/30" />
+                Drafts
+              </div>
+            </div>
+            <div className="mt-auto flex items-center gap-1.5 px-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#28c840]" />
+              <span className="text-[9px] text-white/50">Ready</span>
+            </div>
+          </div>
 
-        {state === "loading" && (
-          <Card>
-            <CardContent className="flex flex-col items-center gap-4 py-12">
-              <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              <p className="text-sm text-muted-foreground">{progress}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {state === "error" && (
-          <Card className="border-destructive/50 bg-destructive/5">
-            <CardContent className="py-6 text-center">
-              <p className="text-sm text-destructive">{error}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4"
-                onClick={() => setState("idle")}
-              >
-                Try again
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {state === "result" && result && (
-          <div className="flex flex-col gap-6">
-            <Separator />
-
-            <div className="grid gap-6 md:grid-cols-[200px_1fr]">
-              <RiskGauge score={result.riskScore} />
-              <div className="flex flex-col gap-2">
-                <h2 className="font-semibold">
-                  {result.violations.length > 0
-                    ? `${result.violations.length} violation${result.violations.length > 1 ? "s" : ""} found`
-                    : "Analysis complete"}
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  {result.violations.length > 0
-                    ? "Review each violation and use the safe variants below."
-                    : "Your ad copy is clean. No policy violations detected."}
-                </p>
+          {/* Main */}
+          <div className="flex-1 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="w-9 h-9 rounded-lg bg-[#e8553f] flex items-center justify-center text-sm font-bold text-white">T</span>
+                  <div>
+                    <div className="text-sm font-medium text-white">tadan</div>
+                    <div className="text-[10px] text-white/45">Meta · Google · Taboola</div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
+                <Sparkles className="w-3 h-3 text-white/70" />
+                <span className="text-[10px] text-white/70">Re-scan</span>
               </div>
             </div>
 
-            {result.violations.length > 0 && (
-              <ViolationsTable violations={result.violations} />
-            )}
+            {/* Stats grid */}
+            <div className="grid grid-cols-4 divide-x divide-white/5 rounded-xl bg-white/[0.03] ring-1 ring-white/5 mb-4">
+              <div className="px-3 py-2.5">
+                <div className="text-[8px] tracking-wider text-white/35 mb-1">COMPLIANT</div>
+                <div className="text-xl font-medium text-[#28c840]">14</div>
+                <div className="text-[8px] text-white/25">Risk score</div>
+              </div>
+              <div className="px-3 py-2.5">
+                <div className="text-[8px] tracking-wider text-white/35 mb-1">FLAGGED</div>
+                <div className="text-xl font-medium text-white">2</div>
+                <div className="text-[8px] text-white/25">Violations</div>
+              </div>
+              <div className="px-3 py-2.5">
+                <div className="text-[8px] tracking-wider text-white/35 mb-1">READY</div>
+                <div className="text-xl font-medium text-white">3</div>
+                <div className="text-[8px] text-white/25">Safe variants</div>
+              </div>
+              <div className="px-3 py-2.5">
+                <div className="text-[8px] tracking-wider text-white/35 mb-1">PLATFORMS</div>
+                <div className="text-xl font-medium text-white">3</div>
+                <div className="text-[8px] text-white/25">All clear</div>
+              </div>
+            </div>
 
-            {result.variants.length > 0 && (
-              <div className="flex flex-col gap-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold">
-                    Safe Variants ({result.variants.length})
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    Click copy to use any variant in your ad account.
-                  </p>
-                </div>
-                <div className="grid gap-4">
-                  {result.variants.map((v, i) => (
-                    <VariantCard
-                      key={i}
-                      index={i}
-                      text={v.text}
-                      complianceScore={v.complianceScore}
-                      hookPreservation={v.hookPreservation}
-                    />
-                  ))}
+            {/* Violation cards */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <div className="rounded-lg bg-white/[0.03] ring-1 ring-white/5 p-3">
+                <div className="text-[9px] font-medium text-white/50 mb-1.5">Critical</div>
+                <div className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#ff5f57] mt-1 shrink-0" />
+                  <div>
+                    <span className="text-[10px] text-[#ff5f57]/80 bg-[#ff5f57]/10 px-1.5 py-0.5 rounded">
+                      &quot;Guaranteed $500/day&quot;
+                    </span>
+                  </div>
                 </div>
               </div>
-            )}
+              <div className="rounded-lg bg-white/[0.03] ring-1 ring-white/5 p-3">
+                <div className="text-[9px] font-medium text-white/50 mb-1.5">Warning</div>
+                <div className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#febc2e] mt-1 shrink-0" />
+                  <div>
+                    <span className="text-[10px] text-[#febc2e]/80 bg-[#febc2e]/10 px-1.5 py-0.5 rounded">
+                      &quot;Limited time offer&quot;
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Variants table */}
+            <div>
+              <div className="text-[9px] font-medium text-white/40 mb-1.5 px-1">Safe variants</div>
+              <div className="rounded-lg bg-white/[0.03] ring-1 ring-white/5 overflow-hidden">
+                <div className="grid grid-cols-[1fr_60px_60px_70px] text-[8px] font-medium text-white/30 px-3 py-2 border-b border-white/5">
+                  <span>Copy</span>
+                  <span>Compliance</span>
+                  <span>Hook</span>
+                  <span className="text-right">Action</span>
+                </div>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="grid grid-cols-[1fr_60px_60px_70px] text-[9px] text-white/70 px-3 py-2 border-b border-white/[0.02] last:border-b-0 hover:bg-white/[0.02]">
+                    <span className="truncate pr-2">Variant {i}: Rewritten safe copy with preserved marketing hook for compliance...</span>
+                    <span className="text-[#28c840]">94%</span>
+                    <span className="text-[#febc2e]">88%</span>
+                    <span className="text-right text-[#28c840]/70">Copy</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
+  )
+}
+
+/* ---- HERO ---- */
+export default function HomePage() {
+  const { data: session, isPending } = useSession()
+
+  return (
+    <section
+      className="relative min-h-[100svh] overflow-hidden bg-cover bg-center flex flex-col"
+      style={{
+        backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
+      }}
+    >
+      <div className="flex-1 min-h-8 sm:min-h-12 lg:min-h-16 shrink-0" />
+
+      <div className="flex-1 min-h-8 sm:min-h-12 lg:min-h-16 shrink-0" />
+
+      <div className="flex flex-col items-center text-center px-5">
+        <h1 className="text-gray-900 font-normal leading-[1.05] tracking-tight text-[40px] min-[400px]:text-[44px] sm:text-6xl lg:text-7xl xl:text-[80px]">
+          <span className="block animate-fade-up">Ship compliant ads.</span>
+          <span className="block animate-fade-up [animation-delay:100ms]">Not banned accounts.</span>
+        </h1>
+
+        <p className="animate-fade-up [animation-delay:220ms] mt-5 sm:mt-6 text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-md">
+          Scan against Meta, Google, and Taboola policies.
+          <br />
+          Get safe alternatives that preserve your hook &mdash; and stay live
+          <Sparkles className="inline w-4 h-4 -mt-1 ml-1" />
+        </p>
+
+        <div className="animate-fade-up [animation-delay:340ms] mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3">
+          {isPending ? (
+            <div className="h-10 w-28 animate-pulse rounded-full bg-gray-100" />
+          ) : session ? (
+            <Link
+              href="/analyzer"
+              className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 hover:shadow-lg transition-all"
+            >
+              Open analyzer
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/signup"
+                className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 hover:shadow-lg transition-all"
+              >
+                Try it free
+              </Link>
+              <Link
+                href="/login"
+                className="text-gray-700 text-sm font-medium px-6 py-2.5 rounded-full ring-1 ring-gray-300 hover:bg-gray-100 transition-colors"
+              >
+                Sign in
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-10 sm:min-h-12 lg:min-h-16 shrink-0" />
+
+      <DashboardMockup />
+
+      <img
+        src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
+        alt=""
+        className="pointer-events-none absolute bottom-0 left-0 z-10 w-full select-none"
+      />
+    </section>
   )
 }

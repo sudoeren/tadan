@@ -5,10 +5,6 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { authClient } from "@/lib/auth-client"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
 export default function SignUpPage() {
   const router = useRouter()
   const [name, setName] = useState("")
@@ -28,105 +24,108 @@ export default function SignUpPage() {
       setLoading(false)
       return
     }
-
-    const { error } = await authClient.signUp.email({
-      name,
-      email,
-      password,
-    })
-
-    if (error) {
-      const msg =
-        error.code === "VALIDATION_ERROR"
-          ? "Password must be at least 8 characters"
-          : error.message || "Sign up failed"
-      setError(msg)
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters")
       setLoading(false)
       return
     }
 
-    router.push("/")
+    const { error } = await authClient.signUp.email({ name, email, password })
+    if (error) {
+      setError(error.message || "Failed to create account")
+      setLoading(false)
+      return
+    }
+    router.push("/analyzer")
     router.refresh()
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>Get started with tadan</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="name" className="text-sm font-medium">
-                Name
-              </label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium">
-                Confirm password
-              </label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Re-enter your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={8}
-              />
-            </div>
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
-            <Button type="submit" disabled={loading}>
-              {loading ? "Creating account..." : "Create account"}
-            </Button>
-          </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary hover:underline">
-              Sign in
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+    <div className="flex min-h-[80vh] items-center justify-center px-5">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <Link href="/" className="text-2xl font-semibold tracking-tight text-gray-900">
+            tadan
+          </Link>
+          <p className="text-sm text-gray-500 mt-2">Create your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label htmlFor="name" className="block text-[13px] font-medium text-gray-700 mb-1.5">
+              Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              placeholder="Your name"
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-400 transition-colors"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-[13px] font-medium text-gray-700 mb-1.5">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-400 transition-colors"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-[13px] font-medium text-gray-700 mb-1.5">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="At least 8 characters"
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-400 transition-colors"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+            />
+          </div>
+          <div>
+            <label htmlFor="confirmPassword" className="block text-[13px] font-medium text-gray-700 mb-1.5">
+              Confirm password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Re-enter password"
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-400 transition-colors"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={8}
+            />
+          </div>
+          {error && <p className="text-[13px] text-red-600 font-medium">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 disabled:opacity-50 transition-all"
+          >
+            {loading ? "Creating account..." : "Create account"}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-[13px] text-gray-500">
+          Already have an account?{" "}
+          <Link href="/login" className="text-gray-900 font-medium hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }
