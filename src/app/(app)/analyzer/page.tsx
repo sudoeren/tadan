@@ -159,7 +159,6 @@ export default function AnalyzerPage() {
   return (
     <div className="relative min-h-screen">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
       {/* HERO — compact */}
       <section className="relative z-[2] flex flex-col items-center text-center px-5 pt-24 sm:pt-32 pb-6 sm:pb-8">
@@ -186,7 +185,7 @@ export default function AnalyzerPage() {
         <div className="max-w-3xl mx-auto">
           <form
             onSubmit={run}
-            className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-6"
+            className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-6"
           >
             <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
               <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1">

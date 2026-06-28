@@ -32,7 +32,6 @@ export default function HomePage() {
       {/* HERO */}
       <section className="relative min-h-[100svh] overflow-hidden flex flex-col">
         <NavBar variant="transparent" />
-        <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
         <div className="relative z-[2] flex-1 min-h-20 sm:min-h-28 lg:min-h-36 shrink-0" />
 

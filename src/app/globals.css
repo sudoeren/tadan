@@ -45,7 +45,7 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv11";

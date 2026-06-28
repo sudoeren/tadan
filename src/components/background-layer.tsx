@@ -3,10 +3,18 @@ const BG_URL =
 
 export function BackgroundLayer() {
   return (
-    <div
-      aria-hidden
-      className="fixed inset-0 -z-10 bg-cover bg-center pointer-events-none"
-      style={{ backgroundImage: `url(${BG_URL})` }}
-    />
+    <>
+      <div
+        aria-hidden
+        className="fixed inset-0 bg-cover bg-center pointer-events-none"
+        style={{
+          backgroundImage: `url(${BG_URL})`,
+        }}
+      />
+      <div
+        aria-hidden
+        className="fixed inset-0 pointer-events-none hero-overlay"
+      />
+    </>
   )
 }

@@ -32,7 +32,6 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen flex flex-col">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
       {/* CENTERED CONTENT */}
       <div className="relative z-[2] flex-1 flex flex-col items-center justify-center px-5 py-20 sm:py-24">

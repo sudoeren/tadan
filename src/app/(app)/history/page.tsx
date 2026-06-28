@@ -59,7 +59,6 @@ export default function HistoryPage() {
   return (
     <div className="relative min-h-screen">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
       {/* HERO — compact */}
       <section className="relative z-[2] flex flex-col items-center text-center px-5 pt-24 sm:pt-32 pb-6 sm:pb-8">
@@ -84,7 +83,7 @@ export default function HistoryPage() {
       {/* CONTENT CARD */}
       <div className="relative z-[2] px-5 sm:px-8 pb-16">
         <div className="max-w-3xl mx-auto">
-          <div className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-7">
+          <div className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-7">
             {loading ? (
               <div className="flex items-center justify-center py-20 text-gray-400">
                 <Loader2 className="w-5 h-5 animate-spin mr-2" />

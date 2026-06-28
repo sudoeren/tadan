@@ -105,7 +105,6 @@ export default function HowItWorksPage() {
   return (
     <div className="relative min-h-screen">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
       {/* HERO */}
       <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-28 sm:pt-36 pb-12">
