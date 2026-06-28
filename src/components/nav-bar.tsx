@@ -54,15 +54,15 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
             <>
               <button
                 onClick={() => signOut()}
-                className="hidden md:inline-flex text-[13px] text-gray-700 hover:text-gray-900 transition-colors"
+                className="hidden md:inline-flex text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
               >
                 Sign out
               </button>
               <Link
-                href="/analyzer"
+                href="/signup"
                 className="bg-gray-900 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-gray-800 transition-colors"
               >
-                Open analyzer
+                Get started
               </Link>
               <button
                 onClick={() => setOpen(!open)}
@@ -75,7 +75,7 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
             <>
               <Link
                 href="/login"
-                className="hidden md:inline-flex text-[13px] text-gray-700 hover:text-gray-900 transition-colors"
+                className="hidden md:inline-flex text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
               >
                 Sign in
               </Link>
