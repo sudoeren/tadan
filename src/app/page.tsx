@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useSession } from "@/lib/auth-client"
 import {
@@ -259,23 +258,6 @@ export default function HomePage() {
               "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.55) 75%, rgba(255,255,255,0.9) 92%, rgba(255,255,255,1) 100%)",
           }}
         />
-
-        <div className="relative z-[1] w-[92%] sm:w-[84%] lg:w-[72%] max-w-4xl mx-auto shrink-0 -mb-10 sm:-mb-20 lg:-mb-32 animate-hero-rise [animation-delay:700ms]">
-          <Image
-            src="/image.png"
-            alt="tadan compliance dashboard"
-            width={1200}
-            height={800}
-            className="w-full h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.12)] ring-1 ring-black/5"
-            style={{
-              maskImage:
-                "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
-            }}
-            priority
-          />
-        </div>
 
         {/* Grass — fixed, blurs & fades on scroll */}
         <img
