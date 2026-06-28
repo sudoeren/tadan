@@ -36,7 +36,11 @@ export default function SignUpPage() {
     })
 
     if (error) {
-      setError(error.message || "Sign up failed")
+      const msg =
+        error.code === "VALIDATION_ERROR"
+          ? "Password must be at least 8 characters"
+          : error.message || "Sign up failed"
+      setError(msg)
       setLoading(false)
       return
     }
