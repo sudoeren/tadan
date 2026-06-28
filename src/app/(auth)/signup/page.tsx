@@ -60,15 +60,6 @@ export default function SignUpPage() {
 
           <div className="animate-fade-up rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-7 sm:p-9">
             <div className="mb-7">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-gray-100/80 ring-1 ring-gray-200 px-2.5 py-1 mb-4">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                </span>
-                <span className="text-[11px] text-gray-600 font-medium">
-                  Free forever · No credit card
-                </span>
-              </div>
               <h1 className="text-3xl sm:text-[34px] font-normal leading-[1.1] tracking-tight text-gray-900">
                 Create your account.
               </h1>
