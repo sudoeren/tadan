@@ -2,15 +2,7 @@
 
 import Link from "next/link"
 import { useSession } from "@/lib/auth-client"
-import {
-  Sparkles,
-  Shield,
-  Zap,
-  Globe,
-  Check,
-  ArrowUp,
-  ArrowUpRight,
-} from "lucide-react"
+import { Sparkles, Shield, ArrowUp, ArrowUpRight } from "lucide-react"
 import { DashboardMockup } from "@/components/dashboard-mockup"
 import { ScaledDashboard } from "@/components/scaled-dashboard"
 import { NavBar } from "@/components/nav-bar"
@@ -30,29 +22,6 @@ const TESTIMONIALS = [
   "My media buyers can't live without this",
   "Pays for itself in the first banned ad it prevents",
   "We shipped 200 ads in one month — zero rejections",
-]
-
-const FEATURES = [
-  {
-    icon: Shield,
-    title: "Real policy enforcement",
-    body: "Rules sourced directly from Meta, Google, and Taboola. Not vibes. Not LLM guessing.",
-  },
-  {
-    icon: Zap,
-    title: "Hook-preserving rewrites",
-    body: "Safe variants that keep the marketing punch — eight distinct copywriting techniques, all compliant.",
-  },
-  {
-    icon: Globe,
-    title: "Landing page audit",
-    body: "Drop a URL. We scrape, parse, and flag the bait-and-switch before it costs you your account.",
-  },
-  {
-    icon: Sparkles,
-    title: "RAG over policy docs",
-    body: "Embeddings search over 1,200+ policy rules. Only the relevant ones reach the LLM. Lower cost, higher accuracy.",
-  },
 ]
 
 export default function HomePage() {
@@ -205,112 +174,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="relative bg-white py-24 sm:py-32">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="text-center mb-16 sm:mb-20">
-            <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-[12px] font-medium text-gray-700 mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-900" />
-              How it works
-            </div>
-            <h2 className="text-gray-900 font-normal leading-[1.05] tracking-tight text-4xl sm:text-5xl lg:text-6xl max-w-3xl mx-auto">
-              From sketchy copy to <em className="italic font-display">safe to ship</em> in 6 seconds.
-            </h2>
-            <p className="text-gray-500 text-base sm:text-lg mt-5 max-w-xl mx-auto leading-relaxed">
-              Two AI agents, one platform-aware knowledge base, zero room for banned-account regret.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {FEATURES.map((f, i) => {
-              const Icon = f.icon
-              return (
-                <div
-                  key={f.title}
-                  className="group relative rounded-2xl bg-white ring-1 ring-gray-200 p-6 hover:ring-gray-900/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all"
-                >
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="w-10 h-10 rounded-xl bg-gray-100 ring-1 ring-gray-200 flex items-center justify-center group-hover:bg-gray-900 group-hover:text-white transition-colors">
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-xs text-gray-300 font-mono">
-                      0{i + 1}
-                    </span>
-                  </div>
-                  <h3 className="text-[15px] font-semibold text-gray-900 mb-1.5">
-                    {f.title}
-                  </h3>
-                  <p className="text-[13px] text-gray-500 leading-relaxed">
-                    {f.body}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* PIPELINE */}
-      <section className="relative bg-gray-50 border-y border-gray-100 py-24 sm:py-32">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white ring-1 ring-gray-200 px-3 py-1 text-[12px] font-medium text-gray-700 mb-5">
-                <Sparkles className="w-3 h-3" />
-                The pipeline
-              </div>
-              <h2 className="text-gray-900 font-normal leading-[1.05] tracking-tight text-4xl sm:text-5xl">
-                Two agents. Eight rewrite techniques. Zero guesswork.
-              </h2>
-              <p className="text-gray-500 text-base sm:text-lg mt-5 leading-relaxed">
-                A critic agent scores your copy. An optimizer agent rewrites
-                it. A pgvector knowledge base grounds both in real platform
-                policy language — not vibes.
-              </p>
-              <div className="mt-8 space-y-3">
-                {[
-                  "RAG over 1,200+ policy rules",
-                  "Critic agent → risk score 0–100",
-                  "Optimizer agent → 8 copywriting techniques",
-                  "Streaming SSE — see progress live",
-                ].map((line) => (
-                  <div key={line} className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-gray-900 text-white inline-flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3" />
-                    </div>
-                    <span className="text-[15px] text-gray-700">{line}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-2xl bg-white ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-6 font-mono text-[12px] leading-relaxed">
-              <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-100">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                <span className="ml-2 text-gray-400 text-[11px]">tadan · analyze</span>
-              </div>
-              <div className="space-y-1.5">
-                <div className="text-gray-400">$ analyze --platforms meta,google,taboola</div>
-                <div className="text-gray-700">→ Scraping landing page…</div>
-                <div className="text-gray-700">→ Embedding 412 policy rules…</div>
-                <div className="text-emerald-600">✓ Retrieved top-8 (cosine 0.84+)</div>
-                <div className="text-gray-700">→ Critic agent scanning…</div>
-                <div className="text-amber-600">⚠ 2 violations detected</div>
-                <div className="text-gray-700">→ Optimizer agent running…</div>
-                <div className="text-emerald-600">✓ 3 variants generated</div>
-                <div className="text-gray-900 mt-3 pt-3 border-t border-gray-100">
-                  <span className="text-gray-400">risk_score</span>{" "}
-                  <span className="text-gray-900">62</span>{" "}
-                  <span className="text-gray-400">/ 100</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FOOTER */}
       <footer className="border-t border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -319,6 +182,12 @@ export default function HomePage() {
             <span className="text-[12px] text-gray-400">— Ad Compliance AI</span>
           </div>
           <div className="flex items-center gap-6 text-[12px] text-gray-500">
+            <Link
+              href="/how-it-works"
+              className="hover:text-gray-900 transition-colors"
+            >
+              How it works
+            </Link>
             <a href="#" className="hover:text-gray-900 transition-colors">
               Privacy
             </a>
@@ -327,9 +196,6 @@ export default function HomePage() {
             </a>
             <a href="#" className="hover:text-gray-900 transition-colors">
               GitHub
-            </a>
-            <a href="#" className="hover:text-gray-900 transition-colors">
-              Twitter
             </a>
           </div>
           <p className="text-[12px] text-gray-400">

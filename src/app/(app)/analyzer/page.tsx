@@ -14,8 +14,8 @@ import {
   FileText,
   Link2,
 } from "lucide-react"
-import { NavBar } from "@/components/nav-bar"
 import type { Platform, Violation } from "@/types"
+import { NavBar } from "@/components/nav-bar"
 
 interface Result {
   id: string
@@ -31,10 +31,37 @@ const PLATFORMS: { value: Platform; label: string; color: string }[] = [
 ]
 
 function scoreColor(n: number) {
-  if (n <= 25) return { text: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", label: "Clean" }
-  if (n <= 60) return { text: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", label: "Needs review" }
-  if (n <= 85) return { text: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", label: "Risky" }
-  return { text: "text-red-600", bg: "bg-red-50", border: "border-red-200", label: "Bannable" }
+  if (n <= 25)
+    return {
+      text: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
+      ring: "ring-emerald-200/60",
+      label: "Clean",
+    }
+  if (n <= 60)
+    return {
+      text: "text-amber-600",
+      bg: "bg-amber-50",
+      border: "border-amber-200",
+      ring: "ring-amber-200/60",
+      label: "Needs review",
+    }
+  if (n <= 85)
+    return {
+      text: "text-orange-600",
+      bg: "bg-orange-50",
+      border: "border-orange-200",
+      ring: "ring-orange-200/60",
+      label: "Risky",
+    }
+  return {
+    text: "text-red-600",
+    bg: "bg-red-50",
+    border: "border-red-200",
+    ring: "ring-red-200/60",
+    label: "Bannable",
+  }
 }
 
 function CopyBtn({ text }: { text: string }) {
@@ -46,7 +73,7 @@ function CopyBtn({ text }: { text: string }) {
         setOk(true)
         setTimeout(() => setOk(false), 2000)
       }}
-      className="inline-flex items-center gap-1.5 text-[12px] text-gray-400 hover:text-gray-900 transition-colors"
+      className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 hover:text-gray-900 transition-colors"
     >
       {ok ? (
         <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -61,7 +88,11 @@ function CopyBtn({ text }: { text: string }) {
 export default function AnalyzerPage() {
   const [mode, setMode] = useState<"text" | "url">("text")
   const [input, setInput] = useState("")
-  const [platforms, setPlatforms] = useState<Platform[]>(["meta", "google", "taboola"])
+  const [platforms, setPlatforms] = useState<Platform[]>([
+    "meta",
+    "google",
+    "taboola",
+  ])
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState("")
@@ -127,232 +158,257 @@ export default function AnalyzerPage() {
   const score = result ? scoreColor(result.riskScore) : null
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
-      <NavBar />
-      {/* TOP — compact header with grass / nature gradient */}
-      <section className="relative bg-cover bg-center overflow-hidden border-b border-gray-100">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
-          }}
-        />
-        <div className="absolute inset-0 hero-overlay" />
-        <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28 text-center">
-          <div className="animate-fade-down inline-flex items-center gap-2 mb-5 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 px-3.5 py-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-gray-700" />
-            <span className="text-[12px] text-gray-700 font-medium">
-              Ad Compliance Scanner
-            </span>
-          </div>
-          <h1 className="animate-fade-up text-gray-900 font-normal leading-[1.05] tracking-tight text-4xl sm:text-5xl lg:text-6xl">
-            Paste copy. Get a verdict.
-          </h1>
-          <p className="animate-fade-up [animation-delay:100ms] text-gray-600 text-base sm:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
-            Two agents, 1,200+ policy rules, and a risk score in under 6
-            seconds. No more guessing if your ad gets banned.
-          </p>
+    <div
+      className="relative min-h-screen bg-cover bg-center overflow-hidden"
+      style={{
+        backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
+      }}
+    >
+      <NavBar variant="transparent" />
+      <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
+
+      {/* HERO */}
+      <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-32 sm:pt-44 pb-8">
+        <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 px-3 py-1.5 mb-6">
+          <Sparkles className="w-3.5 h-3.5 text-gray-700" />
+          <span className="text-[12px] text-gray-700 font-medium">
+            Ad Compliance Scanner
+          </span>
         </div>
-        <img
-          src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
-          alt=""
-          className="pointer-events-none absolute bottom-0 left-0 z-10 w-full select-none opacity-50"
-        />
-      </section>
+        <h1 className="text-gray-900 font-normal leading-[1.02] tracking-[-0.04em] text-[44px] min-[400px]:text-[48px] sm:text-[68px] lg:text-[80px] xl:text-[92px] max-w-4xl">
+          <span className="block animate-fade-up">Paste copy.</span>
+          <span className="block animate-fade-up [animation-delay:100ms]">
+            Get a verdict.
+          </span>
+        </h1>
+        <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-base sm:text-lg mt-5 max-w-xl leading-relaxed">
+          Two agents, 1,200+ policy rules, and a risk score in under 6
+          seconds. No more guessing if your ad gets banned.
+        </p>
+      </div>
 
-      {/* INPUT FORM — floating glass card overlapping the hero */}
-      <div className="max-w-4xl mx-auto px-5 sm:px-8 -mt-10 sm:-mt-14 relative z-10">
-        <form
-          onSubmit={run}
-          className="animate-fade-up [animation-delay:220ms] rounded-3xl bg-white/90 backdrop-blur-xl ring-1 ring-gray-200 shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-5 sm:p-7"
-        >
-          {/* Mode tabs */}
-          <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
-            <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1">
-              {[
-                { value: "text", label: "Ad copy", icon: FileText },
-                { value: "url", label: "Landing page", icon: Link2 },
-              ].map((opt) => {
-                const Icon = opt.icon
-                const active = mode === opt.value
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setMode(opt.value as "text" | "url")}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium rounded-full transition-all ${
-                      active
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    {opt.label}
-                  </button>
-                )
-              })}
+      {/* FORM CARD */}
+      <div className="relative z-[2] px-5 sm:px-8 pb-16">
+        <div className="max-w-3xl mx-auto">
+          <form
+            onSubmit={run}
+            className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-6 sm:p-8"
+          >
+            {/* Mode tabs */}
+            <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+              <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1">
+                {[
+                  { value: "text", label: "Ad copy", icon: FileText },
+                  { value: "url", label: "Landing page", icon: Link2 },
+                ].map((opt) => {
+                  const Icon = opt.icon
+                  const active = mode === opt.value
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setMode(opt.value as "text" | "url")}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium rounded-full transition-all ${
+                        active
+                          ? "bg-white text-gray-900 shadow-sm"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {opt.label}
+                    </button>
+                  )
+                })}
+              </div>
+              <span className="text-[12px] text-gray-400">
+                {input.length} characters
+              </span>
             </div>
-            <span className="text-[12px] text-gray-400">
-              {input.length} characters
-            </span>
-          </div>
 
-          {/* Input area */}
-          {mode === "text" ? (
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Paste your ad headline, body copy, and CTA…"
-              rows={5}
-              className="w-full resize-y rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-400 focus:ring-0 transition-colors"
-            />
-          ) : (
-            <div className="relative">
-              <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="url"
+            {/* Input area */}
+            {mode === "text" ? (
+              <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="https://example.com/landing-page"
-                className="w-full rounded-2xl border border-gray-200 bg-white pl-11 pr-4 py-3.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-400 focus:ring-0 transition-colors"
+                placeholder="Paste your ad headline, body copy, and CTA…"
+                rows={5}
+                className="w-full resize-y rounded-2xl border border-gray-200 bg-white/90 px-4 py-3.5 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
               />
-            </div>
-          )}
+            ) : (
+              <div className="relative">
+                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="url"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="https://example.com/landing-page"
+                  className="w-full rounded-2xl border border-gray-200 bg-white/90 pl-11 pr-4 py-3.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+                />
+              </div>
+            )}
 
-          {/* Platform chips */}
-          <div className="mt-5">
-            <p className="text-[12px] uppercase tracking-[0.15em] text-gray-400 mb-2.5 font-medium">
-              Target platforms
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {PLATFORMS.map((p) => {
-                const on = platforms.includes(p.value)
-                return (
-                  <button
-                    key={p.value}
-                    type="button"
-                    onClick={() =>
-                      setPlatforms((prev) =>
-                        prev.includes(p.value)
-                          ? prev.filter((x) => x !== p.value)
-                          : [...prev, p.value]
-                      )
-                    }
-                    className={`flex items-center gap-2 text-[13px] px-3.5 py-2 rounded-full border transition-all ${
-                      on
-                        ? "border-gray-900 bg-gray-900 text-white shadow-sm"
-                        : "border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    }`}
-                  >
-                    {p.value === "meta" && (
-                      <svg
-                        className="w-3.5 h-3.5"
-                        viewBox="0 0 24 24"
-                        fill={on ? "white" : p.color}
-                      >
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                      </svg>
-                    )}
-                    {p.value === "google" && (
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                        <path
-                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-                          fill={on ? "white" : "#4285F4"}
-                        />
-                        <path
-                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                          fill={on ? "white" : "#34A853"}
-                        />
-                        <path
-                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                          fill={on ? "white" : "#FBBC05"}
-                        />
-                        <path
-                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                          fill={on ? "white" : "#EA4335"}
-                        />
-                      </svg>
-                    )}
-                    {p.value === "taboola" && (
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                        <rect
-                          x="2"
-                          y="4"
-                          width="20"
-                          height="16"
-                          rx="2"
-                          fill={on ? "white" : "#6C2BD9"}
-                        />
-                        <path
-                          d="M7 8h3l2 4-2 4H7l2-4-2-4zM14 8h3v8h-3z"
-                          fill={on ? "#111" : "white"}
-                        />
-                      </svg>
-                    )}
-                    {p.label}
-                  </button>
-                )
-              })}
+            {/* Platform chips */}
+            <div className="mt-5">
+              <p className="text-[11px] uppercase tracking-[0.15em] text-gray-400 mb-2.5 font-medium">
+                Target platforms
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {PLATFORMS.map((p) => {
+                  const on = platforms.includes(p.value)
+                  return (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() =>
+                        setPlatforms((prev) =>
+                          prev.includes(p.value)
+                            ? prev.filter((x) => x !== p.value)
+                            : [...prev, p.value]
+                        )
+                      }
+                      className={`flex items-center gap-2 text-[13px] px-3.5 py-2 rounded-full border transition-all ${
+                        on
+                          ? "border-gray-900 bg-gray-900 text-white shadow-sm"
+                          : "border-gray-200 bg-white/70 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                      }`}
+                    >
+                      {p.value === "meta" && (
+                        <svg
+                          className="w-3.5 h-3.5"
+                          viewBox="0 0 24 24"
+                          fill={on ? "white" : p.color}
+                        >
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                      )}
+                      {p.value === "google" && (
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                          <path
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                            fill={on ? "white" : "#4285F4"}
+                          />
+                          <path
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                            fill={on ? "white" : "#34A853"}
+                          />
+                          <path
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                            fill={on ? "white" : "#FBBC05"}
+                          />
+                          <path
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                            fill={on ? "white" : "#EA4335"}
+                          />
+                        </svg>
+                      )}
+                      {p.value === "taboola" && (
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                          <rect
+                            x="2"
+                            y="4"
+                            width="20"
+                            height="16"
+                            rx="2"
+                            fill={on ? "white" : "#6C2BD9"}
+                          />
+                          <path
+                            d="M7 8h3l2 4-2 4H7l2-4-2-4zM14 8h3v8h-3z"
+                            fill={on ? "#111" : "white"}
+                          />
+                        </svg>
+                      )}
+                      {p.label}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* Submit */}
-          <div className="mt-6 flex items-center justify-between gap-3">
-            <div className="text-[12px] text-gray-400 hidden sm:block">
-              Powered by critic + optimizer agents with RAG
-            </div>
-            <button
-              type="submit"
-              disabled={!canRun || loading}
-              className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-800 disabled:opacity-30 transition-all active:scale-[0.98] ml-auto"
-            >
-              <span className="px-1.5">
-                {loading ? stage || "Scanning…" : "Run compliance scan"}
-              </span>
-              {loading ? (
-                <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                </span>
-              ) : (
-                <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center group-hover:bg-white/20">
-                  <ArrowUp className="w-4 h-4" />
-                </span>
-              )}
-            </button>
-          </div>
-
-          {error && (
-            <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" />
-                {error}
-              </span>
+            {/* Submit */}
+            <div className="mt-6 flex items-center justify-between gap-3">
+              <p className="text-[12px] text-gray-500 hidden sm:block">
+                Critic + optimizer agents · streaming SSE
+              </p>
               <button
-                onClick={() => setError("")}
-                className="text-xs text-red-400 hover:text-red-600"
+                type="submit"
+                disabled={!canRun || loading}
+                className="ml-auto inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-800 disabled:opacity-30 transition-all"
               >
-                Dismiss
+                <span className="px-1.5">
+                  {loading ? stage || "Scanning…" : "Run compliance scan"}
+                </span>
+                {loading ? (
+                  <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  </span>
+                ) : (
+                  <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">
+                    <ArrowUp className="w-4 h-4" />
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {error && (
+              <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  {error}
+                </span>
+                <button
+                  onClick={() => setError("")}
+                  className="text-xs text-red-400 hover:text-red-600"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+          </form>
+
+          {/* EMPTY STATE — sample ad for quick demo */}
+          {!result && !loading && (
+            <div className="animate-fade-up [animation-delay:460ms] mt-6 text-center">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-3">
+                Or try a sample
+              </p>
+              <button
+                type="button"
+                onClick={() =>
+                  setInput(
+                    "Guaranteed $500/day with this one weird trick! Limited time offer — only 3 spots left. Click now before your financial freedom disappears forever. Risk-free. 100% success rate."
+                  )
+                }
+                className="group inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <span className="font-mono">
+                  &ldquo;Guaranteed $500/day with this one weird trick!&rdquo;…
+                </span>
+                <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
             </div>
           )}
-        </form>
+        </div>
       </div>
 
       {/* RESULTS */}
       {result && score && (
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 mt-12 sm:mt-16 pb-20">
+        <div className="relative z-[2] max-w-3xl mx-auto px-5 sm:px-8 pb-20">
           {/* Score card */}
-          <div className="animate-fade-up flex flex-col sm:flex-row items-stretch sm:items-center gap-5 rounded-3xl bg-white ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)] px-6 sm:px-8 py-6 mb-8">
+          <div className="animate-fade-up flex flex-col sm:flex-row items-stretch sm:items-center gap-5 rounded-3xl bg-white/90 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] px-6 sm:px-8 py-6 mb-8">
             <div
               className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl ${score.bg} ${score.border} ring-1`}
             >
-              <span className={`text-4xl font-semibold tracking-tight ${score.text}`}>
+              <span
+                className={`text-4xl font-semibold tracking-tight ${score.text}`}
+              >
                 {result.riskScore}
               </span>
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className={`text-xs font-semibold uppercase tracking-wider ${score.text}`}>
+                <span
+                  className={`text-xs font-semibold uppercase tracking-wider ${score.text}`}
+                >
                   {score.label}
                 </span>
                 <span className="text-xs text-gray-300">·</span>
@@ -369,7 +425,9 @@ export default function AnalyzerPage() {
             </div>
             <div className="flex items-center gap-2">
               <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse-dot" />
-              <span className="text-[12px] text-gray-500">Analysis complete</span>
+              <span className="text-[12px] text-gray-500">
+                Analysis complete
+              </span>
             </div>
           </div>
 
@@ -390,10 +448,8 @@ export default function AnalyzerPage() {
                   return (
                     <div
                       key={i}
-                      className={`animate-fade-up rounded-2xl ring-1 p-4 sm:p-5 ${
-                        isRed
-                          ? "ring-red-200 bg-red-50/50"
-                          : "ring-amber-200 bg-amber-50/40"
+                      className={`animate-fade-up rounded-2xl ring-1 p-4 sm:p-5 bg-white/90 backdrop-blur-xl ${
+                        isRed ? "ring-red-200/60" : "ring-amber-200/60"
                       }`}
                       style={{ animationDelay: `${i * 80}ms` }}
                     >
@@ -439,7 +495,8 @@ export default function AnalyzerPage() {
                     Safe rewrites
                   </h2>
                   <p className="text-[13px] text-gray-500 mt-1">
-                    Same hook. Eight different techniques. Zero banned-account regret.
+                    Same hook. Eight different techniques. Zero banned-account
+                    regret.
                   </p>
                 </div>
                 <button
@@ -458,7 +515,7 @@ export default function AnalyzerPage() {
                 {result.variants.map((v, i) => (
                   <div
                     key={i}
-                    className="animate-fade-up group rounded-2xl bg-white ring-1 ring-gray-200 hover:ring-gray-300 p-5 transition-all"
+                    className="animate-fade-up group rounded-2xl bg-white/90 backdrop-blur-xl ring-1 ring-white/40 hover:ring-gray-200 p-5 transition-all"
                     style={{ animationDelay: `${i * 100 + 200}ms` }}
                   >
                     <div className="flex items-center gap-3 mb-3">
@@ -502,31 +559,6 @@ export default function AnalyzerPage() {
               </p>
             </div>
           )}
-        </div>
-      )}
-
-      {/* EMPTY STATE — sample ad for quick demo */}
-      {!result && !loading && (
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 mt-12 sm:mt-16 pb-20">
-          <div className="text-center">
-            <p className="text-[12px] uppercase tracking-[0.2em] text-gray-400 mb-4">
-              Or try a sample
-            </p>
-            <button
-              type="button"
-              onClick={() =>
-                setInput(
-                  "Guaranteed $500/day with this one weird trick! Limited time offer — only 3 spots left. Click now before your financial freedom disappears forever. Risk-free. 100% success rate."
-                )
-              }
-              className="group inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-            >
-              <span className="font-mono">
-                &ldquo;Guaranteed $500/day with this one weird trick!&rdquo;…
-              </span>
-              <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-          </div>
         </div>
       )}
     </div>

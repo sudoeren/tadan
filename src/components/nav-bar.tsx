@@ -39,12 +39,12 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
           >
             History
           </Link>
-          <a
-            href="#how-it-works"
+          <Link
+            href="/how-it-works"
             className="text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
           >
             How it works
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -112,13 +112,13 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
           >
             History
           </Link>
-          <a
-            href="#how-it-works"
+          <Link
+            href="/how-it-works"
             className="block text-[15px] text-gray-700 hover:text-gray-900 py-3 border-b border-gray-200"
             onClick={() => setOpen(false)}
           >
             How it works
-          </a>
+          </Link>
           {session ? (
             <button
               onClick={() => {
