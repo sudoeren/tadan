@@ -180,12 +180,18 @@ export default function HomePage() {
             >
               How it works
             </Link>
-            <a href="#" className="hover:text-gray-900 transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-gray-900 transition-colors"
+            >
               Privacy
-            </a>
-            <a href="#" className="hover:text-gray-900 transition-colors">
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-gray-900 transition-colors"
+            >
               Terms
-            </a>
+            </Link>
             <a href="#" className="hover:text-gray-900 transition-colors">
               GitHub
             </a>
