@@ -1,12 +1,7 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist_Mono } from "next/font/google"
 import { NavBar } from "@/components/nav-bar"
 import "./globals.css"
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -14,9 +9,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "tadan — Ad Compliance AI",
+  title: "tadan — Ship compliant ads, not banned accounts",
   description:
-    "Scan ad copy against Meta, Google, and Taboola policies. Get instant risk scores, violations, and safe alternatives.",
+    "Scan ad copy and landing pages against Meta, Google, and Taboola policies. Get instant risk scores, violations, and safe alternatives that preserve your marketing hook.",
 }
 
 export default function RootLayout({
@@ -27,8 +22,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://db.onlinewebfonts.com/c/bb5de19d87c09a95216dc6ccd96e37c6?family=Nimbus+Sans+TW01"
+        />
+      </head>
       <body className="min-h-full flex flex-col text-foreground">
         <NavBar />
         <main className="flex-1">{children}</main>
