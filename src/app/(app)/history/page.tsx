@@ -57,53 +57,48 @@ export default function HistoryPage() {
   })
 
   return (
-    <div
-      className="relative min-h-screen bg-cover bg-center overflow-hidden"
-      style={{
-        backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
-      }}
-    >
+    <div className="relative min-h-screen">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
+      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
-      {/* HERO */}
-      <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-32 sm:pt-44 pb-8">
-        <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 px-3 py-1.5 mb-6">
+      {/* HERO — compact */}
+      <section className="relative z-[2] flex flex-col items-center text-center px-5 pt-24 sm:pt-32 pb-6 sm:pb-8">
+        <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 px-3 py-1.5 mb-4">
           <Shield className="w-3.5 h-3.5 text-gray-700" />
           <span className="text-[12px] text-gray-700 font-medium">
             Compliance log
           </span>
         </div>
-        <h1 className="text-gray-900 font-normal leading-[1.02] tracking-[-0.04em] text-[44px] min-[400px]:text-[48px] sm:text-[68px] lg:text-[80px] xl:text-[92px] max-w-4xl">
+        <h1 className="text-gray-900 font-normal leading-[1.05] tracking-[-0.03em] text-[36px] min-[400px]:text-[40px] sm:text-[56px] lg:text-[64px] max-w-3xl">
           <span className="block animate-fade-up">Your past</span>
           <span className="block animate-fade-up [animation-delay:100ms]">
             scans.
           </span>
         </h1>
-        <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-base sm:text-lg mt-5 max-w-xl leading-relaxed">
+        <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-sm sm:text-base mt-3 max-w-md leading-relaxed">
           Every ad you&apos;ve checked. Every verdict we gave. Every rewrite
-          we generated. All in one place.
+          we generated.
         </p>
-      </div>
+      </section>
 
       {/* CONTENT CARD */}
-      <div className="relative z-[2] px-5 sm:px-8 pb-20">
+      <div className="relative z-[2] px-5 sm:px-8 pb-16">
         <div className="max-w-3xl mx-auto">
-          <div className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-6 sm:p-8">
+          <div className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-7">
             {loading ? (
               <div className="flex items-center justify-center py-20 text-gray-400">
                 <Loader2 className="w-5 h-5 animate-spin mr-2" />
                 Loading scans…
               </div>
             ) : records.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-                <div className="h-14 w-14 rounded-2xl bg-gray-50 ring-1 ring-gray-200 flex items-center justify-center mb-5">
-                  <FileText className="w-7 h-7 text-gray-300" />
+              <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                <div className="h-12 w-12 rounded-2xl bg-gray-50 ring-1 ring-gray-200 flex items-center justify-center mb-4">
+                  <FileText className="w-6 h-6 text-gray-300" />
                 </div>
                 <p className="text-[15px] text-gray-900 font-medium mb-1">
                   No analyses yet
                 </p>
-                <p className="text-sm text-gray-500 mb-6 max-w-xs">
+                <p className="text-sm text-gray-500 mb-5 max-w-xs">
                   Run your first compliance scan and the full audit log will
                   show up here.
                 </p>
@@ -119,14 +114,10 @@ export default function HistoryPage() {
               </div>
             ) : (
               <>
-                {/* Filters */}
-                <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
                   <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1">
                     {[
-                      {
-                        value: "all",
-                        label: `All (${records.length})`,
-                      },
+                      { value: "all", label: `All (${records.length})` },
                       { value: "flagged", label: "Flagged" },
                       { value: "clean", label: "Clean" },
                     ].map((opt) => {

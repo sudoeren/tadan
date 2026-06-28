@@ -38,14 +38,9 @@ export default function SignUpPage() {
   }
 
   return (
-    <div
-      className="relative min-h-screen flex flex-col bg-cover bg-center overflow-hidden"
-      style={{
-        backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
-      }}
-    >
+    <div className="relative min-h-screen flex flex-col">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
+      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
       {/* CENTERED CONTENT */}
       <div className="relative z-[2] flex-1 flex flex-col items-center justify-center px-5 py-20 sm:py-24">

@@ -106,7 +106,6 @@ export default function AnalyzerPage() {
     setLoading(true)
     setError("")
     setStage("Scanning policies…")
-
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -158,44 +157,38 @@ export default function AnalyzerPage() {
   const score = result ? scoreColor(result.riskScore) : null
 
   return (
-    <div
-      className="relative min-h-screen bg-cover bg-center overflow-hidden"
-      style={{
-        backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
-      }}
-    >
+    <div className="relative min-h-screen">
       <NavBar variant="transparent" />
-      <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
+      <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
-      {/* HERO */}
-      <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-32 sm:pt-44 pb-8">
-        <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 px-3 py-1.5 mb-6">
+      {/* HERO — compact */}
+      <section className="relative z-[2] flex flex-col items-center text-center px-5 pt-24 sm:pt-32 pb-6 sm:pb-8">
+        <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 px-3 py-1.5 mb-4">
           <Sparkles className="w-3.5 h-3.5 text-gray-700" />
           <span className="text-[12px] text-gray-700 font-medium">
             Ad Compliance Scanner
           </span>
         </div>
-        <h1 className="text-gray-900 font-normal leading-[1.02] tracking-[-0.04em] text-[44px] min-[400px]:text-[48px] sm:text-[68px] lg:text-[80px] xl:text-[92px] max-w-4xl">
+        <h1 className="text-gray-900 font-normal leading-[1.05] tracking-[-0.03em] text-[36px] min-[400px]:text-[40px] sm:text-[56px] lg:text-[64px] max-w-3xl">
           <span className="block animate-fade-up">Paste copy.</span>
           <span className="block animate-fade-up [animation-delay:100ms]">
             Get a verdict.
           </span>
         </h1>
-        <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-base sm:text-lg mt-5 max-w-xl leading-relaxed">
+        <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-sm sm:text-base mt-3 max-w-md leading-relaxed">
           Two agents, 1,200+ policy rules, and a risk score in under 6
-          seconds. No more guessing if your ad gets banned.
+          seconds.
         </p>
-      </div>
+      </section>
 
-      {/* FORM CARD */}
-      <div className="relative z-[2] px-5 sm:px-8 pb-16">
+      {/* FORM — floating card */}
+      <div className="relative z-[2] px-5 sm:px-8 pb-8">
         <div className="max-w-3xl mx-auto">
           <form
             onSubmit={run}
-            className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-6 sm:p-8"
+            className="animate-fade-up [animation-delay:340ms] rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-6"
           >
-            {/* Mode tabs */}
-            <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+            <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
               <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1">
                 {[
                   { value: "text", label: "Ad copy", icon: FileText },
@@ -225,14 +218,13 @@ export default function AnalyzerPage() {
               </span>
             </div>
 
-            {/* Input area */}
             {mode === "text" ? (
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Paste your ad headline, body copy, and CTA…"
-                rows={5}
-                className="w-full resize-y rounded-2xl border border-gray-200 bg-white/90 px-4 py-3.5 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+                rows={4}
+                className="w-full resize-y rounded-2xl border border-gray-200 bg-white/90 px-4 py-3 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
               />
             ) : (
               <div className="relative">
@@ -247,9 +239,8 @@ export default function AnalyzerPage() {
               </div>
             )}
 
-            {/* Platform chips */}
-            <div className="mt-5">
-              <p className="text-[11px] uppercase tracking-[0.15em] text-gray-400 mb-2.5 font-medium">
+            <div className="mt-4">
+              <p className="text-[11px] uppercase tracking-[0.15em] text-gray-400 mb-2 font-medium">
                 Target platforms
               </p>
               <div className="flex flex-wrap gap-2">
@@ -324,11 +315,22 @@ export default function AnalyzerPage() {
               </div>
             </div>
 
-            {/* Submit */}
-            <div className="mt-6 flex items-center justify-between gap-3">
-              <p className="text-[12px] text-gray-500 hidden sm:block">
-                Critic + optimizer agents · streaming SSE
-              </p>
+            <div className="mt-5 flex items-center justify-between gap-3">
+              {!result && !loading ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setInput(
+                      "Guaranteed $500/day with this one weird trick! Limited time offer — only 3 spots left. Click now before your financial freedom disappears forever. Risk-free. 100% success rate."
+                    )
+                  }
+                  className="text-[12px] text-gray-500 hover:text-gray-900 transition-colors"
+                >
+                  Try a sample →
+                </button>
+              ) : (
+                <span />
+              )}
               <button
                 type="submit"
                 disabled={!canRun || loading}
@@ -350,7 +352,7 @@ export default function AnalyzerPage() {
             </div>
 
             {error && (
-              <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center justify-between">
+              <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4" />
                   {error}
@@ -365,10 +367,10 @@ export default function AnalyzerPage() {
             )}
           </form>
 
-          {/* EMPTY STATE — sample ad for quick demo */}
+          {/* Sample ad suggestion (only when empty state) */}
           {!result && !loading && (
-            <div className="animate-fade-up [animation-delay:460ms] mt-6 text-center">
-              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-3">
+            <div className="animate-fade-up [animation-delay:460ms] mt-5 text-center">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-2">
                 Or try a sample
               </p>
               <button

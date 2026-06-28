@@ -19,7 +19,7 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
           : "relative bg-white/70 backdrop-blur-xl border-b border-gray-100"
       }`}
     >
-      <div className="flex items-center justify-between px-5 sm:px-8 lg:px-10 py-4 sm:py-5 max-w-6xl mx-auto">
+      <div className="flex items-center justify-between px-5 sm:px-8 lg:px-10 py-4 sm:py-5 max-w-5xl mx-auto">
         <Link href="/" className="text-gray-900 flex items-center gap-2 group">
           <Logo className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="text-lg sm:text-xl font-semibold tracking-tight">tadan</span>

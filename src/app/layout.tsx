@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
+import { BackgroundLayer } from "@/components/background-layer"
 import "./globals.css"
 
 const geistMono = Geist_Mono({
@@ -29,7 +30,8 @@ export default function RootLayout({
           href="https://db.onlinewebfonts.com/c/bb5de19d87c09a95216dc6ccd96e37c6?family=Nimbus+Sans+TW01"
         />
       </head>
-      <body className="min-h-full flex flex-col text-foreground">
+      <body className="min-h-screen flex flex-col text-foreground overflow-x-hidden">
+        <BackgroundLayer />
         {children}
       </body>
     </html>

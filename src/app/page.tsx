@@ -30,15 +30,9 @@ export default function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section
-        className="relative min-h-[100svh] overflow-hidden bg-cover bg-center flex flex-col"
-        style={{
-          backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
-        }}
-      >
+      <section className="relative min-h-[100svh] overflow-hidden flex flex-col">
         <NavBar variant="transparent" />
-        {/* gradient overlay for legibility */}
-        <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
+        <div className="pointer-events-none fixed inset-0 hero-overlay -z-[5]" />
 
         <div className="relative z-[2] flex-1 min-h-20 sm:min-h-28 lg:min-h-36 shrink-0" />
 
