@@ -338,11 +338,11 @@ export default function HomePage() {
               className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/5 to-black/20"
             />
 
-            {/* Grass — left side framing, prominent */}
+            {/* Grass — left side framing, very prominent */}
             <img
               src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
               alt=""
-              className="pointer-events-none absolute left-0 bottom-0 h-3/4 w-72 sm:w-80 lg:w-96 object-cover object-top select-none"
+              className="pointer-events-none absolute left-0 bottom-0 h-full w-80 sm:w-96 lg:w-[28rem] object-cover object-top select-none"
             />
 
             <div className="relative">
