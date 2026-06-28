@@ -83,11 +83,11 @@ function OutbrainLogo({ className }: { className?: string }) {
 }
 
 const PLATFORM_LOGOS = [
-  { name: "Meta", Logo: MetaLogo },
-  { name: "Google", Logo: GoogleLogo },
-  { name: "Taboola", Logo: TaboolaLogo },
-  { name: "TikTok", Logo: TikTokLogo },
-  { name: "Outbrain", Logo: OutbrainLogo },
+  { name: "Meta", Logo: MetaLogo, tint: "#1877F2" },
+  { name: "Google", Logo: GoogleLogo, tint: "#EA4335" },
+  { name: "Taboola", Logo: TaboolaLogo, tint: "#6C2BD9" },
+  { name: "TikTok", Logo: TikTokLogo, tint: "#000000" },
+  { name: "Outbrain", Logo: OutbrainLogo, tint: "#EE6E37" },
 ] as const
 
 function initials(name: string) {
@@ -199,14 +199,19 @@ export default function HomePage() {
             )}
           </div>
 
-          <div className="animate-fade-up [animation-delay:580ms] mt-7 sm:mt-9 flex flex-wrap items-center justify-center gap-2.5">
-            {PLATFORM_LOGOS.map(({ name, Logo }) => (
+          <div className="animate-fade-up [animation-delay:580ms] mt-7 sm:mt-9 flex flex-wrap items-center justify-center gap-3">
+            {PLATFORM_LOGOS.map(({ name, Logo, tint }) => (
               <div
                 key={name}
-                className="flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/60 backdrop-blur-sm px-3.5 py-1.5"
+                className="flex items-center gap-2.5 rounded-2xl border border-gray-200/80 bg-white/70 backdrop-blur-sm pl-1.5 pr-3.5 py-1.5 hover:border-gray-300 hover:bg-white transition-all"
               >
-                <Logo className="w-3.5 h-3.5" />
-                <span className="text-[12px] text-gray-700 font-medium">
+                <span
+                  className="w-8 h-8 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: `${tint}1f` }}
+                >
+                  <Logo className="w-4 h-4" />
+                </span>
+                <span className="text-[13px] text-gray-700 font-medium">
                   {name}
                 </span>
               </div>
@@ -216,13 +221,13 @@ export default function HomePage() {
 
         <div className="relative z-[2] flex-1 min-h-10 sm:min-h-12 lg:min-h-16 shrink-0" />
 
-        {/* Soft bottom-only fade — keeps background clear, smooth transition to white */}
+        {/* Soft transition only — background stays clear, fade happens at the very bottom */}
         <div
           aria-hidden
-          className="absolute bottom-0 left-0 right-0 z-0 h-40 sm:h-48 pointer-events-none"
+          className="absolute bottom-0 left-0 right-0 z-0 h-32 sm:h-40 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 80%, rgba(255,255,255,1) 100%)",
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.7) 85%, rgba(255,255,255,1) 100%)",
           }}
         />
 

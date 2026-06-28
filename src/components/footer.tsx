@@ -5,8 +5,8 @@ export function Footer() {
   return (
     <footer className="relative z-10 bg-white">
       <div className="px-4 sm:px-6 py-4 sm:py-6">
-        <div className="mx-auto max-w-6xl rounded-2xl bg-white ring-1 ring-gray-200/70 shadow-[0_8px_30px_rgba(0,0,0,0.04)] px-5 sm:px-7 py-4 sm:py-5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-gray-400">
+        <div className="mx-auto max-w-6xl rounded-2xl bg-gray-50 ring-1 ring-gray-200/70 shadow-[0_8px_30px_rgba(0,0,0,0.04)] px-5 sm:px-7 py-4 sm:py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-gray-500">
             <Link
               href="/"
               className="flex items-center gap-2 group"
@@ -16,7 +16,9 @@ export function Footer() {
               <span className="text-sm font-semibold tracking-tight text-gray-900">
                 tadan
               </span>
-              <span className="hidden sm:inline">— Ad Compliance AI</span>
+              <span className="hidden sm:inline text-gray-500">
+                — Ad Compliance AI
+              </span>
             </Link>
 
             <nav className="flex items-center gap-5">
@@ -40,7 +42,7 @@ export function Footer() {
               </Link>
             </nav>
 
-            <p>© 2026 tadan</p>
+            <p className="text-gray-400">© 2026 tadan</p>
           </div>
         </div>
       </div>
