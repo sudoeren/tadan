@@ -252,7 +252,7 @@ export default function AnalyzerPage() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Paste your ad headline, body copy, and CTA…"
                 rows={4}
-                className="w-full resize-y rounded-2xl border border-gray-200 bg-white/90 px-4 py-3 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+                className="w-full resize-y rounded-2xl border-2 border-gray-200 bg-white/90 px-4 py-3 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
               />
             ) : (
               <div className="relative">
@@ -262,7 +262,7 @@ export default function AnalyzerPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="https://example.com/landing-page"
-                  className="w-full rounded-2xl border border-gray-200 bg-white/90 pl-11 pr-4 py-3.5 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+                  className="w-full rounded-2xl border-2 border-gray-200 bg-white/90 pl-11 pr-4 py-3.5 text-[15px] text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
                 />
               </div>
             )}
