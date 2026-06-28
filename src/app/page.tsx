@@ -338,6 +338,13 @@ export default function HomePage() {
               className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/5 to-black/20"
             />
 
+            {/* Grass — left side framing, prominent */}
+            <img
+              src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
+              alt=""
+              className="pointer-events-none absolute left-0 bottom-0 h-3/4 w-72 sm:w-80 lg:w-96 object-cover object-top select-none"
+            />
+
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.1] tracking-tight text-white max-w-2xl mx-auto [text-shadow:0_2px_20px_rgba(0,0,0,0.25)]">
                 Ready to ship your first safe ad?
