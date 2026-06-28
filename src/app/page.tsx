@@ -1,36 +1,131 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 import { useSession } from "@/lib/auth-client"
-import { Shield, ArrowUp, ArrowUpRight } from "lucide-react"
-import { DashboardMockup } from "@/components/dashboard-mockup"
-import { ScaledDashboard } from "@/components/scaled-dashboard"
+import {
+  Shield,
+  ArrowUp,
+  ArrowUpRight,
+  ArrowRight,
+} from "lucide-react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 
-const PLATFORMS = [
-  { name: "Meta", color: "#1877F2" },
-  { name: "Google", color: "#4285F4" },
-  { name: "Taboola", color: "#6C2BD9" },
-  { name: "TikTok", color: "#000000" },
-  { name: "Outbrain", color: "#EE6E37" },
-]
+const GRASS_FADE_RANGE = 350
 
 const TESTIMONIALS = [
-  "Saved us $40k in account bans last quarter",
-  "Caught a $5k Meta ban 10 minutes before launch",
-  "Replaced our 3-person compliance team",
-  "My media buyers can't live without this",
-  "Pays for itself in the first banned ad it prevents",
-  "We shipped 200 ads in one month — zero rejections",
-]
+  {
+    quote:
+      "Caught a $5k Meta ban 10 minutes before launch. The optimizer rewrote our hook in a way that still converted — same ROAS, zero policy risk.",
+    name: "Maya Chen",
+    role: "Head of Paid, Linnea & Co.",
+  },
+  {
+    quote:
+      "Replaced our 3-person compliance review queue. What used to take a day of back-and-forth now takes six seconds and a click.",
+    name: "Jordan Park",
+    role: "Media Director, Northbeam",
+  },
+  {
+    quote:
+      "The risk score is the only number I check before pushing a campaign live. It's caught more landmines in three months than our QA process did in three years.",
+    name: "Sasha Iyer",
+    role: "Founder, Pivot Growth",
+  },
+] as const
+
+function MetaLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="#1877F2">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  )
+}
+
+function GoogleLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+    </svg>
+  )
+}
+
+function TaboolaLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <rect x="2" y="4" width="20" height="16" rx="2" fill="#6C2BD9" />
+      <path d="M7 8h3l2 4-2 4H7l2-4-2-4zM14 8h3v8h-3z" fill="white" />
+    </svg>
+  )
+}
+
+function TikTokLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="#000">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
+    </svg>
+  )
+}
+
+function OutbrainLogo({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#EE6E37" />
+      <circle cx="12" cy="12" r="4.5" fill="white" />
+      <circle cx="12" cy="12" r="2" fill="#EE6E37" />
+    </svg>
+  )
+}
+
+const PLATFORM_LOGOS = [
+  { name: "Meta", Logo: MetaLogo },
+  { name: "Google", Logo: GoogleLogo },
+  { name: "Taboola", Logo: TaboolaLogo },
+  { name: "TikTok", Logo: TikTokLogo },
+  { name: "Outbrain", Logo: OutbrainLogo },
+] as const
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+}
 
 export default function HomePage() {
   const { data: session, isPending } = useSession()
+  const [scrollY, setScrollY] = useState(0)
+
+  useEffect(() => {
+    let rafId = 0
+    const update = () => {
+      rafId = 0
+      setScrollY(window.scrollY)
+    }
+    const onScroll = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(update)
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [])
+
+  const grassProgress = Math.min(1, scrollY / GRASS_FADE_RANGE)
+  const grassOpacity = 1 - grassProgress
+  const grassBlur = grassProgress * 24
 
   return (
     <>
-      {/* HERO */}
+      {/* HERO — centered, unchanged */}
       <section className="relative min-h-[100svh] overflow-hidden flex flex-col">
         <NavBar variant="transparent" />
 
@@ -49,7 +144,6 @@ export default function HomePage() {
             policies. Get safe rewrites that keep your hook.
           </p>
 
-          {/* Search-style form */}
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -75,7 +169,6 @@ export default function HomePage() {
             </div>
           </form>
 
-          {/* CTA buttons */}
           <div className="animate-fade-up [animation-delay:460ms] mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-3">
             {isPending ? (
               <div className="h-10 w-28 animate-pulse rounded-full bg-gray-100" />
@@ -96,31 +189,25 @@ export default function HomePage() {
                   Try it free
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  href="/how-it-works"
                   className="text-gray-700 text-sm font-medium px-6 py-2.5 rounded-full ring-1 ring-gray-300 hover:bg-gray-100 transition-colors inline-flex items-center gap-2"
                 >
-                  Book a demo
-                </a>
+                  How it works
+                </Link>
               </>
             )}
           </div>
 
-          {/* Platform chips */}
           <div className="animate-fade-up [animation-delay:580ms] mt-7 sm:mt-9 flex flex-wrap items-center justify-center gap-2.5">
-            {PLATFORMS.map((p) => (
+            {PLATFORM_LOGOS.map(({ name, Logo }) => (
               <div
-                key={p.name}
+                key={name}
                 className="flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/60 backdrop-blur-sm px-3.5 py-1.5"
               >
-                <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: p.color }}
-                />
+                <Logo className="w-3.5 h-3.5" />
                 <span className="text-[12px] text-gray-700 font-medium">
-                  {p.name}
+                  {name}
                 </span>
               </div>
             ))}
@@ -129,45 +216,137 @@ export default function HomePage() {
 
         <div className="relative z-[2] flex-1 min-h-10 sm:min-h-12 lg:min-h-16 shrink-0" />
 
-        {/* Dashboard mockup */}
-        <div className="relative z-0 w-[92%] sm:w-[84%] lg:w-[72%] max-w-4xl mx-auto shrink-0 -mb-10 sm:-mb-20 lg:-mb-32 animate-hero-rise [animation-delay:700ms]">
-          <ScaledDashboard designWidth={896} className="w-full">
-            <DashboardMockup />
-          </ScaledDashboard>
+        {/* Soft bottom-only fade — keeps background clear, smooth transition to white */}
+        <div
+          aria-hidden
+          className="absolute bottom-0 left-0 right-0 z-0 h-40 sm:h-48 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 80%, rgba(255,255,255,1) 100%)",
+          }}
+        />
+
+        <div className="relative z-[1] w-[92%] sm:w-[84%] lg:w-[72%] max-w-4xl mx-auto shrink-0 -mb-10 sm:-mb-20 lg:-mb-32 animate-hero-rise [animation-delay:700ms]">
+          <Image
+            src="/image.png"
+            alt="tadan compliance dashboard"
+            width={1200}
+            height={800}
+            className="w-full h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.12)] ring-1 ring-black/5"
+            style={{
+              maskImage:
+                "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+            priority
+          />
         </div>
 
-        {/* Grass overlay */}
+        {/* Grass — fixed, blurs & fades on scroll */}
         <img
           src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
           alt=""
-          className="pointer-events-none absolute bottom-0 left-0 z-10 w-full select-none"
+          className="pointer-events-none fixed bottom-0 left-0 z-[5] w-full select-none"
+          style={{
+            opacity: grassOpacity,
+            filter: `blur(${grassBlur}px)`,
+            transition: "opacity 0.2s ease-out, filter 0.2s ease-out",
+          }}
         />
       </section>
 
-      {/* LOGO MARQUEE — SOCIAL PROOF */}
-      <section className="relative bg-white border-y border-gray-100 py-10 sm:py-12 overflow-hidden">
+      {/* TESTIMONIALS */}
+      <section className="relative bg-white py-24 sm:py-32">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <p className="text-center text-[12px] uppercase tracking-[0.2em] text-gray-500 mb-7">
-            Trusted by media buyers shipping at scale
-          </p>
-        </div>
-        <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-          <div className="flex gap-12 animate-marquee whitespace-nowrap">
-            {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 text-gray-400 text-sm shrink-0"
+          <div className="max-w-2xl mb-14 sm:mb-20">
+            <p className="text-[12px] uppercase tracking-[0.2em] text-gray-400 font-medium">
+              From the field
+            </p>
+            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.05] tracking-tight text-gray-900">
+              The compliance layer performance marketers reach for first.
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
+            {TESTIMONIALS.map((t) => (
+              <figure
+                key={t.name}
+                className="rounded-2xl bg-gray-50 ring-1 ring-gray-200/70 p-6 sm:p-7 flex flex-col"
               >
-                <span className="font-mono text-gray-300">0{(i % TESTIMONIALS.length) + 1}</span>
-                <span className="text-gray-700 font-medium">{t}</span>
-                <span className="w-1 h-1 rounded-full bg-gray-200" />
-              </div>
+                <svg
+                  aria-hidden
+                  viewBox="0 0 32 32"
+                  className="w-7 h-7 text-gray-300 mb-4 shrink-0"
+                  fill="currentColor"
+                >
+                  <path d="M9.5 8C5.36 8 2 11.36 2 15.5V24h8v-8H6.5C6.5 13.6 8.6 11.5 11 11.5V8h-1.5zm15 0c-4.14 0-7.5 3.36-7.5 7.5V24h8v-8h-3.5c0-2.4 2.1-4.5 4.5-4.5V8h-1.5z" />
+                </svg>
+                <blockquote className="text-[15px] leading-relaxed text-gray-700 flex-1">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 pt-5 border-t border-gray-200/70">
+                  <span className="w-9 h-9 rounded-full bg-gray-900 text-white text-[12px] font-medium flex items-center justify-center shrink-0">
+                    {initials(t.name)}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-semibold text-gray-900 leading-tight">
+                      {t.name}
+                    </div>
+                    <div className="text-[12px] text-gray-500 leading-tight mt-0.5 truncate">
+                      {t.role}
+                    </div>
+                  </div>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* CTA */}
+      <section className="relative bg-white py-16 sm:py-20">
+        <div className="max-w-5xl mx-auto px-5 sm:px-8">
+          <div className="rounded-3xl bg-gray-900 text-white p-8 sm:p-14 text-center">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.05] tracking-tight max-w-2xl mx-auto">
+              Ship your first safe ad today.
+            </h2>
+            <p className="mt-4 text-gray-400 text-[15px] sm:text-base leading-relaxed max-w-md mx-auto">
+              50 free scans a month. No card required. Paste copy, get a
+              verdict, ship it.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              {session ? (
+                <Link
+                  href="/analyzer"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium px-6 py-3 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  Open analyzer
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium px-6 py-3 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  Start scanning free
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
+              <Link
+                href="/how-it-works"
+                className="text-[13px] text-gray-400 hover:text-white transition-colors px-6 py-3"
+              >
+                See how it works →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* White filler — pushes footer to the very bottom of the page */}
+      <div aria-hidden className="bg-white flex-1" />
+
       <Footer />
     </>
   )
