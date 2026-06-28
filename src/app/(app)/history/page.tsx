@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Shield, AlertTriangle, Check, Loader2, ArrowUpRight, FileText, Link2 } from "lucide-react"
 import type { AnalysisRecord } from "@/types"
+import { NavBar } from "@/components/nav-bar"
 
 const PLATFORM_COLORS: Record<string, string> = {
   meta: "#1877F2",
@@ -47,7 +48,8 @@ export default function HistoryPage() {
   })
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50/50">
+    <div className="min-h-screen bg-gray-50/50">
+      <NavBar />
       {/* Header */}
       <section className="relative bg-cover bg-center overflow-hidden border-b border-gray-100">
         <div

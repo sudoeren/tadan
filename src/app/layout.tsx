@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
-import { NavBar } from "@/components/nav-bar"
 import "./globals.css"
 
 const geistMono = Geist_Mono({
@@ -31,8 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col text-foreground">
-        <NavBar />
-        <main className="flex-1">{children}</main>
+        {children}
       </body>
     </html>
   )

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { authClient } from "@/lib/auth-client"
 import { ArrowUp, ArrowUpRight, AlertTriangle, Shield, Check } from "lucide-react"
 import { Logo } from "@/components/logo"
+import { NavBar } from "@/components/nav-bar"
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -37,7 +38,8 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
+      <NavBar />
       {/* LEFT — form */}
       <div className="flex-1 flex flex-col justify-center px-5 sm:px-10 py-12 max-w-xl mx-auto w-full">
         <Link

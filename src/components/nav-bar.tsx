@@ -2,21 +2,21 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { useSession, signOut } from "@/lib/auth-client"
 import { Menu, X, ArrowUpRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 
-export function NavBar() {
+export function NavBar({ variant = "default" }: { variant?: "default" | "transparent" }) {
   const { data: session, isPending } = useSession()
   const [open, setOpen] = useState(false)
-  const pathname = usePathname()
-  const isHome = pathname === "/"
+  const isTransparent = variant === "transparent"
 
   return (
     <header
-      className={`animate-fade-down relative z-30 transition-colors duration-500 ${
-        isHome ? "" : "bg-white/70 backdrop-blur-xl border-b border-gray-100"
+      className={`animate-fade-down z-30 transition-colors duration-500 ${
+        isTransparent
+          ? "absolute top-0 left-0 right-0"
+          : "relative bg-white/70 backdrop-blur-xl border-b border-gray-100"
       }`}
     >
       <div className="flex items-center justify-between px-5 sm:px-8 lg:px-10 py-4 sm:py-5 max-w-6xl mx-auto">

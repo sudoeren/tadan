@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { DashboardMockup } from "@/components/dashboard-mockup"
 import { ScaledDashboard } from "@/components/scaled-dashboard"
+import { NavBar } from "@/components/nav-bar"
 
 const PLATFORMS = [
   { name: "Meta", color: "#1877F2" },
@@ -66,6 +67,7 @@ export default function HomePage() {
           backgroundImage: `url(https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85)`,
         }}
       >
+        <NavBar variant="transparent" />
         {/* gradient overlay for legibility */}
         <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
 

@@ -14,6 +14,7 @@ import {
   FileText,
   Link2,
 } from "lucide-react"
+import { NavBar } from "@/components/nav-bar"
 import type { Platform, Violation } from "@/types"
 
 interface Result {
@@ -126,7 +127,8 @@ export default function AnalyzerPage() {
   const score = result ? scoreColor(result.riskScore) : null
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50/50">
+    <div className="min-h-screen bg-gray-50/50">
+      <NavBar />
       {/* TOP — compact header with grass / nature gradient */}
       <section className="relative bg-cover bg-center overflow-hidden border-b border-gray-100">
         <div
