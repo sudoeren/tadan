@@ -239,6 +239,30 @@ export default function HowItWorksPage() {
                 className="flex items-center justify-center gap-3 py-2 lg:py-0 lg:px-3"
                 aria-hidden
               >
+                <svg
+                  className="w-16 h-6 lg:w-14 lg:h-10 text-orange-500 -rotate-90 lg:rotate-0"
+                  viewBox="0 0 60 16"
+                  fill="none"
+                >
+                  <line
+                    x1="12"
+                    y1="8"
+                    x2="58"
+                    y2="8"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    className="flow-dash"
+                  />
+                  <path
+                    d="M16 2 L4 8 L16 14"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  />
+                </svg>
                 <span className="text-[11px] uppercase tracking-[0.2em] text-orange-500 font-semibold">
                   or
                 </span>
