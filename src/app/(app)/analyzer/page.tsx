@@ -117,11 +117,7 @@ function CopyBtn({ text }: { text: string }) {
 export default function AnalyzerPage() {
   const [mode, setMode] = useState<"text" | "url">("text")
   const [input, setInput] = useState("")
-  const [platforms, setPlatforms] = useState<Platform[]>([
-    "meta",
-    "google",
-    "taboola",
-  ])
+  const [platforms, setPlatforms] = useState<Platform[]>([])
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState("")
@@ -272,10 +268,27 @@ export default function AnalyzerPage() {
                 <p className="text-[11px] uppercase tracking-[0.15em] text-gray-400 font-medium">
                   Target platforms
                 </p>
-                <p className="text-[11px] text-gray-400">
-                  Pick at least one — we&apos;ll check your copy against its
-                  policies
-                </p>
+                <div className="flex items-center gap-3">
+                  <p className="text-[11px] text-gray-400">
+                    Pick at least one — we&apos;ll check your copy against its
+                    policies
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPlatforms(
+                        platforms.length === PLATFORMS.length
+                          ? []
+                          : PLATFORMS.map((p) => p.value)
+                      )
+                    }
+                    className="text-[11px] font-medium text-gray-500 hover:text-gray-900 underline underline-offset-2 decoration-gray-300 hover:decoration-gray-900 transition-colors"
+                  >
+                    {platforms.length === PLATFORMS.length
+                      ? "Clear"
+                      : "Select all"}
+                  </button>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 {PLATFORMS.map((p) => {
