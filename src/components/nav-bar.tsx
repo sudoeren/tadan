@@ -2,27 +2,34 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useSession, signOut } from "@/lib/auth-client"
 import { Menu, X } from "lucide-react"
 
 export function NavBar() {
   const { data: session, isPending } = useSession()
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  const isHome = pathname === "/"
 
   return (
-    <header className="animate-fade-down relative z-20">
+    <header
+      className={`animate-fade-down relative z-20 transition-colors duration-500 ${
+        isHome ? "" : "bg-white/80 backdrop-blur-xl"
+      }`}
+    >
       <div className="flex items-center justify-between px-5 sm:px-8 lg:px-10 py-4 sm:py-5 max-w-6xl mx-auto">
-        <Link href="/" className="text-gray-900">
+        <Link href="/" className={`${isHome ? "text-gray-900" : "text-gray-900"}`}>
           <span className="text-lg sm:text-xl font-semibold tracking-tight">tadan</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
           {session && (
             <>
-              <Link href="/analyzer" className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors">
+              <Link href="/analyzer" className={`text-[13px] transition-colors ${isHome ? "text-gray-700 hover:text-gray-900" : "text-gray-700 hover:text-gray-900"}`}>
                 Analyzer
               </Link>
-              <Link href="/history" className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors">
+              <Link href="/history" className={`text-[13px] transition-colors ${isHome ? "text-gray-700 hover:text-gray-900" : "text-gray-700 hover:text-gray-900"}`}>
                 History
               </Link>
             </>
@@ -34,22 +41,19 @@ export function NavBar() {
             <div className="h-9 w-20 animate-pulse rounded-full bg-gray-100" />
           ) : session ? (
             <>
-              <button
-                onClick={() => signOut()}
-                className="hidden md:inline-flex text-[13px] text-gray-700 hover:text-gray-900 transition-colors"
-              >
+              <button onClick={() => signOut()} className={`hidden md:inline-flex text-[13px] transition-colors ${isHome ? "text-gray-700 hover:text-gray-900" : "text-gray-700 hover:text-gray-900"}`}>
                 Sign out
               </button>
               <button
                 onClick={() => setOpen(!open)}
-                className="md:hidden w-9 h-9 rounded-full text-gray-900 hover:bg-gray-900/10 inline-flex items-center justify-center transition-colors"
+                className={`md:hidden w-9 h-9 rounded-full inline-flex items-center justify-center transition-colors ${isHome ? "text-gray-900 hover:bg-gray-900/10" : "text-gray-900 hover:bg-gray-100"}`}
               >
                 {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className="hidden md:inline-flex text-[13px] text-gray-700 hover:text-gray-900 transition-colors">
+              <Link href="/login" className={`hidden md:inline-flex text-[13px] transition-colors ${isHome ? "text-gray-700 hover:text-gray-900" : "text-gray-700 hover:text-gray-900"}`}>
                 Sign in
               </Link>
               <Link
@@ -64,7 +68,7 @@ export function NavBar() {
       </div>
 
       {open && session && (
-        <div className="md:hidden absolute left-4 right-4 top-full rounded-2xl bg-white/90 backdrop-blur-xl ring-1 ring-gray-200 px-5 py-3 mt-2 animate-fade-up">
+        <div className="md:hidden absolute left-4 right-4 top-full rounded-2xl bg-white/95 backdrop-blur-xl ring-1 ring-gray-200 px-5 py-3 mt-2 animate-fade-up shadow-lg">
           <Link href="/analyzer" className="block text-[15px] text-gray-700 hover:text-gray-900 py-3 border-b border-gray-200" onClick={() => setOpen(false)}>Analyzer</Link>
           <Link href="/history" className="block text-[15px] text-gray-700 hover:text-gray-900 py-3 border-b border-gray-200" onClick={() => setOpen(false)}>History</Link>
           <button onClick={() => { signOut(); setOpen(false) }} className="block w-full text-left text-[15px] text-gray-700 hover:text-gray-900 py-3">Sign out</button>

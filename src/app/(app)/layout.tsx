@@ -21,5 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     )
   }
 
-  return children
+  return (
+    <div className="bg-white min-h-[calc(100vh-3.5rem)]">{children}</div>
+  )
 }
