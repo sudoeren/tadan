@@ -110,6 +110,17 @@ body {
   }
 }
 
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.flow-dash {
+  stroke-dasharray: 6 4;
+  animation: flow-dash 1s linear infinite;
+}
+
 @keyframes pulse-dot {
   0%, 100% {
     opacity: 1;

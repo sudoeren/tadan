@@ -1,5 +1,6 @@
 "use client"
 
+import { Fragment } from "react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
@@ -7,41 +8,40 @@ import {
   ArrowUp,
   Zap,
   Globe,
-  Database,
   FileText,
   Link2,
-  PenLine,
-  Gauge,
   ShieldCheck,
   WandSparkles,
   Check,
   Plus,
   CircleDot,
+  Search,
+  Gauge,
 } from "lucide-react"
 
 const STEPS = [
   {
-    icon: PenLine,
     n: "01",
-    title: "Paste copy or drop a URL",
+    icon: FileText,
+    title: "Paste copy or URL",
     body: "Ad headlines, body copy, CTAs — or a full landing page URL. We handle text or HTML, structured or messy.",
   },
   {
-    icon: Database,
     n: "02",
-    title: "RAG over 1,200+ policy rules",
+    icon: Search,
+    title: "RAG matches policies",
     body: "Your input is embedded and matched against Meta, Google, and Taboola policies via pgvector. Top-8 most relevant rules reach the LLM.",
   },
   {
-    icon: Gauge,
     n: "03",
-    title: "Critic agent scores risk 0–100",
+    icon: Gauge,
+    title: "Critic scores risk 0–100",
     body: "A critic agent reads your copy through the lens of real platform policy — flagging exact phrases, classifying severity, returning a risk score.",
   },
   {
-    icon: WandSparkles,
     n: "04",
-    title: "Optimizer agent rewrites",
+    icon: WandSparkles,
+    title: "Optimizer rewrites",
     body: "8 distinct copywriting techniques. Empowerment framing, curiosity hooks, social proof. Safe — but never sterile.",
   },
 ]
@@ -127,24 +127,24 @@ export default function HowItWorksPage() {
         </p>
       </div>
 
-      {/* STEPS */}
+      {/* STEPS — 4 cards with orange dashed animated arrows between them */}
       <div className="relative z-[2] px-5 sm:px-8 pb-12">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-6 sm:p-9">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            <div className="flex flex-col lg:flex-row items-stretch gap-4 lg:gap-0">
               {STEPS.map((step, i) => {
                 const Icon = step.icon
                 return (
+                <Fragment key={step.n}>
                   <div
-                    key={step.title}
-                    className="animate-fade-up relative rounded-2xl bg-white ring-1 ring-gray-200 p-5 hover:ring-gray-300 transition-all"
-                    style={{ animationDelay: `${i * 100}ms` }}
+                    className="animate-fade-up relative flex-1 rounded-2xl bg-white ring-1 ring-gray-200 p-5 hover:ring-gray-300 transition-all"
+                    style={{ animationDelay: `${i * 120}ms` }}
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-gray-900 text-white ring-1 ring-gray-900 flex items-center justify-center">
+                      <span className="w-10 h-10 rounded-xl bg-orange-100 text-orange-500 ring-1 ring-orange-200/60 flex items-center justify-center">
                         <Icon className="w-5 h-5" strokeWidth={1.75} />
-                      </div>
-                      <span className="text-[11px] text-gray-300 font-mono">
+                      </span>
+                      <span className="text-[12px] font-mono text-gray-300">
                         {step.n}
                       </span>
                     </div>
@@ -155,8 +155,41 @@ export default function HowItWorksPage() {
                       {step.body}
                     </p>
                   </div>
-                )
-              })}
+
+                  {i < STEPS.length - 1 && (
+                    <div
+                      className="flex items-center justify-center py-2 lg:py-0 lg:px-2"
+                      aria-hidden
+                    >
+                      <svg
+                        className="w-16 h-6 lg:w-12 lg:h-10 text-orange-500 rotate-90 lg:rotate-0"
+                        viewBox="0 0 60 16"
+                        fill="none"
+                      >
+                        <line
+                          x1="2"
+                          y1="8"
+                          x2="48"
+                          y2="8"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          className="flow-dash"
+                        />
+                        <path
+                          d="M44 2 L56 8 L44 14"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </Fragment>
+              )}
+            )}
             </div>
           </div>
         </div>
