@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 
 export const metadata = {
   title: "Terms of Service — tadan",
@@ -225,6 +226,8 @@ export default function TermsPage() {
           </div>
         </article>
       </main>
+
+      <Footer />
     </div>
   )
 }

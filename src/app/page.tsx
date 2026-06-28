@@ -6,6 +6,7 @@ import { Shield, ArrowUp, ArrowUpRight } from "lucide-react"
 import { DashboardMockup } from "@/components/dashboard-mockup"
 import { ScaledDashboard } from "@/components/scaled-dashboard"
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 
 const PLATFORMS = [
   { name: "Meta", color: "#1877F2" },
@@ -167,40 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-gray-100 bg-white">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-gray-900">
-            <span className="text-sm font-semibold tracking-tight">tadan</span>
-            <span className="text-[12px] text-gray-400">— Ad Compliance AI</span>
-          </div>
-          <div className="flex items-center gap-6 text-[12px] text-gray-500">
-            <Link
-              href="/how-it-works"
-              className="hover:text-gray-900 transition-colors"
-            >
-              How it works
-            </Link>
-            <Link
-              href="/privacy"
-              className="hover:text-gray-900 transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms"
-              className="hover:text-gray-900 transition-colors"
-            >
-              Terms
-            </Link>
-            <a href="#" className="hover:text-gray-900 transition-colors">
-              GitHub
-            </a>
-          </div>
-          <p className="text-[12px] text-gray-400">
-            © 2026 tadan. Built for media buyers.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }

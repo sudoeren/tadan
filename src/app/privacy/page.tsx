@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 
 export const metadata = {
   title: "Privacy Policy — tadan",
@@ -229,6 +230,8 @@ export default function PrivacyPage() {
           </div>
         </article>
       </main>
+
+      <Footer />
     </div>
   )
 }

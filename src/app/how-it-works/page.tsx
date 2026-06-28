@@ -1,6 +1,7 @@
 "use client"
 
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 import Link from "next/link"
 import {
   ArrowUp,
@@ -359,6 +360,8 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }
