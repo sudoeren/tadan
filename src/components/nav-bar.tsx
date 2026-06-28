@@ -7,6 +7,8 @@ import { hasAuthed, markHasAuthed } from "@/lib/auth-state"
 import { ArrowUpRight, Menu, X } from "lucide-react"
 import { Logo } from "@/components/logo"
 
+const SCROLL_THRESHOLD = 8
+
 const subscribeNoop = () => () => {}
 const getServerHasAuthed = () => false
 
@@ -17,6 +19,7 @@ export function NavBar({
 }) {
   const { data: session, isPending } = useSession()
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const hasAuthedBefore = useSyncExternalStore(
     subscribeNoop,
     hasAuthed,
@@ -30,15 +33,49 @@ export function NavBar({
     }
   }, [session])
 
+  useEffect(() => {
+    if (!isTransparent) return
+
+    let rafId = 0
+    const update = () => {
+      rafId = 0
+      setScrolled(window.scrollY > SCROLL_THRESHOLD)
+    }
+    const onScroll = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(update)
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    update()
+
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [isTransparent])
+
   const headerClasses = isTransparent
-    ? "absolute top-0 left-0 right-0 z-30"
+    ? [
+        "fixed left-0 right-0 z-50 transition-all duration-300 ease-out",
+        scrolled ? "top-3 px-3 sm:top-4 sm:px-4" : "top-0 px-0",
+      ].join(" ")
     : "relative"
+
+  const innerClasses = isTransparent
+    ? [
+        "flex items-center justify-between mx-auto transition-all duration-300 ease-out",
+        scrolled
+          ? "h-12 max-w-2xl bg-white/80 backdrop-blur-xl rounded-full ring-1 ring-black/5 shadow-lg shadow-black/5 px-4"
+          : "h-20 sm:h-24 max-w-5xl px-5 sm:px-8 lg:px-10",
+      ].join(" ")
+    : "flex items-center justify-between h-20 sm:h-24 max-w-5xl mx-auto px-5 sm:px-8 lg:px-10"
 
   const ctaHref = hasAuthedBefore ? "/login" : "/signup"
 
   return (
     <header className={`animate-fade-down ${headerClasses}`}>
-      <div className="flex items-center justify-between px-5 sm:px-8 lg:px-10 h-16 sm:h-20 max-w-5xl mx-auto">
+      <div className={innerClasses}>
         <Link href="/" className="text-gray-900 flex items-center gap-2 group">
           <Logo className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="text-lg sm:text-xl font-semibold tracking-tight">
