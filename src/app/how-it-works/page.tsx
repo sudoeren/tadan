@@ -3,6 +3,7 @@
 import { Fragment } from "react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
+import { Logo } from "@/components/logo"
 import Link from "next/link"
 import {
   ArrowUp,
@@ -699,7 +700,7 @@ export default function HowItWorksPage() {
                     </g>
                     <g id="googleLogoR">
                       <path
-                        d="M22.56 12.25c0-.78-.07-1.53 H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
                         fill="#4285F4"
                       />
                       <path
@@ -726,12 +727,6 @@ export default function HowItWorksPage() {
                       <path
                         d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"
                         fill="#000"
-                      />
-                    </g>
-                    <g id="tadanHub">
-                      <path
-                        d="M 144 256 L 27.598 256 L 144 139.598 Z M 256 207.5 L 200 256 L 200 56 L 0 56 L 48 0 L 256 0 Z M 0 204.402 L 0 112 L 92.402 112 Z"
-                        fill="white"
                       />
                     </g>
                   </defs>
@@ -825,10 +820,6 @@ export default function HowItWorksPage() {
                     fill="#fff7ed"
                     stroke="#f97316"
                     strokeWidth="1.5"
-                  />
-                  <use
-                    href="#tadanHub"
-                    transform="translate(70 50) scale(0.09) translate(-128 -128)"
                   />
 
                   <rect
