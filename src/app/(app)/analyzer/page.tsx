@@ -7,7 +7,6 @@ import {
   Copy,
   Check,
   ArrowUp,
-  ArrowUpRight,
   Loader2,
   Globe,
   FileText,
@@ -363,29 +362,6 @@ export default function AnalyzerPage() {
               </div>
             )}
           </form>
-
-          {/* Sample ad suggestion (only when empty state) */}
-          {!result && !loading && (
-            <div className="animate-fade-up [animation-delay:460ms] mt-5 text-center">
-              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-2">
-                Or try a sample
-              </p>
-              <button
-                type="button"
-                onClick={() =>
-                  setInput(
-                    "Guaranteed $500/day with this one weird trick! Limited time offer — only 3 spots left. Click now before your financial freedom disappears forever. Risk-free. 100% success rate."
-                  )
-                }
-                className="group inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-              >
-                <span className="font-mono">
-                  &ldquo;Guaranteed $500/day with this one weird trick!&rdquo;…
-                </span>
-                <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
