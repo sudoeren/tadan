@@ -346,13 +346,14 @@ export default function HomePage() {
             style={{
               backgroundImage: `url(${BG_URL})`,
               backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundPosition: "center 65%",
+              filter: "contrast(1.08) saturate(1.2)",
             }}
           >
             {/* Very light scrim — keeps photo visible, text-shadow handles readability */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/15"
+              className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/5 to-black/20"
             />
 
             <div className="relative">
