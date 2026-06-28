@@ -71,20 +71,9 @@ export default function HomePage() {
         {/* gradient overlay for legibility */}
         <div className="pointer-events-none absolute inset-0 hero-overlay z-[1]" />
 
-        <div className="relative z-[2] flex-1 min-h-8 sm:min-h-12 lg:min-h-16 shrink-0" />
+        <div className="relative z-[2] flex-1 min-h-20 sm:min-h-28 lg:min-h-36 shrink-0" />
 
         <div className="relative z-[2] flex flex-col items-center text-center px-5 max-w-5xl mx-auto w-full">
-          {/* Eyebrow chip */}
-          <div className="animate-fade-down mb-6 sm:mb-8 inline-flex items-center gap-2 rounded-full bg-white/60 backdrop-blur-md ring-1 ring-gray-200 px-3.5 py-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span className="text-[12px] text-gray-700 font-medium">
-              Built for media buyers — by media buyers
-            </span>
-          </div>
-
           <h1 className="text-gray-900 font-normal leading-[1.02] tracking-[-0.04em] text-[44px] min-[400px]:text-[48px] sm:text-[68px] lg:text-[80px] xl:text-[92px]">
             <span className="block animate-fade-up">Ship compliant ads.</span>
             <span className="block animate-fade-up [animation-delay:100ms]">

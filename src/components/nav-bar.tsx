@@ -31,7 +31,7 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
             className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-1"
           >
             Analyzer
-            <ArrowUpRight className="w-3 h-3 text-gray-400" />
+            <ArrowUpRight className="w-4 h-4 text-gray-400" />
           </Link>
           <Link
             href="/history"
