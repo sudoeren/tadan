@@ -268,9 +268,15 @@ export default function AnalyzerPage() {
             )}
 
             <div className="mt-4">
-              <p className="text-[11px] uppercase tracking-[0.15em] text-gray-400 mb-2 font-medium">
-                Target platforms
-              </p>
+              <div className="flex items-baseline justify-between mb-2 gap-3">
+                <p className="text-[11px] uppercase tracking-[0.15em] text-gray-400 font-medium">
+                  Target platforms
+                </p>
+                <p className="text-[11px] text-gray-400">
+                  Pick at least one — we&apos;ll check your copy against its
+                  policies
+                </p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {PLATFORMS.map((p) => {
                   const on = platforms.includes(p.value)
