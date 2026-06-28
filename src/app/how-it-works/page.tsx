@@ -4,7 +4,6 @@ import { NavBar } from "@/components/nav-bar"
 import Link from "next/link"
 import {
   ArrowUp,
-  Sparkles,
   Zap,
   Globe,
   Database,
@@ -72,7 +71,7 @@ const FEATURES = [
     body: "Drop a URL. We scrape, parse, and flag the bait-and-switch before it costs you your account.",
   },
   {
-    icon: Sparkles,
+    icon: WandSparkles,
     title: "RAG over policy docs",
     body: "Only the most relevant policy rules reach the LLM. Lower token cost, higher accuracy.",
   },

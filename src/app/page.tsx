@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useSession } from "@/lib/auth-client"
-import { Sparkles, Shield, ArrowUp, ArrowUpRight } from "lucide-react"
+import { Shield, ArrowUp, ArrowUpRight } from "lucide-react"
 import { DashboardMockup } from "@/components/dashboard-mockup"
 import { ScaledDashboard } from "@/components/scaled-dashboard"
 import { NavBar } from "@/components/nav-bar"
@@ -45,8 +45,7 @@ export default function HomePage() {
 
           <p className="animate-fade-up [animation-delay:220ms] mt-5 sm:mt-6 text-gray-600 text-base sm:text-lg lg:text-xl leading-relaxed max-w-xl">
             Scan ad copy and landing pages against Meta, Google, and Taboola
-            policies. Get safe rewrites that keep your hook
-            <Sparkles className="inline w-4 h-4 -mt-1 ml-1 text-gray-700" />
+            policies. Get safe rewrites that keep your hook.
           </p>
 
           {/* Search-style form */}
