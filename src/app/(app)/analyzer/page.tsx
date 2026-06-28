@@ -37,8 +37,8 @@ const PLATFORMS: {
   {
     value: "google",
     label: "Google Ads",
-    color: "#4285F4",
-    tint: { bg: "bg-sky-50", border: "border-sky-300", text: "text-sky-700" },
+    color: "#EA4335",
+    tint: { bg: "bg-red-50", border: "border-red-300", text: "text-red-700" },
   },
   {
     value: "taboola",
