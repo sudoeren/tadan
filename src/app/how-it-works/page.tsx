@@ -108,7 +108,6 @@ export default function HowItWorksPage() {
       {/* HERO */}
       <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-28 sm:pt-36 pb-12">
         <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/30 backdrop-blur-xl ring-1 ring-white/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_4px_20px_rgba(0,0,0,0.04)] px-3.5 py-1.5 mb-7">
-          <span className="w-1.5 h-1.5 rounded-full bg-gray-900" />
           <span className="text-[12px] text-gray-700 font-medium">
             How it works
           </span>
