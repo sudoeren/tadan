@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSession, signOut } from "@/lib/auth-client"
-import { Menu, X, ChevronDown, ArrowUpRight } from "lucide-react"
+import { Menu, X, ArrowUpRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 
 export function NavBar() {
@@ -44,13 +44,6 @@ export function NavBar() {
             className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors"
           >
             How it works
-          </a>
-          <a
-            href="#pricing"
-            className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-1"
-          >
-            Pricing
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
           </a>
         </nav>
 
@@ -125,13 +118,6 @@ export function NavBar() {
             onClick={() => setOpen(false)}
           >
             How it works
-          </a>
-          <a
-            href="#pricing"
-            className="block text-[15px] text-gray-700 hover:text-gray-900 py-3"
-            onClick={() => setOpen(false)}
-          >
-            Pricing
           </a>
           {session ? (
             <button

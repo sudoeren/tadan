@@ -320,40 +320,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PRICING / CTA */}
-      <section id="pricing" className="relative bg-white py-24 sm:py-32">
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-[12px] font-medium text-gray-700 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-900" />
-            Ready when you are
-          </div>
-          <h2 className="text-gray-900 font-normal leading-[1.05] tracking-tight text-4xl sm:text-5xl lg:text-6xl">
-            Stop gambling with your ad account.
-          </h2>
-          <p className="text-gray-500 text-base sm:text-lg mt-5 max-w-xl mx-auto leading-relaxed">
-            Free to start. 50 scans/month, no card. Scale when you ship.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/signup"
-              className="bg-gray-900 text-white text-sm font-medium px-7 py-3 rounded-full hover:bg-gray-800 hover:shadow-lg transition-all inline-flex items-center gap-2"
-            >
-              Start scanning free
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/analyzer"
-              className="text-gray-700 text-sm font-medium px-7 py-3 rounded-full ring-1 ring-gray-300 hover:bg-gray-100 transition-colors"
-            >
-              See it in action
-            </Link>
-          </div>
-          <p className="text-[12px] text-gray-400 mt-6">
-            No credit card · 50 free scans · Meta, Google, Taboola
-          </p>
-        </div>
-      </section>
-
       {/* FOOTER */}
       <footer className="border-t border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
