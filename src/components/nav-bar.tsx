@@ -25,23 +25,23 @@ export function NavBar({ variant = "default" }: { variant?: "default" | "transpa
           <span className="text-lg sm:text-xl font-semibold tracking-tight">tadan</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-7">
           <Link
             href="/analyzer"
-            className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-1"
+            className="group inline-flex items-center gap-1.5 text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
           >
             Analyzer
-            <ArrowUpRight className="w-4 h-4 text-gray-400" />
+            <ArrowUpRight className="w-[15px] h-[15px] text-gray-900 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
           <Link
             href="/history"
-            className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
           >
             History
           </Link>
           <a
             href="#how-it-works"
-            className="text-[13px] text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
           >
             How it works
           </a>
