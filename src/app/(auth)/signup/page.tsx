@@ -14,6 +14,7 @@ export default function SignUpPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -21,6 +22,12 @@ export default function SignUpPage() {
     e.preventDefault()
     setError("")
     setLoading(true)
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      setLoading(false)
+      return
+    }
 
     const { error } = await authClient.signUp.email({
       name,
@@ -84,6 +91,21 @@ export default function SignUpPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={8}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium">
+                Confirm password
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Re-enter your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={8}
               />
             </div>
             {error && (

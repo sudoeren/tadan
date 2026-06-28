@@ -9,7 +9,9 @@ User Input (ad copy or URL)
     │
     ▼
 /api/analyze
+    ├── stream: true → SSE (progress events)
     ├── URL? → scraper.ts (cheerio DOM parse)
+    ├── RAG → pgvector similarity search on platform_policies
     ├── Critic Agent → { risk_score, violations[] }
     ├── Optimizer Agent → 3 safe variants
     └── DB save (PostgreSQL + Drizzle)
@@ -20,8 +22,12 @@ Dashboard → risk gauge, violations table, variant cards
 
 ### Dual-Agent System
 
-- **Critic Agent** — Scans content against live platform policy documents via LLM. Returns structured violations and a 0-100 risk score.
-- **Optimizer Agent** — Takes violations and original copy, generates 3 compliant variants using psychological angles that bypass algorithm detection without killing the marketing hook.
+- **Critic Agent** — Scans content against platform policies via LLM. Optionally uses RAG (pgvector similarity search) to retrieve only the most relevant policy rules for lower token cost and higher accuracy. Returns structured violations and a 0-100 risk score.
+- **Optimizer Agent** — Takes violations and original copy, generates 3 compliant variants using 8 distinct copywriting techniques (curiosity hooks, empowerment framing, social proof, etc.) without killing the marketing hook.
+
+### RAG Pipeline
+
+Policy rules are embedded via `openai/text-embedding-3-small` (1536-dim) and stored in pgvector. At scan time, the user's ad copy is embedded and the top-8 most similar policy rules are retrieved and injected into the Critic Agent's system prompt.
 
 ## Tech Stack
 
@@ -30,11 +36,12 @@ Dashboard → risk gauge, violations table, variant cards
 | Framework | Next.js 16 (App Router) |
 | Package Manager | Bun |
 | Language | TypeScript |
-| UI | Tailwind CSS v4 + Shadcn UI (base-nova) |
+| UI | Tailwind CSS v4 + Shadcn UI (base-nova, light-only) |
 | Auth | Better Auth (email/password) |
 | Database | PostgreSQL 16 + pgvector (Docker) |
 | ORM | Drizzle ORM |
-| LLM | OpenRouter API |
+| LLM Chat | OpenRouter API (gemini-2.5-flash-preview) |
+| Embeddings | OpenRouter API (text-embedding-3-small, 1536d) |
 | Scraper | Cheerio |
 | Tests | Vitest + Testing Library + Playwright |
 
@@ -72,13 +79,15 @@ bun run db:generate
 bun run db:migrate
 ```
 
-### 5. Start the dev server
+### 5. Start dev server and open
 
 ```bash
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) — sign up, paste ad copy, analyze.
+
+Policy embeddings are auto-seeded on the first analysis request (no manual step needed).
 
 ## Scripts
 
@@ -101,61 +110,65 @@ Open [http://localhost:3000](http://localhost:3000).
 tadan/
 ├── docker-compose.yml         # PostgreSQL 16 + pgvector
 ├── drizzle.config.ts          # Drizzle Kit config
-├── vite.config.ts             # Vitest config
+├── vitest.config.ts           # Vitest config
 ├── playwright.config.ts       # Playwright e2e config
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx         # Root layout with NavBar
-│   │   ├── page.tsx           # Dashboard / analyzer
+│   │   ├── page.tsx           # Dashboard / analyzer (SSE streaming)
 │   │   ├── globals.css        # Tailwind + Shadcn theme
 │   │   ├── (auth)/
 │   │   │   ├── login/page.tsx
 │   │   │   └── signup/page.tsx
 │   │   ├── history/page.tsx
 │   │   └── api/
-│   │       ├── analyze/route.ts   # POST — full pipeline
+│   │       ├── analyze/route.ts   # POST — full pipeline + SSE stream
 │   │       ├── scrape/route.ts    # POST — URL preview
+│   │       ├── seed/route.ts      # POST — seed policy embeddings
 │   │       └── auth/[...all]/route.ts
 │   ├── components/
 │   │   ├── ui/                # Shadcn components
 │   │   ├── nav-bar.tsx
-│   │   ├── ad-input.tsx       # Platform selector + input
-│   │   ├── risk-gauge.tsx     # Circular score indicator
+│   │   ├── ad-input.tsx       # Platform selector + input (text/URL)
+│   │   ├── risk-gauge.tsx     # Circular score indicator (0-100)
 │   │   ├── violations-table.tsx
-│   │   └── variant-card.tsx
+│   │   └── variant-card.tsx   # Copy-to-clipboard variant card
 │   ├── lib/
 │   │   ├── auth.ts            # Better Auth server config
 │   │   ├── auth-client.ts     # Better Auth client
 │   │   ├── db/
 │   │   │   ├── index.ts       # Drizzle + pg connection
-│   │   │   └── schema.ts      # Table definitions
+│   │   │   └── schema.ts      # Table definitions (7 tables)
 │   │   ├── agents/
-│   │   │   ├── critic.ts      # Compliance analysis agent
-│   │   │   └── optimizer.ts   # Safe variant generator
+│   │   │   ├── critic.ts      # Compliance analysis (RAG-integrated)
+│   │   │   └── optimizer.ts   # Safe variant generator (8 techniques)
 │   │   ├── policies/
 │   │   │   ├── meta.ts        # Meta Ad policies
 │   │   │   ├── google.ts      # Google Ads policies
-│   │   │   └── taboola.ts     # Taboola policies
-│   │   ├── openrouter.ts      # OpenRouter API client
-│   │   ├── scraper.ts         # Landing page scraper
+│   │   │   └── taboola.ts     # Taboola / Outbrain policies
+│   │   ├── openrouter.ts      # OpenRouter API (chat + embeddings)
+│   │   ├── rag.ts             # pgvector similarity search + seed
+│   │   ├── scraper.ts         # Cheerio landing page scraper
+│   │   ├── errors.ts          # AppError, LLMError, withRetry()
 │   │   └── utils.ts           # cn() helper
 │   └── types/
 │       └── index.ts
 ├── tests/
 │   ├── unit/
 │   │   ├── setup.ts
-│   │   └── utils.test.ts
+│   │   ├── utils.test.ts      # cn() + utility tests
+│   │   └── agents.test.ts     # JSON extraction + retry logic
 │   └── e2e/
 │       └── home.spec.ts
 └── drizzle/
-    └── migrations/
+    └── migrations/            # SQL migration files
 ```
 
 ## API
 
 ### POST /api/analyze
 
-Analyze ad copy or landing page for policy compliance.
+Analyze ad copy or landing page for policy compliance. Supports streaming via SSE.
 
 ```json
 // Request
@@ -163,17 +176,18 @@ Analyze ad copy or landing page for policy compliance.
   "inputType": "text",          // "text" | "url"
   "content": "Your ad copy...", // required when inputType is "text"
   "url": "https://...",         // required when inputType is "url"
-  "platforms": ["meta", "google", "taboola"]
+  "platforms": ["meta", "google", "taboola"],
+  "stream": true                // optional — enables SSE streaming
 }
 
-// Response
+// Response (non-streaming)
 {
   "id": "uuid",
   "riskScore": 75,
   "violations": [
     {
       "text": "guaranteed earnings",
-      "reason": "Financial promise without evidence",
+      "reason": "Financial promise without evidence — Google Evrak dışı financial vaat yasağı",
       "level": "Red"
     }
   ],
@@ -185,6 +199,13 @@ Analyze ad copy or landing page for policy compliance.
     }
   ]
 }
+
+// Streaming events (when stream: true)
+// event: progress  data: {"stage":"scraping","message":"Fetching landing page..."}
+// event: progress  data: {"stage":"analyzing","message":"Analyzing against platform policies..."}
+// event: progress  data: {"stage":"optimizing","message":"Generating safe variants..."}
+// event: result    data: {"id":"...","riskScore":75,"violations":[...],"variants":[...]}
+// event: done      data: {}
 ```
 
 ### POST /api/scrape

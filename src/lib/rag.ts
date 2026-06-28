@@ -58,6 +58,17 @@ export async function retrieveRelevantPolicies(
   return results
 }
 
+export async function ensurePolicyEmbeddings(): Promise<void> {
+  const existing = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(platformPolicies)
+  if ((existing[0]?.count ?? 0) > 0) return
+
+  console.log("[tadan] Seeding policy embeddings...")
+  await seedPolicyEmbeddings()
+  console.log("[tadan] Embeddings seeded.")
+}
+
 export async function seedPolicyEmbeddings(): Promise<{
   upserted: number
 }> {
@@ -70,7 +81,6 @@ export async function seedPolicyEmbeddings(): Promise<{
   for (const policy of [META_AD_POLICIES, GOOGLE_ADS_POLICIES, TABOOLA_POLICIES]) {
     for (const cat of policy.categories) {
       for (const rule of cat.rules) {
-        const text = `[${policy.platform}] ${cat.category}: ${rule}`
         rules.push({
           platform: policy.platform,
           category: cat.category,

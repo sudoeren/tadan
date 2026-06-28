@@ -6,6 +6,7 @@ import { analyses, violations as violationsTable, variants as variantsTable } fr
 import { scrapeLandingPage, formatScrapedContent } from "@/lib/scraper"
 import { analyzeContent } from "@/lib/agents/critic"
 import { generateVariants } from "@/lib/agents/optimizer"
+import { ensurePolicyEmbeddings } from "@/lib/rag"
 import { withRetry, ValidationError } from "@/lib/errors"
 import type { Platform } from "@/types"
 
@@ -67,6 +68,8 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    await ensurePolicyEmbeddings()
+
     const result = await runPipeline(
       session.user.id,
       inputType,
@@ -103,6 +106,8 @@ async function handleStream(
       }
 
       try {
+        await ensurePolicyEmbeddings()
+
         let rawContent: string
 
         if (inputType === "url") {
