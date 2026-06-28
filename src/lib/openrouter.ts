@@ -73,4 +73,45 @@ export function extractJsonFromResponse(content: string): unknown {
   throw new Error("Could not extract JSON from response")
 }
 
+export interface OpenRouterEmbeddingParams {
+  model: string
+  input: string | string[]
+}
+
+export interface OpenRouterEmbeddingResponse {
+  data: { embedding: number[]; index: number }[]
+}
+
+export async function openRouterEmbedding(
+  params: OpenRouterEmbeddingParams
+): Promise<number[][]> {
+  if (!OPENROUTER_API_KEY) {
+    throw new Error("OPENROUTER_API_KEY is not configured")
+  }
+
+  const response = await fetch(`${OPENROUTER_BASE_URL}/embeddings`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": process.env.BETTER_AUTH_URL || "http://localhost:3000",
+      "X-Title": "tadan",
+    },
+    body: JSON.stringify({
+      model: params.model,
+      input: params.input,
+    }),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`OpenRouter Embedding error: ${response.status} ${errorText}`)
+  }
+
+  const result: OpenRouterEmbeddingResponse = await response.json()
+  return result.data
+    .sort((a, b) => a.index - b.index)
+    .map((d) => d.embedding)
+}
+
 export { type OpenRouterMessage, type OpenRouterCompletionParams }

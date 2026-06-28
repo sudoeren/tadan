@@ -1,7 +1,47 @@
 import { openRouterCompletion, extractJsonFromResponse } from "@/lib/openrouter"
 import type { Platform, Violation } from "@/types"
 
-function buildOptimizerPrompt(
+const OPTIMIZER_SYSTEM_PROMPT = `You are an elite affiliate marketing copywriter who rewrites ad copy to pass platform compliance checks while maximizing conversion. You understand the difference between what algorithms flag and what humans buy.
+
+## Copywriting Philosophy
+
+Your goal is NOT to neuter the ad. It's to restructure the same persuasion using compliant language patterns:
+
+1. **Reframe claims as benefits**: Instead of "Lose 10 lbs in 1 week" → "Finally feel light and energized"
+2. **Replace direct questions with universal statements**: Instead of "Are you struggling with debt?" → "Debt relief is closer than you think"
+3. **Swap guarantees for empowerment**: Instead of "Guaranteed $500/day" → "Proven system that puts you in control"
+4. **Use curiosity hooks**: Instead of "This pill melts belly fat" → "The metabolism trick Wall Street doesn't want you to know"
+5. **Authority positioning**: Instead of "Best weight loss product" → "Formulated by a board-certified endocrinologist"
+6. **Social proof**: Instead of "Everyone is making money with this" → "Trusted by 10,000+ professionals across 40 countries"
+7. **Indirect benefit language**: Instead of "Miracle cure for X" → "Supports your body's natural X response"
+8. **Eliminate time-bound claims**: Instead of "In just 3 days" → "From day one, you'll notice the difference"
+
+## Never-Use Patterns
+
+- Personal attribute questions: "Are you...?", "Do you suffer from...?"
+- Direct medical/health claims: "cures", "treats", "eliminates [disease]"
+- Financial promises: "guaranteed", "risk-free returns", "earn $X/day"
+- Before/after: "see the transformation", any comparison imagery
+- False urgency: "limited time", "only X spots left"
+- Superlatives without evidence: "the best", "#1", "top rated"
+- Clickbait: "You won't believe...", "Shocking truth..."
+- Body shaming: "tired of being fat", "embarrassed by your..."
+
+## Variant Strategies
+
+For each rewrite, pick a distinct angle:
+- **Variant 1:** Curiosity + Authority (hook with intrigue, close with credibility)
+- **Variant 2:** Empowerment + Benefit (focus on transformation and positive outcome)
+- **Variant 3:** Social Proof + Relatability (lean on trust and shared experience)
+
+## Output Rules
+
+- Output ONLY valid JSON, no markdown
+- Exactly 3 variants
+- Each variant must be self-contained ad copy ready to paste into an ad platform
+- Score compliance from 0-100 and hook preservation from 0-100 honestly`
+
+function buildOptimizerUserPrompt(
   original: string,
   violations: Violation[],
   platforms: Platform[]
@@ -9,30 +49,15 @@ function buildOptimizerPrompt(
   const violationsSummary = violations
     .map(
       (v, i) =>
-        `${i + 1}. Problem: "${v.text}"\n   Violates: ${v.reason}\n   Severity: ${v.level}`
+        `${i + 1}. Problem: "${v.text}"\n   Rule broken: ${v.reason}\n   Severity: ${v.level}`
     )
     .join("\n")
 
-  return `You are an elite affiliate marketing copywriter who specializes in rewriting ad copy to be 100% compliant with ${platforms.join(", ")} advertising policies while preserving the psychological hook and conversion power of the original.
+  const violationPhrases = violations.map((v) => v.text).join(", ")
 
-## Critical Rules
+  return `## Task
 
-1. NEVER use the following patterns (they trigger bans):
-   - Direct health/weight claims ("lose X pounds in Y days")
-   - Before/after comparisons or imagery language
-   - Guaranteed income/financial promises
-   - Negative body image or personal attribute targeting
-   - Sensationalist clickbait headlines
-   - Misleading urgency ("limited time", fake countdowns)
-   - Questions that imply personal shortcomings ("Are you struggling with...?")
-
-2. DO use these safe psychological angles:
-   - Curiosity-driven openings
-   - Empowerment and self-improvement framing
-   - Social proof and authority signals
-   - Benefit-focused language (not claim-focused)
-   - Metaphors and indirect language for sensitive topics
-   - Professional expertise positioning
+Rewrite this ad copy to be 100% compliant with ${platforms.join(", ")} policies. The violations below MUST be fixed, but the core marketing hook must survive.
 
 ## Original Ad Copy
 
@@ -40,33 +65,21 @@ function buildOptimizerPrompt(
 ${original}
 """
 
-## Compliance Violations Found
+## Compliance Violations (must fix)
 
 ${violationsSummary}
 
-## Task
+## Critical Constraint
 
-Rewrite the ad copy into 3 distinct safe variants. Each variant must:
-- Be 100% compliant with ${platforms.join(", ")} policies
-- Preserve the core marketing hook and conversion intent
-- Use a different psychological angle from the other variants
-- Sound natural and persuasive, not robotic
+The following phrases triggered violations and CANNOT appear in any variant. You must find alternative phrasing for each:
 
-## Output Format
+${violationPhrases}
 
-Respond ONLY with valid JSON:
+## Reminder
 
-{
-  "variants": [
-    {
-      "text": "The rewritten safe ad copy...",
-      "compliance_score": number (0-100),
-      "hook_preservation": number (0-100)
-    }
-  ]
-}
-
-Generate exactly 3 variants.`
+- 3 distinct variants, each using a different psychological angle
+- NO markdown, NO commentary — just the JSON
+- Every word must be platform-safe`
 }
 
 export interface OptimizedVariant {
@@ -80,14 +93,12 @@ export async function generateVariants(
   violations: Violation[],
   platforms: Platform[]
 ): Promise<OptimizedVariant[]> {
-  const systemPrompt = `You are an elite affiliate copywriter. Always respond ONLY with the requested JSON — no markdown, no commentary.`
-  const userPrompt = buildOptimizerPrompt(original, violations, platforms)
-  const model = "google/gemini-2.5-flash-preview"
+  const userPrompt = buildOptimizerUserPrompt(original, violations, platforms)
 
   const response = await openRouterCompletion({
-    model,
+    model: "google/gemini-2.5-flash-preview",
     messages: [
-      { role: "system", content: systemPrompt },
+      { role: "system", content: OPTIMIZER_SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
     ],
     temperature: 0.8,
@@ -97,15 +108,15 @@ export async function generateVariants(
 
   const raw = response.choices[0]?.message?.content
   if (!raw) {
-    throw new Error("Empty response from LLM")
+    throw new Error("Empty optimizer response from LLM")
   }
 
   const parsed = extractJsonFromResponse(raw) as {
     variants: OptimizedVariant[]
   }
 
-  if (!Array.isArray(parsed.variants)) {
-    throw new Error(`Invalid optimizer response: ${raw.slice(0, 200)}`)
+  if (!Array.isArray(parsed.variants) || parsed.variants.length === 0) {
+    throw new Error(`Invalid optimizer response: ${raw.slice(0, 300)}`)
   }
 
   return parsed.variants

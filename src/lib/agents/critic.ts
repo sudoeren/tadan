@@ -2,6 +2,7 @@ import { openRouterCompletion, extractJsonFromResponse } from "@/lib/openrouter"
 import { META_AD_POLICIES } from "@/lib/policies/meta"
 import { GOOGLE_ADS_POLICIES } from "@/lib/policies/google"
 import { TABOOLA_POLICIES } from "@/lib/policies/taboola"
+import { retrieveRelevantPolicies } from "@/lib/rag"
 import type { Platform, AnalysisResult, ViolationLevel } from "@/types"
 
 const POLICY_MAP = {
@@ -10,8 +11,59 @@ const POLICY_MAP = {
   taboola: TABOOLA_POLICIES,
 } as const
 
-function buildSystemPrompt(platforms: Platform[]): string {
-  const policySections = platforms
+const CRITIC_SYSTEM_PROMPT = `You are a senior ad compliance officer with deep expertise in affiliate marketing and native advertising. Your job is to scan ad copy and landing page content against platform advertising policies and identify violations that could lead to account bans or ad disapprovals.
+
+## Review Methodology
+
+1. **Read the entire content.** Understand the offer, hook, and conversion flow.
+2. **Check every sentence, phrase, word choice, and implied claim** against the platform policies provided.
+3. **Be aggressive but accurate.** Better to flag borderline content than miss a violation that gets the account banned.
+4. **Context matters.** A phrase that seems harmless in one context could be a policy violation in another (e.g. "guarantee" in a financial ad vs. a product warranty).
+
+## Risk Scoring
+
+Assign a risk score from 0 to 100:
+- **0-25 (Safe):** Fully compliant. Ships without edits.
+- **26-60 (Low Risk):** Minor wording issues. Likely approved but could be flagged.
+- **61-85 (High Risk):** Policy violations present. Likely rejected or account flagged.
+- **86-100 (Ban Risk):** Severe violations. Will trigger account suspension or ban.
+
+## Violation Levels
+
+- **Red:** Direct policy violation that can cause immediate account suspension (e.g. financial promises, health cure claims, misleading information, prohibited content).
+- **Yellow:** Borderline content that may cause ad disapproval (e.g. excessive caps, aggressive tone, unclear disclosures, minor landing page issues).
+
+## Key Red Flags to Watch For
+
+- Guaranteed income or earnings claims
+- Before/after comparisons, "miracle" cures
+- Negative self-perception targeting
+- Clickbait or sensationalist headlines
+- Misleading scarcity/urgency without basis
+- Missing privacy policy or disclosures
+- Bait-and-switch landing pages
+- Excessive skin exposure in imagery language
+- Personal attribute assertions ("Are you overweight?")
+
+## Output Format
+
+Respond ONLY with valid JSON — no markdown, no commentary:
+
+{
+  "risk_score": number,
+  "violations": [
+    {
+      "text": "exact violating text from the content",
+      "reason": "specific policy rule violated and why it's problematic",
+      "level": "Red" | "Yellow"
+    }
+  ]
+}
+
+If there are no violations, return an empty violations array with risk_score 0.`
+
+function buildPolicyContext(platforms: Platform[]): string {
+  return platforms
     .map((p) => {
       const policy = POLICY_MAP[p]
       const rules = policy.categories
@@ -23,51 +75,42 @@ function buildSystemPrompt(platforms: Platform[]): string {
       return `--- ${p.toUpperCase()} ADS POLICIES ---\n${rules}`
     })
     .join("\n\n")
-
-  return `You are a senior ad compliance officer for ${platforms.join(", ")} Ads platforms. Your task is to review ad copy or landing page content against the platform advertising policies provided below.
-
-## Review Instructions
-
-1. Read the provided content carefully.
-2. Check EVERY sentence, phrase, and claim against the policies.
-3. Flag ANY violation, no matter how subtle — be aggressive in your review.
-4. Assign a risk score from 0 to 100:
-   - 0-25: Clean, no violations (Green)
-   - 26-60: Minor issues, needs slight edits (Yellow)  
-   - 61-85: Significant risk, likely disapproval (Orange)
-   - 86-100: Account ban risk, immediate rewrite needed (Red)
-5. For each violation, specify:
-   - "text": the exact problematic phrase from the content
-   - "reason": which specific policy rule it violates
-   - "level": "Red" for account-banning violations, "Yellow" for likely-disapproval issues
-
-## Platform Policies
-
-${policySections}
-
-## Output Format
-
-Respond ONLY with valid JSON — no markdown, no commentary:
-
-{
-  "risk_score": number,
-  "violations": [
-    {
-      "text": "exact violating text from the content",
-      "reason": "which policy rule and why",
-      "level": "Red" | "Yellow"
-    }
-  ]
-}
-
-If there are no violations, return an empty violations array with risk_score 0.`
 }
 
 export async function analyzeContent(
   content: string,
-  platforms: Platform[]
+  platforms: Platform[],
+  useRag = true
 ): Promise<AnalysisResult> {
-  const systemPrompt = buildSystemPrompt(platforms)
+  let ragPolicies = ""
+
+  if (useRag) {
+    try {
+      const relevant = await retrieveRelevantPolicies(content, platforms)
+      if (relevant.length > 0) {
+        ragPolicies =
+          "\n## Most Relevant Policy Rules (RAG-matched)\n" +
+          relevant
+            .map(
+              (r) =>
+                `- [${r.platform}] ${r.category}: ${r.ruleText}`
+            )
+            .join("\n") +
+          "\n"
+      }
+    } catch {
+      // RAG unavailable, fall through to full policy docs
+      useRag = false
+    }
+  }
+
+  const policyContext = useRag
+    ? ragPolicies + "\n## Full Policy Reference\n" + buildPolicyContext(platforms)
+    : buildPolicyContext(platforms)
+
+  const systemPrompt =
+    CRITIC_SYSTEM_PROMPT + "\n\n## Platform Policies\n\n" + policyContext
+
   const model = "google/gemini-2.5-flash-preview"
 
   const response = await openRouterCompletion({

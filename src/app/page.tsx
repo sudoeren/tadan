@@ -30,6 +30,7 @@ export default function AnalyzerPage() {
   const [state, setState] = useState<State>("idle")
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState("")
+  const [progress, setProgress] = useState("")
 
   async function handleAnalyze(input: {
     inputType: "text" | "url"
@@ -39,12 +40,13 @@ export default function AnalyzerPage() {
   }) {
     setState("loading")
     setError("")
+    setProgress("Scanning against platform policies...")
 
     try {
       const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
+        body: JSON.stringify({ ...input, stream: true }),
       })
 
       if (!response.ok) {
@@ -52,9 +54,43 @@ export default function AnalyzerPage() {
         throw new Error(data.error || "Analysis failed")
       }
 
-      const data = await response.json()
-      setResult(data)
-      setState("result")
+      const reader = response.body?.getReader()
+      if (!reader) throw new Error("No response stream")
+
+      const decoder = new TextDecoder()
+      let buffer = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split("\n")
+        buffer = lines.pop() || ""
+
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            const event = line.slice(7).trim()
+            continue
+          }
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6))
+              const lastEvent = buffer ? "result" : ""
+              if (data.stage) {
+                setProgress(data.message || data.stage)
+              } else if (data.riskScore !== undefined) {
+                setResult(data)
+                setState("result")
+              } else if (data.message) {
+                throw new Error(data.message)
+              }
+            } catch {
+              // skip malformed lines
+            }
+          }
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
       setState("error")
@@ -144,9 +180,7 @@ export default function AnalyzerPage() {
           <Card>
             <CardContent className="flex flex-col items-center gap-4 py-12">
               <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              <p className="text-sm text-muted-foreground">
-                Scanning against platform policies...
-              </p>
+              <p className="text-sm text-muted-foreground">{progress}</p>
             </CardContent>
           </Card>
         )}
