@@ -141,9 +141,10 @@ export default function HowItWorksPage() {
                     style={{ animationDelay: `${i * 120}ms` }}
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <span className="w-10 h-10 rounded-xl bg-orange-100 text-orange-500 ring-1 ring-orange-200/60 flex items-center justify-center">
-                        <Icon className="w-5 h-5" strokeWidth={1.75} />
-                      </span>
+                      <Icon
+                        className="w-7 h-7 text-orange-500"
+                        strokeWidth={1.75}
+                      />
                       <span className="text-[12px] font-mono text-gray-300">
                         {step.n}
                       </span>
