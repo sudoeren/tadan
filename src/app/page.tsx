@@ -250,13 +250,13 @@ export default function HomePage() {
 
         <div className="relative z-[2] flex-1 min-h-10 sm:min-h-12 lg:min-h-16 shrink-0" />
 
-        {/* Soft transition only — background stays clear, fade happens at the very bottom */}
+        {/* Soft transition — tall, very gradual fade from hero bg to white */}
         <div
           aria-hidden
-          className="absolute bottom-0 left-0 right-0 z-0 h-32 sm:h-40 pointer-events-none"
+          className="absolute bottom-0 left-0 right-0 z-0 h-64 sm:h-80 lg:h-96 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.7) 85%, rgba(255,255,255,1) 100%)",
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.55) 75%, rgba(255,255,255,0.9) 92%, rgba(255,255,255,1) 100%)",
           }}
         />
 
@@ -349,10 +349,10 @@ export default function HomePage() {
               backgroundPosition: "center",
             }}
           >
-            {/* Subtle scrim for text readability */}
+            {/* Very light scrim — keeps photo visible, text-shadow handles readability */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/25"
+              className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/15"
             />
 
             <div className="relative">
