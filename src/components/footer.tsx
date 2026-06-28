@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="relative z-10 bg-white">
       <div className="px-4 sm:px-6 py-4 sm:py-6">
-        <div className="mx-auto max-w-6xl rounded-2xl bg-gray-50 ring-1 ring-gray-200/70 shadow-[0_8px_30px_rgba(0,0,0,0.04)] px-5 sm:px-7 py-4 sm:py-5">
+        <div className="mx-auto max-w-6xl rounded-2xl bg-gray-100 ring-1 ring-gray-200/70 shadow-[0_8px_30px_rgba(0,0,0,0.04)] px-5 sm:px-7 py-4 sm:py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-gray-500">
             <Link
               href="/"

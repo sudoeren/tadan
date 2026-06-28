@@ -203,7 +203,7 @@ export default function HomePage() {
             {PLATFORM_LOGOS.map(({ name, Logo, tint }) => (
               <div
                 key={name}
-                className="flex items-center gap-2.5 rounded-2xl border border-gray-200/80 bg-white/70 backdrop-blur-sm pl-1.5 pr-3.5 py-1.5 hover:border-gray-300 hover:bg-white transition-all"
+                className="flex items-center gap-2.5 rounded-2xl bg-white/70 backdrop-blur-sm pl-1.5 pr-3.5 py-1.5 hover:bg-white transition-all"
               >
                 <span
                   className="w-8 h-8 rounded-xl flex items-center justify-center"
