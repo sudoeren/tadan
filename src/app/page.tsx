@@ -3,14 +3,15 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useSession } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
 import {
-  Shield,
   ArrowUp,
   ArrowUpRight,
   ArrowRight,
 } from "lucide-react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
+import { Logo } from "@/components/logo"
 import { BG_URL } from "@/components/background-layer"
 import GlobeFeatureSection from "@/components/globe-feature-section"
 import HowItWorksContent from "@/components/how-it-works-content"
@@ -95,7 +96,9 @@ const PLATFORM_LOGOS = [
 
 export default function HomePage() {
   const { data: session, isPending } = useSession()
+  const router = useRouter()
   const [scrollY, setScrollY] = useState(0)
+  const [searchInput, setSearchInput] = useState("")
 
   useEffect(() => {
     let rafId = 0
@@ -142,22 +145,34 @@ export default function HomePage() {
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              window.location.href = session ? "/analyzer" : "/signup"
+              const value = searchInput.trim()
+              if (!value) return
+              if (!session) {
+                router.push(
+                  `/signup?next=${encodeURIComponent(`/analyzer?input=${encodeURIComponent(value)}&mode=auto&platforms=meta,google,tiktok,taboola`)}`
+                )
+                return
+              }
+              router.push(
+                `/analyzer?input=${encodeURIComponent(value)}&mode=auto&platforms=meta,google,tiktok,taboola`
+              )
             }}
             className="animate-fade-up [animation-delay:340ms] mt-6 sm:mt-8 w-full max-w-xl"
           >
-            <div className="flex items-center gap-2 sm:gap-3 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.06)] pl-4 sm:pl-5 pr-1.5 py-1.5">
-              <Shield className="w-4 h-4 text-gray-400 shrink-0 hidden sm:block" />
+            <div className="flex items-center gap-2 sm:gap-3 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.06)] pl-3 sm:pl-4 pr-1.5 py-1.5">
+              <Logo className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 shrink-0 ml-1" />
               <input
                 type="text"
-                readOnly
-                value="Paste your ad copy or landing page URL…"
-                className="flex-1 bg-transparent text-sm sm:text-[15px] text-gray-500 placeholder-gray-500 outline-none py-2 cursor-pointer"
-                aria-label="Open analyzer"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Paste your ad copy or landing page URL…"
+                className="flex-1 bg-transparent text-sm sm:text-[15px] text-gray-900 placeholder:text-gray-400 outline-none py-2"
+                aria-label="Search ad content or URL"
               />
               <button
                 type="submit"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-500 text-white hover:scale-105 active:scale-95 transition-transform shrink-0 inline-flex items-center justify-center"
+                disabled={!searchInput.trim()}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-500 text-white hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 transition-transform shrink-0 inline-flex items-center justify-center"
               >
                 <ArrowUp className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               </button>

@@ -27,6 +27,9 @@ type View = "form" | "scanning" | "result"
 export default function AnalyzerPage() {
   const searchParams = useSearchParams()
   const scanId = searchParams.get("scan")
+  const quickInput = searchParams.get("input")
+  const quickMode = searchParams.get("mode")
+  const quickPlatforms = searchParams.get("platforms")
 
   const [view, setView] = useState<View>("form")
   const [mode, setMode] = useState<"text" | "url">("url")
@@ -36,6 +39,34 @@ export default function AnalyzerPage() {
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState("")
   const [loadingExisting, setLoadingExisting] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!quickInput) return
+
+    queueMicrotask(() => {
+      setInput(quickInput)
+      if (quickMode === "text" || quickMode === "url") {
+        setMode(quickMode)
+      } else {
+        const looksLikeUrl =
+          /^https?:\/\//.test(quickInput) || /\.[a-z]{2,}/i.test(quickInput)
+        setMode(looksLikeUrl ? "url" : "text")
+      }
+      if (quickPlatforms) {
+        const valid: Platform[] = ["meta", "google", "taboola", "tiktok"]
+        const parsed = quickPlatforms
+          .split(",")
+          .map((p) => p.trim())
+          .filter((p): p is Platform => valid.includes(p as Platform))
+        if (parsed.length > 0) setPlatforms(parsed)
+      }
+      const url = new URL(window.location.href)
+      url.searchParams.delete("input")
+      url.searchParams.delete("mode")
+      url.searchParams.delete("platforms")
+      window.history.replaceState({}, "", url.toString())
+    })
+  }, [quickInput, quickMode, quickPlatforms])
 
   useEffect(() => {
     if (!scanId) return
