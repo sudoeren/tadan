@@ -66,7 +66,7 @@ export function NavBar({
     ? [
         "flex items-center justify-between mx-auto transition-all duration-300 ease-out",
         scrolled
-          ? "h-12 max-w-2xl bg-white/80 backdrop-blur-xl rounded-full ring-1 ring-black/5 shadow-lg shadow-black/5 px-4"
+          ? "h-12 max-w-2xl bg-white backdrop-blur-xl rounded-full ring-1 ring-black/5 shadow-lg shadow-black/5 px-4"
           : "h-20 sm:h-24 max-w-5xl px-5 sm:px-8 lg:px-10",
       ].join(" ")
     : "flex items-center justify-between h-20 sm:h-24 max-w-5xl mx-auto px-5 sm:px-8 lg:px-10"
