@@ -31,14 +31,15 @@ export default function LoginPage() {
     router.refresh()
   }
 
+  const inputClass =
+    "w-full rounded-2xl border border-gray-300 bg-white/90 px-4 py-3 text-[15px] text-gray-900 placeholder:text-gray-500 outline-none focus:border-gray-900 focus:bg-white focus:ring-4 focus:ring-gray-900/10 transition-all"
+
   return (
     <div className="relative min-h-screen flex flex-col">
       <NavBar variant="transparent" />
 
-      {/* CENTERED CONTENT */}
       <div className="relative z-[2] flex-1 flex flex-col items-center justify-center px-5 py-20 sm:py-24">
         <div className="w-full max-w-md">
-          {/* Brand mark on top of card */}
           <Link
             href="/"
             className="animate-fade-down inline-flex items-center gap-2 text-orange-500 mb-6 mx-auto w-fit"
@@ -47,7 +48,6 @@ export default function LoginPage() {
             <span className="text-xl font-semibold tracking-tight">tadan</span>
           </Link>
 
-          {/* Card */}
           <div className="animate-fade-up rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-7 sm:p-9">
             <div className="mb-7">
               <h1 className="text-3xl sm:text-[34px] font-normal leading-[1.1] tracking-tight text-gray-900">
@@ -71,7 +71,7 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="you@company.com"
-                  className="w-full rounded-2xl border border-gray-200 bg-white/90 px-4 py-3 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+                  className={inputClass}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -85,18 +85,18 @@ export default function LoginPage() {
                   >
                     Password
                   </label>
-                  <a
-                    href="#"
-                    className="text-[12px] text-gray-500 hover:text-gray-900 transition-colors"
+                  <Link
+                    href="/forgot-password"
+                    className="text-[12px] text-gray-500 hover:text-orange-500 transition-colors"
                   >
                     Forgot?
-                  </a>
+                  </Link>
                 </div>
                 <input
                   id="password"
                   type="password"
                   placeholder="Your password"
-                  className="w-full rounded-2xl border border-gray-200 bg-white/90 px-4 py-3 text-[15px] text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+                  className={inputClass}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -141,23 +141,22 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          {/* Footer microcopy */}
           <p className="animate-fade-up [animation-delay:240ms] mt-6 text-center text-[12px] text-gray-600">
             <Shield className="inline w-3 h-3 -mt-0.5 mr-1 text-gray-500" />
             Protected by Better Auth ·{" "}
-            <a
-              href="#"
+            <Link
+              href="/privacy"
               className="text-gray-900 hover:underline underline-offset-2"
             >
               Privacy
-            </a>{" "}
+            </Link>{" "}
             ·{" "}
-            <a
-              href="#"
+            <Link
+              href="/terms"
               className="text-gray-900 hover:underline underline-offset-2"
             >
               Terms
-            </a>
+            </Link>
           </p>
         </div>
       </div>
