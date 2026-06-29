@@ -8,6 +8,7 @@ import {
   FileText,
   Link2,
   Check,
+  ClipboardPaste,
 } from "lucide-react"
 import type { Platform } from "@/types"
 
@@ -71,6 +72,15 @@ function normalizeUrl(raw: string): string {
   return raw.match(/^https?:\/\//) ? raw : `https://${raw}`
 }
 
+async function pasteFromClipboard(setInput: (s: string) => void) {
+  try {
+    const text = await navigator.clipboard.readText()
+    if (text) setInput(text)
+  } catch {
+    // ignore — user may have denied clipboard permission
+  }
+}
+
 export default function AnalyzerForm({
   mode,
   setMode,
@@ -119,13 +129,24 @@ export default function AnalyzerForm({
       </div>
 
       {mode === "text" ? (
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Paste your ad headline, body copy, and CTA…"
-          rows={4}
-          className="w-full resize-y rounded-2xl border-2 border-gray-200 bg-white/90 px-4 py-3 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
-        />
+        <div className="relative">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Paste your ad headline, body copy, and CTA…"
+            rows={4}
+            className="w-full resize-y rounded-2xl border-2 border-gray-200 bg-white/90 px-4 py-3 pr-14 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+          />
+          <button
+            type="button"
+            onClick={() => pasteFromClipboard(setInput)}
+            className="absolute right-2 top-2 inline-flex items-center gap-1.5 rounded-lg bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-600 px-2.5 py-1.5 text-[12px] font-medium transition-colors"
+            aria-label="Paste from clipboard"
+          >
+            <ClipboardPaste className="w-3.5 h-3.5" />
+            Paste
+          </button>
+        </div>
       ) : (
         <div className="relative">
           <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -135,8 +156,17 @@ export default function AnalyzerForm({
             onChange={(e) => setInput(e.target.value)}
             onBlur={(e) => setInput(normalizeUrl(e.target.value.trim()))}
             placeholder="https://example.com/landing-page"
-            className="w-full rounded-2xl border-2 border-gray-200 bg-white/90 pl-11 pr-4 py-3.5 text-[15px] text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
+            className="w-full rounded-2xl border-2 border-gray-200 bg-white/90 pl-11 pr-24 py-3.5 text-[15px] text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:bg-white focus:ring-0 transition-all"
           />
+          <button
+            type="button"
+            onClick={() => pasteFromClipboard(setInput)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1.5 rounded-lg bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-600 px-2.5 py-1.5 text-[12px] font-medium transition-colors"
+            aria-label="Paste from clipboard"
+          >
+            <ClipboardPaste className="w-3.5 h-3.5" />
+            Paste
+          </button>
         </div>
       )}
 
