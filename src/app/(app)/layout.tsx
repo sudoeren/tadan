@@ -28,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </p>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-orange-600 transition-colors"
             >
               Sign in
               <ArrowUpRight className="w-3.5 h-3.5" />

@@ -102,7 +102,7 @@ export default function HistoryPage() {
                 </p>
                 <Link
                   href="/analyzer"
-                  className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-800 transition-all"
+                  className="inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-orange-600 transition-all"
                 >
                   <span className="px-1.5">Start scanning</span>
                   <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">

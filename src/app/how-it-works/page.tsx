@@ -971,7 +971,7 @@ export default function HowItWorksPage() {
                   </text>
                 </svg>
                 {/* Tadan logo overlaid on hub circle (SVG hub is at viewBox 70,50 → 140px, 100px in 320x200) */}
-                <Logo className="absolute left-[140px] top-[100px] -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-gray-900" />
+                <Logo className="absolute left-[140px] top-[100px] -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-orange-500" />
                 </div>
               </div>
             </div>
@@ -1104,7 +1104,7 @@ export default function HowItWorksPage() {
                   <span className="px-1.5">
                     {session ? "Open analyzer" : "Start scanning free"}
                   </span>
-                  <span className="w-8 h-8 rounded-full bg-gray-900 text-white inline-flex items-center justify-center">
+                  <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </Link>

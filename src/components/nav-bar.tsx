@@ -76,7 +76,7 @@ export function NavBar({
   return (
     <header className={`animate-fade-down ${headerClasses}`}>
       <div className={innerClasses}>
-        <Link href="/" className="text-gray-900 flex items-center gap-2 group">
+        <Link href="/" className="text-orange-500 flex items-center gap-2 group">
           <Logo className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="text-lg sm:text-xl font-semibold tracking-tight">
             tadan
@@ -111,21 +111,21 @@ export function NavBar({
           ) : session ? (
             <button
               onClick={() => signOut()}
-              className="bg-gray-900 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-gray-800 transition-colors"
+              className="bg-orange-500 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-orange-600 transition-colors"
             >
               Sign out
             </button>
           ) : (
             <Link
               href={ctaHref}
-              className="bg-gray-900 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-gray-800 transition-colors"
+              className="bg-orange-500 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-orange-600 transition-colors"
             >
               Get started
             </Link>
           )}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden w-9 h-9 rounded-full inline-flex items-center justify-center text-gray-900 hover:bg-gray-900/10 transition-colors"
+            className="md:hidden w-9 h-9 rounded-full inline-flex items-center justify-center text-orange-500 hover:bg-orange-500/10 transition-colors"
             aria-label="Toggle menu"
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

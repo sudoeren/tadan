@@ -180,7 +180,7 @@ export default function HomePage() {
               />
               <button
                 type="submit"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white hover:scale-105 active:scale-95 transition-transform shrink-0 inline-flex items-center justify-center"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-500 text-white hover:scale-105 active:scale-95 transition-transform shrink-0 inline-flex items-center justify-center"
               >
                 <ArrowUp className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               </button>
@@ -193,7 +193,7 @@ export default function HomePage() {
             ) : session ? (
               <Link
                 href="/analyzer"
-                className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 hover:shadow-lg transition-all inline-flex items-center gap-2"
+                  className="bg-orange-500 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-orange-600 hover:shadow-lg transition-all inline-flex items-center gap-2"
               >
                 Open analyzer
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -202,7 +202,7 @@ export default function HomePage() {
               <>
                 <Link
                   href="/signup"
-                  className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 hover:shadow-lg transition-all inline-flex items-center gap-2"
+                className="bg-orange-500 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-orange-600 hover:shadow-lg transition-all inline-flex items-center gap-2"
                 >
                   Try it free
                   <ArrowUpRight className="w-3.5 h-3.5" />
@@ -306,7 +306,7 @@ export default function HomePage() {
                     className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
                   >
                     <span className="px-1.5">Open analyzer</span>
-                    <span className="w-8 h-8 rounded-full bg-gray-900 text-white inline-flex items-center justify-center">
+                    <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </Link>
@@ -316,7 +316,7 @@ export default function HomePage() {
                     className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
                   >
                     <span className="px-1.5">Start scanning free</span>
-                    <span className="w-8 h-8 rounded-full bg-gray-900 text-white inline-flex items-center justify-center">
+                    <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </Link>

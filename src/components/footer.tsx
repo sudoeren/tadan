@@ -12,8 +12,8 @@ export function Footer() {
               className="flex items-center gap-2 group"
               aria-label="tadan - Ad Compliance AI"
             >
-              <Logo className="w-4 h-4 text-gray-900" />
-              <span className="text-sm font-semibold tracking-tight text-gray-900">
+              <Logo className="w-4 h-4 text-orange-500" />
+              <span className="text-sm font-semibold tracking-tight text-orange-500">
                 tadan
                 <span className="ml-1.5 font-normal text-gray-400">
                   - Ad Compliance AI

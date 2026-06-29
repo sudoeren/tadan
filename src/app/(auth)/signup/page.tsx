@@ -48,7 +48,7 @@ export default function SignUpPage() {
         <div className="w-full max-w-md">
           <Link
             href="/"
-            className="animate-fade-down inline-flex items-center gap-2 text-gray-900 mb-6 mx-auto w-fit"
+            className="animate-fade-down inline-flex items-center gap-2 text-orange-500 mb-6 mx-auto w-fit"
           >
             <Logo className="w-6 h-6" />
             <span className="text-xl font-semibold tracking-tight">tadan</span>
@@ -128,7 +128,7 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-medium pl-6 pr-1.5 py-1.5 rounded-full hover:bg-gray-800 disabled:opacity-50 transition-all"
+                className="mt-2 inline-flex items-center justify-center gap-2 bg-orange-500 text-white text-sm font-medium pl-6 pr-1.5 py-1.5 rounded-full hover:bg-orange-600 disabled:opacity-50 transition-all"
               >
                 <span className="px-1.5">
                   {loading ? "Creating account…" : "Create account"}

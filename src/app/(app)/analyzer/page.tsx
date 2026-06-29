@@ -227,7 +227,7 @@ export default function AnalyzerPage() {
                       onClick={() => setMode(opt.value as "text" | "url")}
                       className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium rounded-full transition-all ${
                         active
-                          ? "bg-gray-900 text-white shadow-sm"
+                          ? "bg-orange-500 text-white shadow-sm"
                           : "text-gray-500 hover:text-gray-800"
                       }`}
                     >
@@ -402,7 +402,7 @@ export default function AnalyzerPage() {
               <button
                 type="submit"
                 disabled={!canRun || loading}
-                className="ml-auto inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-800 disabled:opacity-30 transition-all"
+                className="ml-auto inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-orange-600 disabled:opacity-30 transition-all"
               >
                 <span className="px-1.5">
                   {loading ? stage || "Scanning…" : "Run compliance scan"}
