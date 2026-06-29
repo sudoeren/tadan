@@ -98,7 +98,7 @@ export function NavBar({
             History
           </Link>
           <Link
-            href="#how-it-works"
+            href="/#how-it-works"
             className="text-[14px] font-medium text-gray-900 hover:text-gray-900 transition-colors"
           >
             How it works
@@ -150,7 +150,7 @@ export function NavBar({
             History
           </Link>
           <Link
-            href="#how-it-works"
+            href="/#how-it-works"
             className="block text-[15px] text-gray-700 hover:text-gray-900 py-3 border-b border-gray-200"
             onClick={() => setOpen(false)}
           >
