@@ -105,7 +105,7 @@ function StageCircle({ status, icon: Icon }: { status: StageStatus; icon: React.
             cy="50"
             r="48"
             stroke="currentColor"
-            strokeOpacity="0.18"
+            strokeOpacity="0.2"
             strokeWidth="3"
           />
           <circle
@@ -118,7 +118,7 @@ function StageCircle({ status, icon: Icon }: { status: StageStatus; icon: React.
             strokeLinecap="round"
           />
         </svg>
-        <div className="absolute inset-[5px] rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-[0_4px_20px_rgba(249,115,22,0.4)]">
+        <div className="absolute inset-[5px] rounded-full bg-white flex items-center justify-center text-orange-500">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={2.5} />
         </div>
       </div>
@@ -128,11 +128,11 @@ function StageCircle({ status, icon: Icon }: { status: StageStatus; icon: React.
   return (
     <div
       className={cn(
-        "relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full transition-all duration-500",
-        status === "pending" && "bg-gray-100 ring-1 ring-gray-200 text-gray-300",
-        status === "complete" && "bg-emerald-500 ring-2 ring-emerald-200 text-white shadow-sm",
-        status === "skipped" && "bg-gray-50 ring-1 ring-gray-200 text-gray-300",
-        status === "error" && "bg-red-500 ring-2 ring-red-200 text-white shadow-sm"
+        "relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full transition-all duration-500 bg-white",
+        status === "pending" && "ring-1 ring-gray-200 text-gray-300",
+        status === "complete" && "ring-2 ring-emerald-500 text-emerald-500",
+        status === "skipped" && "ring-1 ring-gray-200 text-gray-300",
+        status === "error" && "ring-2 ring-red-500 text-red-500"
       )}
     >
       {status === "complete" ? (
