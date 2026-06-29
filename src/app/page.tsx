@@ -8,6 +8,8 @@ import {
   ArrowUp,
   ArrowUpRight,
   ArrowRight,
+  Info,
+  X,
 } from "lucide-react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
@@ -100,6 +102,8 @@ export default function HomePage() {
   const [scrollY, setScrollY] = useState(0)
   const [searchInput, setSearchInput] = useState("")
   const [searchCount, setSearchCount] = useState(0)
+  const [quotaBlocked, setQuotaBlocked] = useState(false)
+  const [pendingNext, setPendingNext] = useState("")
   const FREE_SEARCH_LIMIT = 1
 
   useEffect(() => {
@@ -186,7 +190,8 @@ export default function HomePage() {
               }
 
               if (searchCount >= FREE_SEARCH_LIMIT) {
-                router.push(`/signup?next=${encodeURIComponent(next)}`)
+                setPendingNext(next)
+                setQuotaBlocked(true)
                 return
               }
 
@@ -222,15 +227,59 @@ export default function HomePage() {
                 <ArrowUp className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               </button>
             </div>
-            {!session && !isPending && (
+            {!session && !isPending && quotaBlocked && (
+              <div
+                role="status"
+                className="mt-3 rounded-2xl bg-orange-50 ring-1 ring-orange-200/70 p-4 flex items-start gap-3 text-left animate-fade-up"
+              >
+                <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center shrink-0 mt-0.5">
+                  <Info className="h-4 w-4 text-white" strokeWidth={2.5} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold text-gray-900 leading-snug">
+                    You&apos;ve used your free search
+                  </p>
+                  <p className="text-[12px] text-gray-600 leading-snug mt-0.5">
+                    Create a free account to keep scanning — no credit card
+                    required.
+                  </p>
+                  <div className="mt-2.5 flex items-center gap-2 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(
+                          `/signup?next=${encodeURIComponent(pendingNext)}`
+                        )
+                      }
+                      className="group inline-flex items-center gap-1.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white px-3.5 py-1.5 text-[12px] font-semibold transition-colors"
+                    >
+                      Create free account
+                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    </button>
+                    <Link
+                      href={`/login?next=${encodeURIComponent(pendingNext)}`}
+                      className="text-[12px] font-medium text-gray-500 hover:text-gray-900 px-3 py-1.5 transition-colors"
+                    >
+                      Sign in
+                    </Link>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setQuotaBlocked(false)}
+                  className="text-gray-400 hover:text-gray-700 shrink-0 p-1 -m-1 transition-colors"
+                  aria-label="Dismiss"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+            {!session && !isPending && !quotaBlocked && (
               <p className="mt-2.5 text-center text-[12px] text-gray-500">
-                {searchCount >= FREE_SEARCH_LIMIT ? (
-                  <>Sign up to keep scanning — you&apos;ve used your free search.</>
-                ) : (
-                  <>
-                    {FREE_SEARCH_LIMIT} free search. No sign-up needed.
-                  </>
-                )}
+                {searchCount > 0
+                  ? "You've used your free search."
+                  : "1 free search. No sign-up needed."}
               </p>
             )}
           </form>
