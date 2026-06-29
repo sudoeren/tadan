@@ -22,6 +22,7 @@ const PLATFORM_COLORS: Record<string, string> = {
   meta: "#1877F2",
   google: "#4285F4",
   taboola: "#6C2BD9",
+  tiktok: "#000000",
 }
 
 function scoreColor(n: number) {
@@ -182,20 +183,25 @@ export default function HistoryPage() {
                               </p>
                             </div>
                             <div className="flex items-center gap-3 text-[12px] text-gray-500 flex-wrap">
-                              <span
-                                className="inline-flex items-center gap-1.5"
-                                style={{
-                                  color: PLATFORM_COLORS[r.platform] || "#6b7280",
-                                }}
-                              >
-                                <span
-                                  className="w-1.5 h-1.5 rounded-full"
-                                  style={{
-                                    background:
-                                      PLATFORM_COLORS[r.platform] || "#6b7280",
-                                  }}
-                                />
-                                {r.platform}
+                              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                                {r.platform.split(",").map((p) => {
+                                  const trimmed = p.trim()
+                                  const color =
+                                    PLATFORM_COLORS[trimmed] || "#6b7280"
+                                  return (
+                                    <span
+                                      key={trimmed}
+                                      className="inline-flex items-center gap-1"
+                                      style={{ color }}
+                                    >
+                                      <span
+                                        className="w-1.5 h-1.5 rounded-full"
+                                        style={{ background: color }}
+                                      />
+                                      {trimmed}
+                                    </span>
+                                  )
+                                })}
                               </span>
                               <span className="text-gray-300">·</span>
                               <span>

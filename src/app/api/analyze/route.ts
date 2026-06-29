@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   }
 
   const validatedPlatforms = platforms.filter(
-    (p: string) => ["meta", "google", "taboola"].includes(p)
+    (p: string) => ["meta", "google", "taboola", "tiktok"].includes(p)
   ) as Platform[]
 
   if (validatedPlatforms.length === 0) {
