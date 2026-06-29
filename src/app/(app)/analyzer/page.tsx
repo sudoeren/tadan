@@ -6,7 +6,7 @@ import {
   AlertTriangle,
   Copy,
   Check,
-  ArrowUp,
+  ArrowRight,
   Loader2,
   Globe,
   FileText,
@@ -402,18 +402,18 @@ export default function AnalyzerPage() {
               <button
                 type="submit"
                 disabled={!canRun || loading}
-                className="ml-auto inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-orange-600 disabled:opacity-30 transition-all"
+                className="group ml-auto inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-black disabled:opacity-30 transition-all duration-300"
               >
-                <span className="px-1.5">
+                <span className="px-1.5 transition-transform duration-300 group-hover:translate-x-0.5">
                   {loading ? stage || "Scanning…" : "Run compliance scan"}
                 </span>
                 {loading ? (
-                  <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   </span>
                 ) : (
-                  <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">
-                    <ArrowUp className="w-4 h-4" />
+                  <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center transition-transform duration-300 group-hover:rotate-45">
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 )}
               </button>
