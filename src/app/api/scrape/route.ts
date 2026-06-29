@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { scrapeLandingPage, formatScrapedContent } from "@/lib/scraper"
+import { rateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
   try {
@@ -11,6 +12,19 @@ export async function POST(request: Request) {
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const ip = await getClientIp()
+    const userId = session.user.id
+    const limitResult = rateLimit(`scrape:u:${userId}:ip:${ip}`, RATE_LIMITS.scrape.authenticated)
+    if (!limitResult.ok) {
+      return NextResponse.json(
+        { error: `Too many requests. Try again in ${limitResult.retryAfterSec}s.` },
+        {
+          status: 429,
+          headers: { "Retry-After": String(limitResult.retryAfterSec) },
+        }
+      )
     }
 
     const body = await request.json()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { authClient } from "@/lib/auth-client"
@@ -20,6 +20,30 @@ const inputClass =
   "w-full rounded-2xl border border-gray-300 bg-white/90 px-4 py-3 text-[15px] text-gray-900 placeholder:text-gray-500 outline-none focus:border-gray-900 focus:bg-white focus:ring-4 focus:ring-gray-900/10 transition-all"
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordFallback />}>
+      <ResetPasswordInner />
+    </Suspense>
+  )
+}
+
+function ResetPasswordFallback() {
+  return (
+    <div className="relative min-h-screen flex flex-col">
+      <NavBar variant="transparent" />
+      <div className="relative z-[2] flex-1 flex flex-col items-center justify-center px-5">
+        <div className="w-full max-w-md text-center">
+          <h1 className="text-3xl sm:text-[34px] font-normal leading-[1.1] tracking-tight text-gray-900 mb-3">
+            Loading…
+          </h1>
+          <p className="text-gray-500 text-sm">Preparing password reset.</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ResetPasswordInner() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token") ?? ""
 

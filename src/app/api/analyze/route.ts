@@ -8,6 +8,7 @@ import { analyzeContent } from "@/lib/agents/critic"
 import { generateVariants } from "@/lib/agents/optimizer"
 import { ensurePolicyEmbeddings } from "@/lib/rag"
 import { withRetry, AppError, ValidationError, toUserFriendlyError } from "@/lib/errors"
+import { rateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit"
 import type { Platform } from "@/types"
 
 // Start seeding on module load so it's already in progress when first request arrives
@@ -33,6 +34,22 @@ export async function POST(request: NextRequest) {
     headers: await headers(),
   })
   const userId = session?.user?.id ?? null
+
+  const ip = await getClientIp()
+  const limitKey = userId ? `u:${userId}` : `ip:${ip}`
+  const limitConfig = userId
+    ? RATE_LIMITS.analyze.authenticated
+    : RATE_LIMITS.analyze.anonymous
+  const limitResult = rateLimit(`analyze:${limitKey}`, limitConfig)
+  if (!limitResult.ok) {
+    return NextResponse.json(
+      { error: `Too many requests. Try again in ${limitResult.retryAfterSec}s.` },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limitResult.retryAfterSec) },
+      }
+    )
+  }
 
   const body = await request.json()
   const { inputType, content, url, platforms, stream = false } = body

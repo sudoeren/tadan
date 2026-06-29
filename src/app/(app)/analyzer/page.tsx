@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { Suspense, useState, useRef, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { useSession } from "@/lib/auth-client"
 import type { Platform, Violation } from "@/types"
@@ -26,6 +26,14 @@ interface Result {
 type View = "form" | "scanning" | "result"
 
 export default function AnalyzerPage() {
+  return (
+    <Suspense fallback={null}>
+      <AnalyzerPageInner />
+    </Suspense>
+  )
+}
+
+function AnalyzerPageInner() {
   const { data: session, isPending: sessionPending } = useSession()
   const searchParams = useSearchParams()
   const scanId = searchParams.get("scan")
