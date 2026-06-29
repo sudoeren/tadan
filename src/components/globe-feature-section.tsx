@@ -43,7 +43,7 @@ export default function GlobeFeatureSection() {
             </span>
           </h2>
           <Link
-            href="/how-it-works"
+            href="#how-it-works"
             className="group mt-7 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-black transition-all duration-300"
           >
             <span className="px-1.5 transition-transform duration-300 group-hover:translate-x-0.5">

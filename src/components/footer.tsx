@@ -23,7 +23,7 @@ export function Footer() {
 
             <nav className="flex items-center gap-5">
               <Link
-                href="/how-it-works"
+                href="#how-it-works"
                 className="hover:text-gray-900 transition-colors"
               >
                 How it works

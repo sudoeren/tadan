@@ -13,6 +13,7 @@ import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { BG_URL } from "@/components/background-layer"
 import GlobeFeatureSection from "@/components/globe-feature-section"
+import HowItWorksContent from "@/components/how-it-works-content"
 import { CtaSection } from "@/components/cta-section"
 
 const GRASS_FADE_RANGE = 350
@@ -176,7 +177,7 @@ export default function HomePage() {
                   <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
                 <Link
-                  href="/how-it-works"
+                  href="#how-it-works"
                   className="group bg-white text-gray-700 ring-1 ring-gray-200 text-sm font-medium px-6 py-2.5 rounded-full hover:ring-orange-500 hover:text-orange-500 transition-all inline-flex items-center gap-2"
                 >
                   How it works
@@ -193,7 +194,7 @@ export default function HomePage() {
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
                 <Link
-                  href="/how-it-works"
+                  href="#how-it-works"
                   className="text-gray-700 text-sm font-medium px-6 py-2.5 rounded-full ring-1 ring-gray-300 hover:bg-gray-100 transition-colors inline-flex items-center gap-2"
                 >
                   How it works
@@ -248,6 +249,9 @@ export default function HomePage() {
           <GlobeFeatureSection />
         </div>
       </section>
+
+      {/* FULL PIPELINE — the entire how-it-works content */}
+      <HowItWorksContent />
 
       {/* CTA — athas-style full-bleed photo with framed content */}
       <CtaSection bgUrl={BG_URL} />
