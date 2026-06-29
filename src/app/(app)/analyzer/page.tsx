@@ -160,6 +160,7 @@ export default function AnalyzerPage() {
       if (!reader) throw new Error("No stream")
       const dec = new TextDecoder()
       let buf = ""
+      let gotResult = false
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
@@ -172,18 +173,29 @@ export default function AnalyzerPage() {
             const d = JSON.parse(line.slice(6))
             if (d.stage)
               setStage(
-                d.stage === "scraping"
-                  ? "Fetching page…"
-                  : d.stage === "optimizing"
-                    ? "Generating variants…"
-                    : "Scanning policies…"
+                d.stage === "loading"
+                  ? "Loading policies…"
+                  : d.stage === "scraping"
+                    ? "Fetching page…"
+                    : d.stage === "optimizing"
+                      ? "Generating variants…"
+                      : "Scanning policies…"
               )
-            else if (typeof d.riskScore === "number") {
+            else if (d.error) {
+              setError(d.error)
+              setLoading(false)
+              gotResult = true
+            } else if (typeof d.riskScore === "number") {
               setResult(d)
               setLoading(false)
+              gotResult = true
             }
           } catch {}
         }
+      }
+      if (!gotResult) {
+        setError("Connection closed unexpectedly")
+        setLoading(false)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error")

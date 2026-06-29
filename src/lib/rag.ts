@@ -58,15 +58,23 @@ export async function retrieveRelevantPolicies(
   return results
 }
 
+let embeddingsVerified = false
+
 export async function ensurePolicyEmbeddings(): Promise<void> {
+  if (embeddingsVerified) return
+
   const existing = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(platformPolicies)
-  if ((existing[0]?.count ?? 0) > 0) return
+  if ((existing[0]?.count ?? 0) > 0) {
+    embeddingsVerified = true
+    return
+  }
 
   console.log("[tadan] Seeding policy embeddings...")
   await seedPolicyEmbeddings()
   console.log("[tadan] Embeddings seeded.")
+  embeddingsVerified = true
 }
 
 export async function seedPolicyEmbeddings(): Promise<{

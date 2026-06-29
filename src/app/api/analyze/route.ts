@@ -10,6 +10,20 @@ import { ensurePolicyEmbeddings } from "@/lib/rag"
 import { withRetry, AppError, ValidationError } from "@/lib/errors"
 import type { Platform } from "@/types"
 
+// Start seeding on module load so it's already in progress when first request arrives
+const embeddingsReady = ensurePolicyEmbeddings().catch((err) => {
+  console.error("[tadan] Embedding seed failed:", err)
+})
+
+function waitForEmbeddings(timeoutMs = 15_000): Promise<void> {
+  return Promise.race([
+    embeddingsReady,
+    new Promise<void>((_, reject) =>
+      setTimeout(() => reject(new Error(`Embeddings not ready after ${timeoutMs}ms`)), timeoutMs)
+    ),
+  ])
+}
+
 function sse(data: Record<string, unknown>) {
   return `data: ${JSON.stringify(data)}\n\n`
 }
@@ -68,7 +82,8 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await ensurePolicyEmbeddings()
+    console.log("[tadan] Starting analysis...")
+    await waitForEmbeddings()
 
     const result = await runPipeline(
       session.user.id,
@@ -107,7 +122,8 @@ async function handleStream(
       }
 
       try {
-        await ensurePolicyEmbeddings()
+        send("progress", { stage: "loading", message: "Loading policy database..." })
+        await waitForEmbeddings()
 
         let rawContent: string
 
@@ -188,8 +204,9 @@ async function handleStream(
 
         send("done", {})
       } catch (error) {
+        console.error("[tadan] Stream error:", error)
         send("error", {
-          message: error instanceof Error ? error.message : "Analysis failed",
+          error: error instanceof Error ? error.message : "Analysis failed",
         })
       } finally {
         controller.close()
