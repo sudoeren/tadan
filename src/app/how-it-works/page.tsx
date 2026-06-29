@@ -163,10 +163,6 @@ export default function HowItWorksPage() {
             the full pipeline behind every tadan verdict.
           </p>
         </div>
-      </div>
-
-      {/* Everything below the hero is on pure white */}
-      <div className="bg-white relative z-[2]">
 
       {/* STEPS — 4 cards with orange dashed animated arrows between them */}
       <div className="relative z-[2] px-5 sm:px-8 pb-12">
@@ -231,10 +227,11 @@ export default function HowItWorksPage() {
                   )}
                 </Fragment>
               )}
-            )}
-            </div>
-          </div>
-        </div>
+             )}
+             </div>
+           </div>
+         </div>
+       </div>
       </div>
 
       {/* INPUT MODES — two ways, same orange/white flow as steps */}
@@ -1116,7 +1113,6 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </section>
-      </div>
 
       <Footer />
     </div>
