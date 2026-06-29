@@ -348,20 +348,24 @@ export default function HomePage() {
                 {session ? (
                   <Link
                     href="/analyzer"
-                    className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                    className="group inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors duration-300"
                   >
-                    <span className="px-1.5">Open analyzer</span>
-                    <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
+                    <span className="px-1.5 transition-transform duration-300 group-hover:translate-x-0.5">
+                      Open analyzer
+                    </span>
+                    <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center transition-transform duration-300 group-hover:rotate-45">
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </Link>
                 ) : (
                   <Link
                     href="/signup"
-                    className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                    className="group inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors duration-300"
                   >
-                    <span className="px-1.5">Start scanning free</span>
-                    <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
+                    <span className="px-1.5 transition-transform duration-300 group-hover:translate-x-0.5">
+                      Start scanning free
+                    </span>
+                    <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center transition-transform duration-300 group-hover:rotate-45">
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </Link>
