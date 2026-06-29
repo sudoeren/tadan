@@ -100,7 +100,7 @@ export default function HomePage() {
   const [scrollY, setScrollY] = useState(0)
   const [searchInput, setSearchInput] = useState("")
   const [searchCount, setSearchCount] = useState(0)
-  const FREE_SEARCH_LIMIT = 2
+  const FREE_SEARCH_LIMIT = 1
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -225,15 +225,10 @@ export default function HomePage() {
             {!session && !isPending && (
               <p className="mt-2.5 text-center text-[12px] text-gray-500">
                 {searchCount >= FREE_SEARCH_LIMIT ? (
-                  <>Sign up to keep scanning — you&apos;ve used your free searches.</>
-                ) : searchCount > 0 ? (
-                  <>
-                    {FREE_SEARCH_LIMIT - searchCount} free search remaining
-                    {FREE_SEARCH_LIMIT - searchCount !== 1 ? "es" : ""}.
-                  </>
+                  <>Sign up to keep scanning — you&apos;ve used your free search.</>
                 ) : (
                   <>
-                    {FREE_SEARCH_LIMIT} free searches. No sign-up needed.
+                    {FREE_SEARCH_LIMIT} free search. No sign-up needed.
                   </>
                 )}
               </p>
