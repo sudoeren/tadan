@@ -2,21 +2,34 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowUp, Check } from "lucide-react"
+import { ArrowUp, Check, AlertTriangle } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { NavBar } from "@/components/nav-bar"
+import { authClient } from "@/lib/auth-client"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
+    setError("")
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 600))
+
+    const redirectTo = `${window.location.origin}/reset-password`
+    const { error } = await authClient.requestPasswordReset({
+      email,
+      redirectTo,
+    })
+
     setLoading(false)
+    if (error) {
+      setError(error.message || "Failed to send reset email")
+      return
+    }
     setSubmitted(true)
   }
 
@@ -59,7 +72,7 @@ export default function ForgotPasswordPage() {
                 <p className="text-[12px] text-gray-600 mt-1 leading-relaxed">
                   If an account exists for{" "}
                   <span className="font-medium text-gray-900">{email}</span>,
-                  we sent a reset link.
+                  we sent a password reset link.
                 </p>
               </div>
             ) : (
@@ -81,6 +94,13 @@ export default function ForgotPasswordPage() {
                     required
                   />
                 </div>
+
+                {error && (
+                  <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    {error}
+                  </div>
+                )}
 
                 <button
                   type="submit"
