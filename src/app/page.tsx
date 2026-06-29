@@ -110,6 +110,24 @@ function TaboolaLogoWhite({ className }: { className?: string }) {
   )
 }
 
+function TikTokLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="white">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
+    </svg>
+  )
+}
+
+function OutbrainLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="white" />
+      <circle cx="12" cy="12" r="4.5" fill="#EE6E37" />
+      <circle cx="12" cy="12" r="2" fill="white" />
+    </svg>
+  )
+}
+
 const PLATFORM_LOGOS = [
   { name: "Meta", Logo: MetaLogo, tint: "#1877F2" },
   { name: "Google", Logo: GoogleLogo, tint: "#EA4335" },
@@ -377,7 +395,9 @@ export default function HomePage() {
                   <MetaLogoWhite className="w-4 h-4" />
                   <GoogleLogoWhite className="w-4 h-4" />
                   <TaboolaLogoWhite className="w-4 h-4" />
-                  <span>Meta, Google, and Taboola.</span>
+                  <TikTokLogoWhite className="w-4 h-4" />
+                  <OutbrainLogoWhite className="w-4 h-4" />
+                  <span>Meta, Google, Taboola, TikTok, and Outbrain.</span>
                 </div>
               </div>
             </div>

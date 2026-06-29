@@ -5,9 +5,12 @@ import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { Logo } from "@/components/logo"
 import { Faq } from "@/components/faq"
+import { BG_URL } from "@/components/background-layer"
+import { useSession } from "@/lib/auth-client"
 import Link from "next/link"
 import {
   ArrowUp,
+  ArrowRight,
   Zap,
   Globe,
   FileText,
@@ -18,6 +21,52 @@ import {
   Search,
   Gauge,
 } from "lucide-react"
+
+function MetaLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="white">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  )
+}
+
+function GoogleLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="white" />
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="white" />
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="white" />
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="white" />
+    </svg>
+  )
+}
+
+function TaboolaLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <rect x="2" y="4" width="20" height="16" rx="2" fill="white" />
+      <path d="M7 8h3l2 4-2 4H7l2-4-2-4zM14 8h3v8h-3z" fill="#6C2BD9" />
+    </svg>
+  )
+}
+
+function TikTokLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="white">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
+    </svg>
+  )
+}
+
+function OutbrainLogoWhite({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="white" />
+      <circle cx="12" cy="12" r="4.5" fill="#EE6E37" />
+      <circle cx="12" cy="12" r="2" fill="white" />
+    </svg>
+  )
+}
 
 const STEPS = [
   {
@@ -72,9 +121,25 @@ const FAQS = [
 ]
 
 export default function HowItWorksPage() {
+  const { data: session } = useSession()
   return (
     <div className="relative min-h-screen">
       <NavBar variant="transparent" />
+
+      {/* Background image — visible at top, fades to white */}
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 right-0 h-[60vh] bg-cover bg-center pointer-events-none"
+        style={{ backgroundImage: `url(${BG_URL})` }}
+      />
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 right-0 h-[60vh] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 75%, rgba(255,255,255,1) 100%)",
+        }}
+      />
 
       {/* HERO */}
       <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-28 sm:pt-36 pb-12">
@@ -991,22 +1056,57 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative z-[2] py-16 sm:py-20">
-        <div className="max-w-2xl mx-auto px-5 sm:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.05] tracking-tight text-gray-900">
-            Ready to run your first scan?
-          </h2>
-          <p className="text-gray-600 text-base sm:text-lg mt-4 leading-relaxed">
-            Paste copy, get a verdict, ship safe. Free to start.
-          </p>
-          <div className="mt-8 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-medium pl-6 pr-1.5 py-1.5 rounded-full hover:bg-gray-800 transition-all">
-            <Link href="/signup" className="px-1.5">
-              Start scanning free
-            </Link>
-            <span className="w-9 h-9 rounded-full bg-white/10 inline-flex items-center justify-center">
-              <ArrowUp className="w-4 h-4" />
-            </span>
+      {/* CTA — matches homepage */}
+      <section className="relative bg-white py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div
+            className="relative rounded-3xl overflow-hidden p-10 sm:p-16 lg:p-20 text-center"
+            style={{
+              backgroundImage: `url(${BG_URL})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center 65%",
+              filter: "contrast(1.08) saturate(1.2)",
+            }}
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/5 to-black/20"
+            />
+
+            <img
+              src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
+              alt=""
+              className="pointer-events-none absolute left-0 bottom-0 h-full w-80 sm:w-96 lg:w-[28rem] object-cover object-top select-none"
+            />
+
+            <div className="relative">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.1] tracking-tight text-white max-w-2xl mx-auto [text-shadow:0_2px_20px_rgba(0,0,0,0.25)]">
+                Ready to ship your first safe ad?
+              </h2>
+
+              <div className="mt-8 sm:mt-10 flex flex-col items-center gap-2">
+                <Link
+                  href={session ? "/analyzer" : "/signup"}
+                  className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <span className="px-1.5">
+                    {session ? "Open analyzer" : "Start scanning free"}
+                  </span>
+                  <span className="w-8 h-8 rounded-full bg-gray-900 text-white inline-flex items-center justify-center">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </Link>
+
+                <div className="mt-2 flex items-center gap-3 text-white/80 text-[12px]">
+                  <MetaLogoWhite className="w-4 h-4" />
+                  <GoogleLogoWhite className="w-4 h-4" />
+                  <TaboolaLogoWhite className="w-4 h-4" />
+                  <TikTokLogoWhite className="w-4 h-4" />
+                  <OutbrainLogoWhite className="w-4 h-4" />
+                  <span>Meta, Google, Taboola, TikTok, and Outbrain.</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
