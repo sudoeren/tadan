@@ -36,10 +36,19 @@ For each rewrite, pick a distinct angle:
 
 ## Output Rules
 
-- Output ONLY valid JSON, no markdown
+- Output ONLY valid JSON, no markdown, no commentary
 - Exactly 3 variants
-- Each variant must be self-contained ad copy ready to paste into an ad platform
-- Score compliance from 0-100 and hook preservation from 0-100 honestly`
+- The JSON must have this exact structure:
+  {
+    "variants": [
+      { "text": "...", "complianceScore": <0-100>, "hookPreservation": <0-100> },
+      { "text": "...", "complianceScore": <0-100>, "hookPreservation": <0-100> },
+      { "text": "...", "complianceScore": <0-100>, "hookPreservation": <0-100> }
+    ]
+  }
+- The "text" field must contain the full rewritten ad copy (headline + body + CTA)
+- complianceScore and hookPreservation are integers 0-100
+- Every word in "text" must be platform-safe`
 
 function buildOptimizerUserPrompt(
   original: string,
@@ -88,6 +97,49 @@ export interface OptimizedVariant {
   hookPreservation: number
 }
 
+const VARIANT_KEYS = ["variants", "rewrites", "results", "alternatives", "outputs"]
+const TEXT_KEYS = ["text", "copy", "variant", "content", "rewrite", "ad", "output"]
+
+function extractVariants(parsed: unknown): unknown[] | null {
+  if (Array.isArray(parsed)) {
+    return parsed
+  }
+  if (parsed && typeof parsed === "object") {
+    const obj = parsed as Record<string, unknown>
+    for (const key of VARIANT_KEYS) {
+      if (Array.isArray(obj[key])) {
+        return obj[key] as unknown[]
+      }
+    }
+  }
+  return null
+}
+
+function extractText(item: unknown): string | null {
+  if (!item || typeof item !== "object") return null
+  const obj = item as Record<string, unknown>
+  for (const key of TEXT_KEYS) {
+    const value = obj[key]
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value
+    }
+  }
+  return null
+}
+
+function normalizeVariant(item: unknown, index: number): OptimizedVariant | null {
+  const text = extractText(item)
+  if (!text) return null
+  const obj = (item ?? {}) as Record<string, unknown>
+  return {
+    text,
+    complianceScore:
+      typeof obj.complianceScore === "number" ? obj.complianceScore : 85,
+    hookPreservation:
+      typeof obj.hookPreservation === "number" ? obj.hookPreservation : 80,
+  }
+}
+
 export async function generateVariants(
   original: string,
   violations: Violation[],
@@ -111,13 +163,22 @@ export async function generateVariants(
     throw new Error("Empty optimizer response from LLM")
   }
 
-  const parsed = extractJsonFromResponse(raw) as {
-    variants: OptimizedVariant[]
-  }
+  const parsed = extractJsonFromResponse(raw)
+  const rawVariants = extractVariants(parsed)
 
-  if (!Array.isArray(parsed.variants) || parsed.variants.length === 0) {
+  if (!rawVariants || rawVariants.length === 0) {
     throw new Error(`Invalid optimizer response: ${raw.slice(0, 300)}`)
   }
 
-  return parsed.variants
+  const normalized = rawVariants
+    .map((item, i) => normalizeVariant(item, i))
+    .filter((v): v is OptimizedVariant => v !== null)
+
+  if (normalized.length === 0) {
+    throw new Error(
+      `Optimizer returned no usable variants: ${raw.slice(0, 300)}`
+    )
+  }
+
+  return normalized
 }
