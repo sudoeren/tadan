@@ -239,7 +239,13 @@ export default function AnalyzerPage() {
     }
   }
 
-  if (!sessionPending && !session && !scanId && !quickInput) {
+  if (
+    !sessionPending &&
+    !session &&
+    !scanId &&
+    input === "" &&
+    !quickInput
+  ) {
     return (
       <SignInRequired message="Create a free account to keep scanning ads and landing pages. No credit card required." />
     )
