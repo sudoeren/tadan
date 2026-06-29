@@ -20,7 +20,7 @@ import { NavBar } from "@/components/nav-bar"
 
 const PLATFORM_COLORS: Record<string, string> = {
   meta: "#1877F2",
-  google: "#4285F4",
+  google: "#EA4335",
   taboola: "#6C2BD9",
   tiktok: "#000000",
 }
