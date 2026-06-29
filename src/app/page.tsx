@@ -99,6 +99,35 @@ export default function HomePage() {
   const router = useRouter()
   const [scrollY, setScrollY] = useState(0)
   const [searchInput, setSearchInput] = useState("")
+  const [searchCount, setSearchCount] = useState(0)
+  const FREE_SEARCH_LIMIT = 2
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      try {
+        const stored = window.localStorage.getItem("tadan:searchCount")
+        if (stored) {
+          const n = parseInt(stored, 10)
+          if (!Number.isNaN(n) && n > 0) setSearchCount(n)
+        }
+      } catch {
+        // localStorage unavailable (private mode etc.) — ignore
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    if (session) {
+      queueMicrotask(() => {
+        try {
+          window.localStorage.removeItem("tadan:searchCount")
+        } catch {
+          // ignore
+        }
+        setSearchCount(0)
+      })
+    }
+  }, [session])
 
   useEffect(() => {
     let rafId = 0
@@ -147,15 +176,31 @@ export default function HomePage() {
               e.preventDefault()
               const value = searchInput.trim()
               if (!value) return
-              if (!session) {
-                router.push(
-                  `/signup?next=${encodeURIComponent(`/analyzer?input=${encodeURIComponent(value)}&mode=auto&platforms=meta,google,tiktok,taboola`)}`
-                )
+
+              const params = `input=${encodeURIComponent(value)}&mode=auto&platforms=meta,google,tiktok,taboola`
+              const next = `/analyzer?${params}`
+
+              if (session) {
+                router.push(next)
                 return
               }
-              router.push(
-                `/analyzer?input=${encodeURIComponent(value)}&mode=auto&platforms=meta,google,tiktok,taboola`
-              )
+
+              if (searchCount >= FREE_SEARCH_LIMIT) {
+                router.push(`/signup?next=${encodeURIComponent(next)}`)
+                return
+              }
+
+              const nextCount = searchCount + 1
+              setSearchCount(nextCount)
+              try {
+                window.localStorage.setItem(
+                  "tadan:searchCount",
+                  String(nextCount)
+                )
+              } catch {
+                // ignore
+              }
+              router.push(`/signup?next=${encodeURIComponent(next)}`)
             }}
             className="animate-fade-up [animation-delay:340ms] mt-6 sm:mt-8 w-full max-w-xl"
           >
@@ -177,6 +222,22 @@ export default function HomePage() {
                 <ArrowUp className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               </button>
             </div>
+            {!session && !isPending && (
+              <p className="mt-2.5 text-center text-[12px] text-gray-500">
+                {searchCount >= FREE_SEARCH_LIMIT ? (
+                  <>Sign up to keep scanning — you&apos;ve used your free searches.</>
+                ) : searchCount > 0 ? (
+                  <>
+                    {FREE_SEARCH_LIMIT - searchCount} free search remaining
+                    {FREE_SEARCH_LIMIT - searchCount !== 1 ? "es" : ""}.
+                  </>
+                ) : (
+                  <>
+                    {FREE_SEARCH_LIMIT} free searches. No sign-up needed.
+                  </>
+                )}
+              </p>
+            )}
           </form>
 
           <div className="animate-fade-up [animation-delay:460ms] mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-3">
