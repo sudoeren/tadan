@@ -13,7 +13,6 @@ import {
   X,
   Eye,
   EyeOff,
-  Mail,
   ArrowLeft,
 } from "lucide-react"
 import { Logo } from "@/components/logo"
@@ -104,7 +103,7 @@ export default function SignUpPage() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
-  const codeInputRef = useRef<HTMLInputElement>(null)
+  const codeRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null))
 
   const strength = useMemo(() => evaluatePassword(password), [password])
   const passwordsMatch =
@@ -119,8 +118,8 @@ export default function SignUpPage() {
   }, [resendCooldown])
 
   useEffect(() => {
-    if (step === "code" && codeInputRef.current) {
-      codeInputRef.current.focus()
+    if (step === "code") {
+      codeRefs.current[0]?.focus()
     }
   }, [step])
 
@@ -179,7 +178,7 @@ export default function SignUpPage() {
       setError(verifyError.message || "Invalid or expired code")
       setCode("")
       setLoading(false)
-      codeInputRef.current?.focus()
+      codeRefs.current[0]?.focus()
       return
     }
 
@@ -481,21 +480,14 @@ export default function SignUpPage() {
                 </button>
 
                 <div className="mb-5 text-center">
-                  <div className="inline-flex h-14 w-14 rounded-full bg-orange-50 ring-1 ring-orange-200/70 items-center justify-center mb-3">
-                    <Mail
-                      className="w-6 h-6 text-orange-500"
-                      strokeWidth={2}
-                    />
-                  </div>
                   <h1 className="text-3xl sm:text-[34px] font-normal leading-[1.1] tracking-tight text-gray-900">
                     Check your email
                   </h1>
-                  <p className="text-gray-500 text-sm mt-2 leading-relaxed max-w-sm mx-auto">
-                    We sent a 6-digit code to{" "}
+                  <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+                    We sent a code to{" "}
                     <span className="font-semibold text-gray-900">
                       {email}
                     </span>
-                    . Enter it below to verify your account.
                   </p>
                 </div>
 
@@ -504,38 +496,65 @@ export default function SignUpPage() {
                     e.preventDefault()
                     void handleVerify()
                   }}
-                  className="space-y-3"
                 >
-                  <div>
-                    <label
-                      htmlFor="code"
-                      className="block text-[11px] font-medium text-gray-700 mb-1.5 ml-1 text-center"
-                    >
-                      Verification code
-                    </label>
-                    <input
-                      ref={codeInputRef}
-                      id="code"
-                      type="text"
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
-                      pattern="[0-9]*"
-                      maxLength={6}
-                      placeholder="000000"
-                      className="w-full text-center text-3xl font-mono font-bold tracking-[0.5em] rounded-2xl border border-gray-300 bg-white/90 px-4 py-4 text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 focus:bg-white focus:ring-4 focus:ring-gray-900/10 transition-all"
-                      value={code}
-                      onChange={(e) => {
-                        const val = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 6)
-                        setCode(val)
-                      }}
-                      required
-                    />
-                  </div>
+                  <fieldset className="border-0 p-0 m-0">
+                    <legend className="sr-only">6-digit verification code</legend>
+                    <div className="flex gap-2.5 justify-center">
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <input
+                          key={i}
+                          ref={(el) => {
+                            codeRefs.current[i] = el
+                          }}
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete={i === 0 ? "one-time-code" : "off"}
+                          maxLength={1}
+                          className="w-12 sm:w-14 h-14 sm:h-16 text-center text-2xl font-bold rounded-2xl border border-gray-300 bg-white/90 text-gray-900 outline-none transition-all focus:border-gray-900 focus:ring-4 focus:ring-gray-900/10"
+                          value={code[i] ?? ""}
+                          onChange={(e) => {
+                            const digit = e.target.value
+                              .replace(/\D/g, "")
+                              .slice(0, 1)
+                            if (!digit && !e.target.value) return
+                            const newCode = code.split("")
+                            newCode[i] = digit || ""
+                            setCode(newCode.join(""))
+                            if (digit && i < 5) {
+                              codeRefs.current[i + 1]?.focus()
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Backspace") {
+                              if (code[i]) {
+                                const newCode = code.split("")
+                                newCode[i] = ""
+                                setCode(newCode.join(""))
+                              } else if (i > 0) {
+                                codeRefs.current[i - 1]?.focus()
+                              }
+                            }
+                          }}
+                          onPaste={(e) => {
+                            const pasted = e.clipboardData
+                              .getData("text")
+                              .replace(/\D/g, "")
+                              .slice(0, 6)
+                            if (pasted) {
+                              setCode(pasted)
+                              const target = Math.min(pasted.length, 5)
+                              codeRefs.current[target]?.focus()
+                              e.preventDefault()
+                            }
+                          }}
+                          required
+                        />
+                      ))}
+                    </div>
+                  </fieldset>
 
                   {error && (
-                    <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center gap-2">
+                    <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center gap-2">
                       <AlertTriangle className="w-4 h-4 shrink-0" />
                       {error}
                     </div>
@@ -544,7 +563,7 @@ export default function SignUpPage() {
                   <button
                     type="submit"
                     disabled={loading || code.length !== 6}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-orange-500 text-white text-sm font-medium pl-6 pr-1.5 py-1.5 rounded-full hover:bg-orange-600 disabled:opacity-50 transition-all"
+                    className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-orange-500 text-white text-sm font-medium pl-6 pr-1.5 py-1.5 rounded-full hover:bg-orange-600 disabled:opacity-50 transition-all"
                   >
                     <span className="px-1.5">
                       {loading ? "Verifying…" : "Verify and continue"}
@@ -555,7 +574,7 @@ export default function SignUpPage() {
                   </button>
                 </form>
 
-                <div className="mt-4 text-center text-[12px] text-gray-500">
+                <div className="mt-5 text-center text-[12px] text-gray-500">
                   Didn&apos;t get the code?{" "}
                   <button
                     type="button"
