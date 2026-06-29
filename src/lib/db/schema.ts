@@ -6,6 +6,7 @@ import {
   uuid,
   boolean,
   vector,
+  jsonb,
 } from "drizzle-orm/pg-core"
 
 export const users = pgTable("users", {
@@ -80,6 +81,11 @@ export const variants = pgTable("variants", {
     .references(() => analyses.id, { onDelete: "cascade" }),
   variantText: text("variant_text").notNull(),
   variantIndex: integer("variant_index").notNull(),
+  variantParts: jsonb("variant_parts").$type<{
+    headline: string
+    body: string
+    cta: string
+  }>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 

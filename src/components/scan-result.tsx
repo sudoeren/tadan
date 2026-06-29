@@ -11,15 +11,27 @@ import {
   Globe,
   ShieldCheck,
   BadgeCheck,
+  Sparkles,
+  MousePointerClick,
+  Zap,
+  Search,
+  Eye,
 } from "lucide-react"
 import type { Platform, Violation } from "@/types"
 import { cn } from "@/lib/utils"
+
+interface Variant {
+  text: string
+  parts?: { headline: string; body: string; cta: string }
+  complianceScore: number
+  hookPreservation: number
+}
 
 interface Result {
   id: string
   riskScore: number
   violations: Violation[]
-  variants: { text: string; complianceScore: number; hookPreservation: number }[]
+  variants: Variant[]
 }
 
 interface ScanResultProps {
@@ -57,7 +69,7 @@ const TONE_CLASS: Record<Tone, { bg: string; ring: string; text: string; iconBg:
   },
 }
 
-function CopyBtn({ text }: { text: string }) {
+function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
   const [ok, setOk] = useState(false)
   return (
     <button
@@ -74,7 +86,7 @@ function CopyBtn({ text }: { text: string }) {
       ) : (
         <Copy className="w-3.5 h-3.5" />
       )}
-      {ok ? "Copied" : "Copy"}
+      {ok ? "Copied" : label}
     </button>
   )
 }
@@ -225,31 +237,176 @@ function BulletCard({ item }: { item: BulletItem }) {
   )
 }
 
-function AllClearCard() {
+interface CheckItem {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
+  label: string
+  description: string
+}
+
+function CheckRow({ item }: { item: CheckItem }) {
+  const Icon = item.icon
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-50 to-emerald-100/60 ring-1 ring-emerald-200/70 p-6 flex flex-col items-center text-center h-full justify-center min-h-[260px]">
+    <div className="flex items-start gap-3 py-3">
+      <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+        <Icon className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-gray-900 leading-tight">
+          {item.label}
+        </p>
+        <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
+          {item.description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function AllClearCard({ platforms }: { platforms: Platform[] }) {
+  const checks: CheckItem[] = [
+    {
+      icon: ShieldCheck,
+      label: "No policy violations",
+      description: `Passed all checks across ${platforms.length} platform${platforms.length !== 1 ? "s" : ""}`,
+    },
+    {
+      icon: Search,
+      label: "No red-flag phrases",
+      description: "Avoided guarantees, health claims, and financial promises",
+    },
+    {
+      icon: Zap,
+      label: "Strong hook structure",
+      description: "Opening line creates clear curiosity or value",
+    },
+    {
+      icon: MousePointerClick,
+      label: "Clear call-to-action",
+      description: "Single, unambiguous action for the reader to take",
+    },
+    {
+      icon: Eye,
+      label: "No clickbait or bait-and-switch",
+      description: "Headline matches the offer's actual promise",
+    },
+  ]
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-50 to-emerald-100/60 ring-1 ring-emerald-200/70 p-5 flex flex-col h-full">
       <div
         aria-hidden
         className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.15),transparent_60%)]"
       />
-      <div className="relative mb-4">
-        <div
-          aria-hidden
-          className="absolute inset-0 -m-3 rounded-full bg-emerald-400/20 blur-xl"
-        />
-        <div className="relative h-20 w-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-[0_8px_30px_rgba(16,185,129,0.35)] ring-4 ring-white">
-          <BadgeCheck
-            className="h-11 w-11 text-white"
-            strokeWidth={2.5}
+      <div className="relative mb-3 flex items-center gap-3">
+        <div className="relative">
+          <div
+            aria-hidden
+            className="absolute inset-0 -m-2 rounded-full bg-emerald-400/20 blur-lg"
           />
+          <div className="relative h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-[0_4px_20px_rgba(16,185,129,0.4)] ring-3 ring-white">
+            <BadgeCheck
+              className="h-7 w-7 text-white"
+              strokeWidth={2.5}
+            />
+          </div>
+        </div>
+        <div>
+          <p className="text-[16px] font-semibold text-emerald-700 tracking-tight leading-tight">
+            All clear
+          </p>
+          <p className="text-[11px] text-emerald-600/80 leading-tight">
+            Ship this ad with confidence
+          </p>
         </div>
       </div>
-      <p className="relative text-[20px] font-semibold text-emerald-700 tracking-tight">
-        All clear
-      </p>
-      <p className="relative text-[13px] text-emerald-600/80 mt-1.5 max-w-[200px] leading-relaxed">
-        Ship this ad with confidence.
-      </p>
+      <div className="relative divide-y divide-emerald-200/60">
+        {checks.map((c, i) => (
+          <CheckRow key={i} item={c} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function VariantCard({ variant, index }: { variant: Variant; index: number }) {
+  const hasParts = variant.parts && (variant.parts.headline || variant.parts.body || variant.parts.cta)
+  const headline = variant.parts?.headline || ""
+  const body = variant.parts?.body || ""
+  const cta = variant.parts?.cta || ""
+
+  return (
+    <div
+      className="animate-fade-up rounded-2xl bg-white/90 ring-1 ring-white/40 hover:ring-gray-200 p-4 transition-all"
+      style={{ animationDelay: `${index * 80 + 150}ms` }}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gray-100 text-[11px] font-mono font-semibold text-gray-500">
+          {index + 1}
+        </span>
+        <span className="text-[11px] text-gray-400">
+          Compliance
+          <span className="font-mono font-medium text-emerald-600 ml-1">
+            {variant.complianceScore}%
+          </span>
+        </span>
+        <span className="text-[11px] text-gray-400">
+          Hook
+          <span className="font-mono font-medium text-gray-700 ml-1">
+            {variant.hookPreservation}%
+          </span>
+        </span>
+        <div className="ml-auto">
+          <CopyBtn text={variant.text} label="Copy all" />
+        </div>
+      </div>
+
+      {hasParts ? (
+        <div className="space-y-3">
+          {headline && (
+            <div className="rounded-xl bg-orange-50/60 ring-1 ring-orange-200/50 px-3.5 py-2.5">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-orange-600 font-semibold">
+                  Headline
+                </span>
+                <CopyBtn text={headline} label="Copy" />
+              </div>
+              <p className="text-[14px] font-semibold text-gray-900 leading-snug">
+                {headline}
+              </p>
+            </div>
+          )}
+          {body && (
+            <div className="rounded-xl bg-white ring-1 ring-gray-200/70 px-3.5 py-2.5">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-gray-500 font-semibold">
+                  Body
+                </span>
+                <CopyBtn text={body} label="Copy" />
+              </div>
+              <p className="text-[14px] text-gray-800 leading-relaxed whitespace-pre-line">
+                {body}
+              </p>
+            </div>
+          )}
+          {cta && (
+            <div className="rounded-xl bg-emerald-50/60 ring-1 ring-emerald-200/50 px-3.5 py-2.5">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-emerald-700 font-semibold">
+                  CTA
+                </span>
+                <CopyBtn text={cta} label="Copy" />
+              </div>
+              <p className="text-[14px] font-medium text-gray-900 leading-snug">
+                {cta}
+              </p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="text-[14px] leading-relaxed text-gray-800 border-l-2 border-gray-200 pl-3.5">
+          {variant.text}
+        </p>
+      )}
     </div>
   )
 }
@@ -317,8 +474,8 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
         </div>
 
         {allClear && (
-          <div className="lg:w-64">
-            <AllClearCard />
+          <div className="lg:w-72">
+            <AllClearCard platforms={platforms} />
           </div>
         )}
       </div>
@@ -424,36 +581,71 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
           </div>
           <div className="space-y-3">
             {result.variants.map((v, i) => (
-              <div
-                key={i}
-                className="animate-fade-up group rounded-2xl bg-white/90 ring-1 ring-white/40 hover:ring-gray-200 p-4 transition-all"
-                style={{ animationDelay: `${i * 80 + 150}ms` }}
-              >
-                <div className="flex items-center gap-3 mb-2.5">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gray-100 text-[11px] font-mono font-semibold text-gray-500">
-                    {i + 1}
-                  </span>
-                  <span className="text-[11px] text-gray-400">
-                    Compliance
-                    <span className="font-mono font-medium text-emerald-600 ml-1">
-                      {v.complianceScore}%
-                    </span>
-                  </span>
-                  <span className="text-[11px] text-gray-400">
-                    Hook
-                    <span className="font-mono font-medium text-gray-700 ml-1">
-                      {v.hookPreservation}%
-                    </span>
-                  </span>
-                  <div className="ml-auto">
-                    <CopyBtn text={v.text} />
-                  </div>
-                </div>
-                <p className="text-[14px] leading-relaxed text-gray-800 border-l-2 border-gray-200 pl-3.5 group-hover:border-gray-900 transition-colors">
-                  {v.text}
-                </p>
-              </div>
+              <VariantCard key={i} variant={v} index={i} />
             ))}
+          </div>
+        </section>
+      )}
+
+      {allClear && (
+        <section>
+          <div className="flex items-end justify-between mb-3">
+            <div>
+              <h2 className="text-[15px] font-semibold text-gray-900 tracking-tight">
+                Why this passed
+              </h2>
+              <p className="text-[12px] text-gray-500 mt-0.5">
+                What our critic agent verified before giving you the green light.
+              </p>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-white/90 ring-1 ring-gray-200/70 p-4">
+            <ul className="divide-y divide-gray-100">
+              {[
+                {
+                  icon: ShieldCheck,
+                  label: "Compliant across all platform policies",
+                  detail: `Matched against ${platforms.join(", ")} without red flags.`,
+                },
+                {
+                  icon: Eye,
+                  label: "Headline matches the offer",
+                  detail: "No bait-and-switch or clickbait detected.",
+                },
+                {
+                  icon: Sparkles,
+                  label: "Hook + structure preserved",
+                  detail: "Your marketing intent survived the scan.",
+                },
+                {
+                  icon: MousePointerClick,
+                  label: "Clear call-to-action",
+                  detail: "The reader knows exactly what to do next.",
+                },
+              ].map((item, i, arr) => {
+                return (
+                  <li
+                    key={i}
+                    className={cn(
+                      "flex items-start gap-3 py-3",
+                      i === arr.length - 1 && "pb-0"
+                    )}
+                  >
+                    <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-semibold text-gray-900 leading-tight">
+                        {item.label}
+                      </p>
+                      <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
+                        {item.detail}
+                      </p>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
         </section>
       )}

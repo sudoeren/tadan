@@ -41,14 +41,21 @@ For each rewrite, pick a distinct angle:
 - The JSON must have this exact structure:
   {
     "variants": [
-      { "text": "...", "complianceScore": <0-100>, "hookPreservation": <0-100> },
-      { "text": "...", "complianceScore": <0-100>, "hookPreservation": <0-100> },
-      { "text": "...", "complianceScore": <0-100>, "hookPreservation": <0-100> }
+      {
+        "headline": "compelling headline (1 short line)",
+        "body": "body copy paragraph(s) describing the offer, social proof, benefits",
+        "cta": "clear call-to-action (1 short line)",
+        "complianceScore": <0-100>,
+        "hookPreservation": <0-100>
+      },
+      ... (2 more variants, each with a different psychological angle)
     ]
   }
-- The "text" field must contain the full rewritten ad copy (headline + body + CTA)
+- "headline" is the attention-grabbing first line
+- "body" is the persuasive middle (can be multiple sentences)
+- "cta" is the closing action prompt
 - complianceScore and hookPreservation are integers 0-100
-- Every word in "text" must be platform-safe`
+- Every word in every field must be platform-safe`
 
 function buildOptimizerUserPrompt(
   original: string,
@@ -93,6 +100,11 @@ ${violationPhrases}
 
 export interface OptimizedVariant {
   text: string
+  parts: {
+    headline: string
+    body: string
+    cta: string
+  }
   complianceScore: number
   hookPreservation: number
 }
@@ -127,12 +139,63 @@ function extractText(item: unknown): string | null {
   return null
 }
 
-function normalizeVariant(item: unknown, index: number): OptimizedVariant | null {
-  const text = extractText(item)
-  if (!text) return null
-  const obj = (item ?? {}) as Record<string, unknown>
+function readPart(obj: Record<string, unknown>, key: string): string {
+  const value = obj[key]
+  return typeof value === "string" ? value.trim() : ""
+}
+
+function splitCombinedText(text: string): { headline: string; body: string; cta: string } {
+  const blocks = text
+    .split(/\n\s*\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  if (blocks.length >= 3) {
+    return { headline: blocks[0], body: blocks[1], cta: blocks.slice(2).join("\n\n") }
+  }
+  if (blocks.length === 2) {
+    return { headline: "", body: blocks[0], cta: blocks[1] }
+  }
+  if (blocks.length === 1) {
+    return { headline: "", body: blocks[0], cta: "" }
+  }
+  return { headline: "", body: text, cta: "" }
+}
+
+function normalizeVariant(item: unknown): OptimizedVariant | null {
+  if (!item || typeof item !== "object") return null
+  const obj = item as Record<string, unknown>
+
+  let headline = readPart(obj, "headline")
+  let body = readPart(obj, "body")
+  let cta = readPart(obj, "cta")
+
+  if (!headline && !body && !cta) {
+    const combined = extractText(item)
+    if (!combined) return null
+    const split = splitCombinedText(combined)
+    headline = split.headline
+    body = split.body
+    cta = split.cta
+  } else {
+    if (!body) {
+      const combined = extractText(item)
+      if (combined) {
+        const split = splitCombinedText(combined)
+        if (!headline) headline = split.headline
+        if (!cta) cta = split.cta
+        if (!body) body = split.body || combined
+      }
+    }
+  }
+
+  if (!body) return null
+
+  const parts = { headline, body, cta }
+  const text = [headline, body, cta].filter(Boolean).join("\n\n")
+
   return {
     text,
+    parts,
     complianceScore:
       typeof obj.complianceScore === "number" ? obj.complianceScore : 85,
     hookPreservation:
@@ -153,8 +216,8 @@ export async function generateVariants(
       { role: "system", content: OPTIMIZER_SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
     ],
-    temperature: 0.8,
-    maxTokens: 4096,
+    temperature: 0.6,
+    maxTokens: 1800,
     responseFormat: { type: "json_object" },
   })
 
@@ -171,7 +234,7 @@ export async function generateVariants(
   }
 
   const normalized = rawVariants
-    .map((item, i) => normalizeVariant(item, i))
+    .map((item) => normalizeVariant(item))
     .filter((v): v is OptimizedVariant => v !== null)
 
   if (normalized.length === 0) {

@@ -35,7 +35,16 @@ export async function GET() {
     const enriched = records.map((r) => ({
       ...r,
       violations: violationRows.filter((v) => v.analysisId === r.id),
-      variants: variantRows.filter((v) => v.analysisId === r.id),
+      variants: variantRows
+        .filter((v) => v.analysisId === r.id)
+        .map((v) => ({
+          id: v.id,
+          analysisId: v.analysisId,
+          variantIndex: v.variantIndex,
+          variantText: v.variantText,
+          variantParts: v.variantParts,
+          createdAt: v.createdAt,
+        })),
     }))
 
     return NextResponse.json({ records: enriched })

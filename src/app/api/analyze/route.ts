@@ -122,24 +122,35 @@ async function handleStream(
       }
 
       try {
+        const t0 = Date.now()
+        const log = (label: string, ms: number) =>
+          console.log(`[tadan] ${label} ${ms}ms`)
+
         send("progress", { stage: "loading", message: "Loading policy database..." })
+        const tEmbed = Date.now()
         await waitForEmbeddings()
+        log("embeddings", Date.now() - tEmbed)
 
         let rawContent: string
 
         if (inputType === "url") {
           send("progress", { stage: "scraping", message: "Fetching landing page..." })
+          const tScrape = Date.now()
           const scraped = await withRetry(() => scrapeLandingPage(url!))
           rawContent = formatScrapedContent(scraped)
+          log("scrape", Date.now() - tScrape)
         } else {
           rawContent = content!.trim()
         }
 
         send("progress", { stage: "analyzing", message: "Analyzing against platform policies..." })
+        const tCritic = Date.now()
         const analysisResult = await withRetry(() =>
           analyzeContent(rawContent, platforms)
         )
+        log("critic", Date.now() - tCritic)
 
+        const tSave = Date.now()
         const [saved] = await db
           .insert(analyses)
           .values({
@@ -152,22 +163,29 @@ async function handleStream(
           })
           .returning()
 
-        if (analysisResult.violations.length > 0) {
-          await db.insert(violationsTable).values(
-            analysisResult.violations.map((v) => ({
-              analysisId: saved.id,
-              text: v.text,
-              reason: v.reason,
-              level: v.level,
-              ruleSource: platforms.join(","),
-            }))
-          )
-        }
+        const violationsInsertPromise =
+          analysisResult.violations.length > 0
+            ? db.insert(violationsTable).values(
+                analysisResult.violations.map((v) => ({
+                  analysisId: saved.id,
+                  text: v.text,
+                  reason: v.reason,
+                  level: v.level,
+                  ruleSource: platforms.join(","),
+                }))
+              )
+            : Promise.resolve()
 
-        let variants: { text: string; complianceScore: number; hookPreservation: number }[] = []
+        let variants: {
+          text: string
+          parts: { headline: string; body: string; cta: string }
+          complianceScore: number
+          hookPreservation: number
+        }[] = []
 
         if (analysisResult.violations.length > 0) {
           send("progress", { stage: "optimizing", message: "Generating safe variants..." })
+          const tOpt = Date.now()
           variants = await withRetry(() =>
             generateVariants(
               rawContent,
@@ -179,17 +197,26 @@ async function handleStream(
               platforms
             )
           )
-
-          if (variants.length > 0) {
-            await db.insert(variantsTable).values(
-              variants.map((v, i) => ({
-                analysisId: saved.id,
-                variantText: v.text,
-                variantIndex: i,
-              }))
-            )
-          }
+          log("optimizer", Date.now() - tOpt)
         }
+
+        await violationsInsertPromise
+        log("db.save.analysis+violations", Date.now() - tSave)
+
+        if (variants.length > 0) {
+          const tVar = Date.now()
+          await db.insert(variantsTable).values(
+            variants.map((v, i) => ({
+              analysisId: saved.id,
+              variantText: v.text,
+              variantIndex: i,
+              variantParts: v.parts,
+            }))
+          )
+          log("db.save.variants", Date.now() - tVar)
+        }
+
+        log("TOTAL", Date.now() - t0)
 
         send("result", {
           id: saved.id,
@@ -197,6 +224,7 @@ async function handleStream(
           violations: analysisResult.violations,
           variants: variants.map((v) => ({
             text: v.text,
+            parts: v.parts,
             complianceScore: v.complianceScore,
             hookPreservation: v.hookPreservation,
           })),
@@ -230,19 +258,28 @@ async function runPipeline(
   url: string | undefined,
   platforms: Platform[]
 ) {
+  const t0 = Date.now()
+  const log = (label: string, ms: number) =>
+    console.log(`[tadan] ${label} ${ms}ms`)
+
   let rawContent: string
 
   if (inputType === "url") {
+    const tScrape = Date.now()
     const scraped = await withRetry(() => scrapeLandingPage(url!))
     rawContent = formatScrapedContent(scraped)
+    log("scrape", Date.now() - tScrape)
   } else {
     rawContent = content!.trim()
   }
 
+  const tCritic = Date.now()
   const analysisResult = await withRetry(() =>
     analyzeContent(rawContent, platforms)
   )
+  log("critic", Date.now() - tCritic)
 
+  const tSave = Date.now()
   const [saved] = await db
     .insert(analyses)
     .values({
@@ -255,21 +292,28 @@ async function runPipeline(
     })
     .returning()
 
-  if (analysisResult.violations.length > 0) {
-    await db.insert(violationsTable).values(
-      analysisResult.violations.map((v) => ({
-        analysisId: saved.id,
-        text: v.text,
-        reason: v.reason,
-        level: v.level,
-        ruleSource: platforms.join(","),
-      }))
-    )
-  }
+  const violationsInsertPromise =
+    analysisResult.violations.length > 0
+      ? db.insert(violationsTable).values(
+          analysisResult.violations.map((v) => ({
+            analysisId: saved.id,
+            text: v.text,
+            reason: v.reason,
+            level: v.level,
+            ruleSource: platforms.join(","),
+          }))
+        )
+      : Promise.resolve()
 
-  let variants: { text: string; complianceScore: number; hookPreservation: number }[] = []
+  let variants: {
+    text: string
+    parts: { headline: string; body: string; cta: string }
+    complianceScore: number
+    hookPreservation: number
+  }[] = []
 
   if (analysisResult.violations.length > 0) {
+    const tOpt = Date.now()
     variants = await withRetry(() =>
       generateVariants(
         rawContent,
@@ -281,17 +325,26 @@ async function runPipeline(
         platforms
       )
     )
-
-    if (variants.length > 0) {
-      await db.insert(variantsTable).values(
-        variants.map((v, i) => ({
-          analysisId: saved.id,
-          variantText: v.text,
-          variantIndex: i,
-        }))
-      )
-    }
+    log("optimizer", Date.now() - tOpt)
   }
+
+  await violationsInsertPromise
+  log("db.save.analysis+violations", Date.now() - tSave)
+
+  if (variants.length > 0) {
+    const tVar = Date.now()
+    await db.insert(variantsTable).values(
+      variants.map((v, i) => ({
+        analysisId: saved.id,
+        variantText: v.text,
+        variantIndex: i,
+        variantParts: v.parts,
+      }))
+    )
+    log("db.save.variants", Date.now() - tVar)
+  }
+
+  log("TOTAL", Date.now() - t0)
 
   return {
     id: saved.id,
@@ -299,6 +352,7 @@ async function runPipeline(
     violations: analysisResult.violations,
     variants: variants.map((v) => ({
       text: v.text,
+      parts: v.parts,
       complianceScore: v.complianceScore,
       hookPreservation: v.hookPreservation,
     })),

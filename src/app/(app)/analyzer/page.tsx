@@ -13,7 +13,12 @@ interface Result {
   id: string
   riskScore: number
   violations: Violation[]
-  variants: { text: string; complianceScore: number; hookPreservation: number }[]
+  variants: {
+    text: string
+    parts?: { headline: string; body: string; cta: string }
+    complianceScore: number
+    hookPreservation: number
+  }[]
 }
 
 type View = "form" | "scanning" | "result"
@@ -60,7 +65,17 @@ export default function AnalyzerPage() {
           id: found.id,
           riskScore: found.riskScore ?? 0,
           violations: found.violations || [],
-          variants: found.variants || [],
+          variants: (found.variants || []).map((v: {
+            variantText: string
+            variantParts: { headline: string; body: string; cta: string } | null
+            complianceScore?: number
+            hookPreservation?: number
+          }) => ({
+            text: v.variantText,
+            parts: v.variantParts || undefined,
+            complianceScore: v.complianceScore ?? 0,
+            hookPreservation: v.hookPreservation ?? 0,
+          })),
         })
         setView("result")
       } catch (err) {
