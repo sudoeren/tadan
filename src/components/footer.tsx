@@ -21,28 +21,23 @@ export function Footer() {
               </span>
             </Link>
 
-            <nav className="flex items-center gap-5">
-              <Link
-                href="/#how-it-works"
-                className="hover:text-gray-900 transition-colors"
-              >
-                How it works
-              </Link>
-              <Link
-                href="/privacy"
-                className="hover:text-gray-900 transition-colors"
-              >
-                Privacy
-              </Link>
-              <Link
-                href="/terms"
-                className="hover:text-gray-900 transition-colors"
-              >
-                Terms
-              </Link>
-            </nav>
-
-            <p className="text-gray-400">© 2026 tadan</p>
+            <div className="flex items-center gap-5">
+              <nav className="flex items-center gap-5">
+                <Link
+                  href="/privacy"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Privacy
+                </Link>
+                <Link
+                  href="/terms"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Terms
+                </Link>
+              </nav>
+              <p className="text-gray-400">© 2026 tadan</p>
+            </div>
           </div>
         </div>
       </div>
