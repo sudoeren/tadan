@@ -8,7 +8,7 @@ import { Faq } from "@/components/faq"
 
 export default function HowItWorksContent() {
   return (
-    <div id="how-it-works" className="relative bg-white">
+    <div className="relative bg-white">
       <StepsSection />
       <InputModesSection />
       <OneScanSection />
