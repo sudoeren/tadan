@@ -11,7 +11,6 @@ import {
   Shield,
   Check,
   X,
-  Sparkles,
   Eye,
   EyeOff,
 } from "lucide-react"
@@ -212,11 +211,9 @@ export default function SignUpPage() {
                   <button
                     type="button"
                     onClick={handleGenerate}
-                    className="inline-flex items-center gap-1 rounded-md text-[11px] font-medium text-orange-600 hover:text-white hover:bg-orange-500 px-1.5 py-0.5 transition-colors"
-                    title="Generate strong password"
+                    className="text-[11px] font-medium text-orange-500 hover:text-orange-600 underline underline-offset-2 transition-colors"
                   >
-                    <Sparkles className="w-3 h-3" />
-                    Generate
+                    Generate password for me
                   </button>
                 </div>
                 <div className="relative">
@@ -245,14 +242,14 @@ export default function SignUpPage() {
                 </div>
 
                 {password.length > 0 && (
-                  <div className="mt-2 animate-fade-up">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex flex-1 gap-0.5 mr-2">
+                  <div className="mt-3 animate-fade-up">
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-1 gap-1">
                         {[0, 1, 2, 3, 4].map((i) => (
                           <div
                             key={i}
                             className={cn(
-                              "h-0.5 flex-1 rounded-full transition-colors duration-500",
+                              "h-1 flex-1 rounded-full transition-colors duration-500",
                               i < strength.score
                                 ? strength.barColor
                                 : "bg-gray-200"
@@ -262,31 +259,31 @@ export default function SignUpPage() {
                       </div>
                       <span
                         className={cn(
-                          "text-[10px] font-semibold uppercase tracking-wider transition-colors duration-300",
+                          "text-[11px] font-bold uppercase tracking-wider transition-colors duration-300 min-w-[80px] text-right",
                           strength.textColor
                         )}
                       >
                         {strength.label}
                       </span>
                     </div>
-                    <ul className="grid grid-cols-2 sm:grid-cols-5 gap-x-2 gap-y-0.5">
+                    <ul className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-x-2 gap-y-2">
                       {strength.requirements.map((r) => (
                         <li
                           key={r.label}
                           className={cn(
-                            "flex items-center gap-1 text-[10px] transition-colors duration-300",
-                            r.met ? "text-emerald-700" : "text-gray-400"
+                            "flex items-start gap-1.5 text-[10.5px] leading-tight transition-colors duration-300",
+                            r.met ? "text-emerald-600" : "text-gray-400"
                           )}
                         >
                           {r.met ? (
                             <Check
-                              className="w-2.5 h-2.5 text-emerald-500 shrink-0"
+                              className="w-3 h-3 text-emerald-500 shrink-0 mt-0.5"
                               strokeWidth={3}
                             />
                           ) : (
-                            <X className="w-2.5 h-2.5 text-gray-300 shrink-0" />
+                            <X className="w-3 h-3 text-gray-300 shrink-0 mt-0.5" />
                           )}
-                          {r.label}
+                          <span className="leading-tight">{r.label}</span>
                         </li>
                       ))}
                     </ul>
