@@ -200,7 +200,7 @@ export default function HomePage() {
               } catch {
                 // ignore
               }
-              router.push(`/signup?next=${encodeURIComponent(next)}`)
+              router.push(next)
             }}
             className="animate-fade-up [animation-delay:340ms] mt-6 sm:mt-8 w-full max-w-xl"
           >
