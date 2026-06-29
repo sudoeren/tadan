@@ -14,7 +14,10 @@ export function Footer() {
             >
               <Logo className="w-4 h-4 text-gray-900" />
               <span className="text-sm font-semibold tracking-tight text-gray-900">
-                tadan - Ad Compliance AI
+                tadan
+                <span className="ml-1.5 font-normal text-gray-400">
+                  - Ad Compliance AI
+                </span>
               </span>
             </Link>
 
