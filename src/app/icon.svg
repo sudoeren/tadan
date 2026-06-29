@@ -1,15 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <style>
-    .bg { fill: #ffffff; }
-    .logo { fill: #f97316; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #111111; }
-    }
-  </style>
-  <rect class="bg" width="256" height="256" rx="32" />
+  <rect width="256" height="256" rx="32" fill="#ffffff" />
   <g transform="translate(38 38) scale(0.7)">
     <path
-      class="logo"
+      fill="#f97316"
       d="M 144 256 L 27.598 256 L 144 139.598 Z M 256 207.5 L 200 256 L 200 56 L 0 56 L 48 0 L 256 0 Z M 0 204.402 L 0 112 L 92.402 112 Z"
     />
   </g>
