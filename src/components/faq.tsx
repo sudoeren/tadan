@@ -48,7 +48,7 @@ export function Faq() {
               <span
                 className={cn(
                   "font-mono text-[12px] mt-1 tracking-tight transition-colors",
-                  isOpen ? "text-orange-500" : "text-gray-300"
+                  isOpen ? "text-orange-500" : "text-gray-500"
                 )}
               >
                 {String(i + 1).padStart(2, "0")}
