@@ -44,3 +44,6 @@ drizzle/*.sql
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#docs
+docs/
