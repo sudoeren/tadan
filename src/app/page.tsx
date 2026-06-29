@@ -12,29 +12,9 @@ import {
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { BG_URL } from "@/components/background-layer"
+import GlobeFeatureSection from "@/components/globe-feature-section"
 
 const GRASS_FADE_RANGE = 350
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "Caught a $5k Meta ban 10 minutes before launch. The optimizer rewrote our hook in a way that still converted — same ROAS, zero policy risk.",
-    name: "Maya Chen",
-    role: "Head of Paid, Linnea & Co.",
-  },
-  {
-    quote:
-      "Replaced our 3-person compliance review queue. What used to take a day of back-and-forth now takes six seconds and a click.",
-    name: "Jordan Park",
-    role: "Media Director, Northbeam",
-  },
-  {
-    quote:
-      "The risk score is the only number I check before pushing a campaign live. It's caught more landmines in three months than our QA process did in three years.",
-    name: "Sasha Iyer",
-    role: "Founder, Pivot Growth",
-  },
-] as const
 
 function MetaLogo({ className }: { className?: string }) {
   return (
@@ -135,14 +115,6 @@ const PLATFORM_LOGOS = [
   { name: "TikTok", Logo: TikTokLogo, tint: "#000000" },
   { name: "Outbrain", Logo: OutbrainLogo, tint: "#EE6E37" },
 ] as const
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-}
 
 export default function HomePage() {
   const { data: session, isPending } = useSession()
@@ -290,51 +262,10 @@ export default function HomePage() {
         />
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="relative bg-white py-24 sm:py-32">
+      {/* HOW IT WORKS — globe CTA */}
+      <section className="relative bg-white py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="max-w-2xl mb-14 sm:mb-20">
-            <p className="text-[12px] uppercase tracking-[0.2em] text-gray-400 font-medium">
-              From the field
-            </p>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.05] tracking-tight text-gray-900">
-              The compliance layer performance marketers reach for first.
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4 sm:gap-5">
-            {TESTIMONIALS.map((t) => (
-              <figure
-                key={t.name}
-                className="rounded-2xl bg-gray-50 ring-1 ring-gray-200/70 p-6 sm:p-7 flex flex-col"
-              >
-                <svg
-                  aria-hidden
-                  viewBox="0 0 32 32"
-                  className="w-7 h-7 text-gray-300 mb-4 shrink-0"
-                  fill="currentColor"
-                >
-                  <path d="M9.5 8C5.36 8 2 11.36 2 15.5V24h8v-8H6.5C6.5 13.6 8.6 11.5 11 11.5V8h-1.5zm15 0c-4.14 0-7.5 3.36-7.5 7.5V24h8v-8h-3.5c0-2.4 2.1-4.5 4.5-4.5V8h-1.5z" />
-                </svg>
-                <blockquote className="text-[15px] leading-relaxed text-gray-700 flex-1">
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
-                <figcaption className="mt-6 flex items-center gap-3 pt-5 border-t border-gray-200/70">
-                  <span className="w-9 h-9 rounded-full bg-gray-900 text-white text-[12px] font-medium flex items-center justify-center shrink-0">
-                    {initials(t.name)}
-                  </span>
-                  <div className="min-w-0">
-                    <div className="text-[13px] font-semibold text-gray-900 leading-tight">
-                      {t.name}
-                    </div>
-                    <div className="text-[12px] text-gray-500 leading-tight mt-0.5 truncate">
-                      {t.role}
-                    </div>
-                  </div>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          <GlobeFeatureSection />
         </div>
       </section>
 
