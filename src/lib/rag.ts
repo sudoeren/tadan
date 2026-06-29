@@ -1,7 +1,7 @@
 import { openRouterEmbedding } from "@/lib/openrouter"
 import { db } from "@/lib/db"
 import { platformPolicies } from "@/lib/db/schema"
-import { cosineDistance, sql } from "drizzle-orm"
+import { inArray, sql } from "drizzle-orm"
 
 const EMBEDDING_MODEL = "openai/text-embedding-3-small"
 const TOP_K = 8
@@ -13,6 +13,26 @@ interface PolicyRule {
   category: string
   ruleText: string
   similarity: number
+}
+
+function cosineSimilarity(a: number[], b: number[]): number {
+  let dot = 0, normA = 0, normB = 0
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i]
+    normA += a[i] * a[i]
+    normB += b[i] * b[i]
+  }
+  const denom = Math.sqrt(normA) * Math.sqrt(normB)
+  return denom === 0 ? 0 : dot / denom
+}
+
+function parseEmbedding(raw: string | null): number[] {
+  if (!raw) return []
+  try {
+    return JSON.parse(raw) as number[]
+  } catch {
+    return []
+  }
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
@@ -27,34 +47,33 @@ export async function retrieveRelevantPolicies(
   query: string,
   platforms?: string[]
 ): Promise<PolicyRule[]> {
-  const embedding = await generateEmbedding(query)
+  const queryEmb = await generateEmbedding(query)
 
-  const embeddingStr = `[${embedding.join(",")}]`
+  const conditions = platforms?.length
+    ? inArray(platformPolicies.platform, platforms)
+    : sql`true`
 
-  const conditions = [sql`1=1`]
-  if (platforms && platforms.length > 0) {
-    const platformList = platforms.map((p) => `'${p}'`).join(",")
-    conditions.push(sql.raw(`platform IN (${platformList})`))
-  }
-
-  const results = await db
+  const allPolicies = await db
     .select({
       id: platformPolicies.id,
       platform: platformPolicies.platform,
       category: platformPolicies.category,
       ruleText: platformPolicies.ruleText,
-      similarity: sql<number>`1 - (${cosineDistance(platformPolicies.embedding, embeddingStr)})`,
+      embedding: platformPolicies.embedding,
     })
     .from(platformPolicies)
-    .where(
-      sql`${cosineDistance(platformPolicies.embedding, embeddingStr)} > ${SIMILARITY_THRESHOLD}`
-    )
-    .orderBy(
-      sql`${cosineDistance(platformPolicies.embedding, embeddingStr)} ASC`
-    )
-    .limit(TOP_K)
+    .where(conditions)
 
-  return results
+  const scored = allPolicies
+    .map((p) => {
+      const similarity = cosineSimilarity(queryEmb, parseEmbedding(p.embedding))
+      return { id: p.id, platform: p.platform, category: p.category, ruleText: p.ruleText, similarity }
+    })
+    .filter((r) => r.similarity > SIMILARITY_THRESHOLD)
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, TOP_K)
+
+  return scored
 }
 
 let embeddingsVerified = false
@@ -112,7 +131,7 @@ export async function seedPolicyEmbeddings(): Promise<{
   })
 
   for (let i = 0; i < rules.length; i++) {
-    rules[i].embedding = `[${embeddings[i].join(",")}]`
+    rules[i].embedding = JSON.stringify(embeddings[i])
   }
 
   await db.delete(platformPolicies)
@@ -122,7 +141,7 @@ export async function seedPolicyEmbeddings(): Promise<{
       platform: rule.platform,
       category: rule.category,
       ruleText: rule.ruleText,
-      embedding: sql`${rule.embedding}::vector`,
+      embedding: rule.embedding,
     })
   }
 

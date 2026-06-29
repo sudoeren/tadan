@@ -5,7 +5,6 @@ import {
   integer,
   uuid,
   boolean,
-  vector,
   jsonb,
 } from "drizzle-orm/pg-core"
 
@@ -106,5 +105,5 @@ export const platformPolicies = pgTable("platform_policies", {
   platform: text("platform").notNull(),
   category: text("category").notNull(),
   ruleText: text("rule_text").notNull(),
-  embedding: vector("embedding", { dimensions: 1536 }),
+  embedding: text("embedding"),
 })
