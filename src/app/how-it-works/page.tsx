@@ -123,44 +123,50 @@ const FAQS = [
 export default function HowItWorksPage() {
   const { data: session } = useSession()
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-white">
       <NavBar variant="transparent" />
 
-      {/* Background image — visible at top, fades to white */}
-      <div
-        aria-hidden
-        className="absolute top-0 left-0 right-0 h-[60vh] bg-cover bg-center pointer-events-none"
-        style={{ backgroundImage: `url(${BG_URL})` }}
-      />
-      <div
-        aria-hidden
-        className="absolute top-0 left-0 right-0 h-[60vh] pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 75%, rgba(255,255,255,1) 100%)",
-        }}
-      />
+      {/* HERO — has its own background image, fades softly to white at the bottom */}
+      <div className="relative">
+        {/* Background image layer (clipped to hero only) */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${BG_URL})` }}
+        />
+        {/* Soft fade-out at the bottom of the hero */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-48 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,1) 100%)",
+          }}
+        />
 
-      {/* HERO */}
-      <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-28 sm:pt-36 pb-12">
-        <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/30 backdrop-blur-xl ring-1 ring-white/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_4px_20px_rgba(0,0,0,0.04)] px-3.5 py-1.5 mb-7">
-          <span className="text-[12px] text-gray-700 font-medium">
-            How it works
-          </span>
+        <div className="relative z-[2] flex flex-col items-center text-center px-5 pt-28 sm:pt-36 pb-24 sm:pb-32">
+          <div className="animate-fade-down inline-flex items-center gap-1.5 rounded-full bg-white/30 backdrop-blur-xl ring-1 ring-white/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_4px_20px_rgba(0,0,0,0.04)] px-3.5 py-1.5 mb-7">
+            <span className="text-[12px] text-gray-700 font-medium">
+              How it works
+            </span>
+          </div>
+
+          <h1 className="text-gray-900 font-normal leading-[1.02] tracking-[-0.04em] text-[44px] min-[400px]:text-[48px] sm:text-[64px] lg:text-[76px] xl:text-[88px] max-w-4xl">
+            <span className="block animate-fade-up">From sketchy copy.</span>
+            <span className="block animate-fade-up [animation-delay:100ms]">
+              To safe to ship.
+            </span>
+          </h1>
+
+          <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-base sm:text-lg mt-5 max-w-xl leading-relaxed">
+            Two AI agents, a pgvector knowledge base, and 1,200+ policy rules —
+            the full pipeline behind every tadan verdict.
+          </p>
         </div>
-
-        <h1 className="text-gray-900 font-normal leading-[1.02] tracking-[-0.04em] text-[44px] min-[400px]:text-[48px] sm:text-[64px] lg:text-[76px] xl:text-[88px] max-w-4xl">
-          <span className="block animate-fade-up">From sketchy copy.</span>
-          <span className="block animate-fade-up [animation-delay:100ms]">
-            To safe to ship.
-          </span>
-        </h1>
-
-        <p className="animate-fade-up [animation-delay:220ms] text-gray-600 text-base sm:text-lg mt-5 max-w-xl leading-relaxed">
-          Two AI agents, a pgvector knowledge base, and 1,200+ policy rules —
-          the full pipeline behind every tadan verdict.
-        </p>
       </div>
+
+      {/* Everything below the hero is on pure white */}
+      <div className="bg-white relative z-[2]">
 
       {/* STEPS — 4 cards with orange dashed animated arrows between them */}
       <div className="relative z-[2] px-5 sm:px-8 pb-12">
@@ -1110,6 +1116,7 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </section>
+      </div>
 
       <Footer />
     </div>
