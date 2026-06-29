@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 
 export function NotFoundPage() {
   const router = useRouter()
@@ -35,7 +36,7 @@ export function NotFoundPage() {
 
                 <Button
                   onClick={() => router.push("/")}
-                  className="my-5"
+                  className="my-5 bg-orange-500 hover:bg-orange-600 text-white border-transparent"
                 >
                   Go to Home
                   <ArrowRight />
@@ -45,6 +46,8 @@ export function NotFoundPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }
