@@ -126,21 +126,30 @@ export default function HowItWorksPage() {
     <div className="relative min-h-screen bg-white">
       <NavBar variant="transparent" />
 
-      {/* HERO — has its own background image, fades softly to white at the bottom */}
+      {/* HERO — has its own background image, fades very softly to white at the bottom */}
       <div className="relative">
-        {/* Background image layer (clipped to hero only) */}
+        {/* Background image layer (clipped to hero+steps only) */}
         <div
           aria-hidden
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${BG_URL})` }}
         />
-        {/* Soft fade-out at the bottom of the hero */}
+        {/* Very soft, long fade-out at the bottom — 400px of smooth gradient */}
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-48 pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-[400px] pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,1) 100%)",
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.5) 70%, rgba(255,255,255,0.85) 88%, rgba(255,255,255,1) 100%)",
+          }}
+        />
+        {/* Extra subtle blur to soften the edge further */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-24 pointer-events-none backdrop-blur-[2px]"
+          style={{
+            maskImage: "linear-gradient(to bottom, transparent, black 40%, black 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent, black 40%, black 100%)",
           }}
         />
 
