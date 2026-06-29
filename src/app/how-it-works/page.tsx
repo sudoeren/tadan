@@ -45,30 +45,7 @@ const STEPS = [
   },
 ]
 
-// (constants removed — One scan section uses inline SVGs)
-
-const FEATURES = [
-  {
-    icon: ShieldCheck,
-    title: "Real policy enforcement",
-    body: "Rules sourced directly from Meta, Google, and Taboola. Not vibes. Not LLM guessing.",
-  },
-  {
-    icon: Zap,
-    title: "Hook-preserving rewrites",
-    body: "Safe variants that keep the marketing punch — eight distinct techniques, all compliant.",
-  },
-  {
-    icon: Globe,
-    title: "Landing page audit",
-    body: "Drop a URL. We scrape, parse, and flag the bait-and-switch before it costs you your account.",
-  },
-  {
-    icon: WandSparkles,
-    title: "RAG over policy docs",
-    body: "Only the most relevant policy rules reach the LLM. Lower token cost, higher accuracy.",
-  },
-]
+// (constants removed — Why tadan uses inline cards)
 
 const FAQS = [
   {
@@ -924,38 +901,79 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section className="relative z-[2] py-12 sm:py-16">
-        <div className="max-w-5xl mx-auto px-5 sm:px-8">
-          <div className="text-center mb-9">
+      {/* WHY TADAN — unified panel, big center animation, no icons */}
+      <section className="relative z-[2] py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-10">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.05] tracking-tight text-gray-900">
-              Why it works
+              Why tadan
             </h2>
             <p className="text-gray-500 text-base sm:text-lg mt-3 max-w-xl mx-auto leading-relaxed">
-              The boring infrastructure that makes the magic reliable.
+              Stop losing time, money, and accounts to compliance. One scan,
+              every platform.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {FEATURES.map((f, i) => {
-              const Icon = f.icon
-              return (
+
+          <div className="relative bg-white">
+            {/* Big center animation — large pulsing gradient blob */}
+            <div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              aria-hidden
+            >
+              <div className="w-[28rem] h-[28rem] rounded-full bg-gradient-to-br from-orange-300/40 via-rose-200/30 to-amber-200/30 blur-3xl animate-pulse" />
+            </div>
+
+            <div className="relative grid grid-cols-1 md:grid-cols-2">
+              {/* Single vertical line in the middle */}
+              <div
+                aria-hidden
+                className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gray-200"
+              />
+              {/* Single horizontal line in the middle */}
+              <div
+                aria-hidden
+                className="hidden md:block absolute left-0 right-0 top-1/2 h-px bg-gray-200"
+              />
+
+              {[
+                {
+                  n: "01",
+                  title: "Stop losing weekends to policy review",
+                  body: "What used to take a day of cross-referencing four platform docs now takes six seconds. Paste your copy, get a verdict.",
+                },
+                {
+                  n: "02",
+                  title: "Stop getting banned after launch",
+                  body: "RAG over 1,200+ real Meta, Google, and Taboola policy rules. Not vibes. Not LLM guessing.",
+                },
+                {
+                  n: "03",
+                  title: "Stop writing sterile ad copy",
+                  body: "Eight copywriting techniques. Empowerment framing, curiosity hooks, social proof. Safe variants that still convert.",
+                },
+                {
+                  n: "04",
+                  title: "Stop switching between four platform docs",
+                  body: "One scan covers Meta, Google, and Taboola. Every rule. Every platform. Every variant.",
+                },
+              ].map((item, i) => (
                 <div
-                  key={f.title}
-                  className="animate-fade-up rounded-3xl bg-white/90 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-6 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] transition-all"
-                  style={{ animationDelay: `${i * 80}ms` }}
+                  key={item.n}
+                  className="animate-fade-up p-8 sm:p-10 hover:bg-white/60 transition-colors duration-300"
+                  style={{ animationDelay: `${i * 120}ms` }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5" strokeWidth={1.75} />
+                  <div className="text-3xl sm:text-4xl font-mono text-orange-500 mb-3 tracking-tight">
+                    {item.n}
                   </div>
-                  <h3 className="text-[15px] font-semibold text-gray-900 mb-1.5">
-                    {f.title}
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 leading-snug">
+                    {item.title}
                   </h3>
-                  <p className="text-[13px] text-gray-500 leading-relaxed">
-                    {f.body}
+                  <p className="text-[14px] text-gray-500 leading-relaxed">
+                    {item.body}
                   </p>
                 </div>
-              )
-            })}
+              ))}
+            </div>
           </div>
         </div>
       </section>
