@@ -4,6 +4,7 @@ import { Fragment } from "react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { Logo } from "@/components/logo"
+import { Faq } from "@/components/faq"
 import Link from "next/link"
 import {
   ArrowUp,
@@ -980,31 +981,13 @@ export default function HowItWorksPage() {
 
       {/* FAQ */}
       <section className="relative z-[2] py-12 sm:py-16">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <div className="text-center mb-9">
+        <div className="max-w-5xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.05] tracking-tight text-gray-900">
               Common questions
             </h2>
           </div>
-          <div className="space-y-3">
-            {FAQS.map((f, i) => (
-              <details
-                key={f.q}
-                className="animate-fade-up group rounded-2xl bg-white/90 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.04)] p-5 open:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <summary className="flex items-center justify-between cursor-pointer list-none">
-                  <span className="text-[15px] font-semibold text-gray-900">
-                    {f.q}
-                  </span>
-                  <Plus className="w-4 h-4 text-gray-400 transition-transform group-open:rotate-45" />
-                </summary>
-                <p className="text-[14px] text-gray-600 mt-3 leading-relaxed">
-                  {f.a}
-                </p>
-              </details>
-            ))}
-          </div>
+          <Faq />
         </div>
       </section>
 
