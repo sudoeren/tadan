@@ -68,6 +68,13 @@ const SAMPLE_ADS = [
   "Exclusive investment opportunity! Turn $250 into $12,500 in 30 days, guaranteed. Our AI trading bot has a 97% success rate. Join the 50,000+ members already earning passive income. Limited spots — sign up now before this offer ends!",
 ]
 
+const SAMPLE_URLS = [
+  "https://www.linear.app",
+  "https://www.notion.so/product",
+  "https://www.stripe.com",
+  "https://www.figma.com",
+]
+
 function normalizeUrl(raw: string): string {
   return raw.match(/^https?:\/\//) ? raw : `https://${raw}`
 }
@@ -94,6 +101,7 @@ export default function AnalyzerForm({
   onClearError,
 }: AnalyzerFormProps) {
   const [sampleIndex, setSampleIndex] = useState(0)
+  const [sampleUrlIndex, setSampleUrlIndex] = useState(0)
   const canRun = input.trim().length > 0 && platforms.length > 0
 
   return (
@@ -326,16 +334,29 @@ export default function AnalyzerForm({
       </div>
 
       <div className="mt-5 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => {
-            setInput(SAMPLE_ADS[sampleIndex])
-            setSampleIndex((i) => (i + 1) % SAMPLE_ADS.length)
-          }}
-          className="text-[12px] text-gray-500 hover:text-gray-900 transition-colors"
-        >
-          Try a sample ({sampleIndex + 1}/{SAMPLE_ADS.length}) →
-        </button>
+        {mode === "text" ? (
+          <button
+            type="button"
+            onClick={() => {
+              setInput(SAMPLE_ADS[sampleIndex])
+              setSampleIndex((i) => (i + 1) % SAMPLE_ADS.length)
+            }}
+            className="text-[12px] text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            Try a sample ad ({sampleIndex + 1}/{SAMPLE_ADS.length}) →
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setInput(SAMPLE_URLS[sampleUrlIndex])
+              setSampleUrlIndex((i) => (i + 1) % SAMPLE_URLS.length)
+            }}
+            className="text-[12px] text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            Try a sample URL ({sampleUrlIndex + 1}/{SAMPLE_URLS.length}) →
+          </button>
+        )}
         <button
           type="submit"
           disabled={!canRun || loading}
