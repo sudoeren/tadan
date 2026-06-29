@@ -13,6 +13,7 @@ import {
   X,
   Eye,
   EyeOff,
+  Wand2,
 } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { NavBar } from "@/components/nav-bar"
@@ -211,8 +212,9 @@ export default function SignUpPage() {
                   <button
                     type="button"
                     onClick={handleGenerate}
-                    className="text-[11px] font-medium text-orange-500 hover:text-orange-600 underline underline-offset-2 transition-colors"
+                    className="group inline-flex items-center gap-1.5 rounded-full bg-white ring-1 ring-orange-300 hover:ring-orange-500 hover:bg-orange-50 px-2.5 py-1 text-[11px] font-semibold text-orange-600 hover:text-orange-700 transition-all"
                   >
+                    <Wand2 className="w-3 h-3 transition-transform group-hover:rotate-12" />
                     Generate password for me
                   </button>
                 </div>
