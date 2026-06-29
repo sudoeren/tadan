@@ -10,14 +10,11 @@ export function Footer() {
             <Link
               href="/"
               className="flex items-center gap-2 group"
-              aria-label="tadan home"
+              aria-label="tadan - Ad Compliance AI"
             >
               <Logo className="w-4 h-4 text-gray-900" />
               <span className="text-sm font-semibold tracking-tight text-gray-900">
-                tadan
-              </span>
-              <span className="hidden sm:inline text-gray-500">
-                — Ad Compliance AI
+                tadan - Ad Compliance AI
               </span>
             </Link>
 
