@@ -32,7 +32,7 @@ const STEPS = [
 
 export default function StepsSection() {
   return (
-    <div id="how-it-works" className="relative z-[2] px-5 sm:px-8 pb-12 sm:pb-16 scroll-mt-28">
+    <div id="how-it-works" className="relative z-[2] px-5 sm:px-8 pb-12 sm:pb-16 scroll-mt-20">
       <div className="max-w-6xl mx-auto">
         <div className="rounded-3xl bg-white/85 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-6 sm:p-9">
           <div className="flex flex-col lg:flex-row items-stretch gap-4 lg:gap-0">
