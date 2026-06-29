@@ -1,6 +1,5 @@
-import { Monitor, Smartphone } from "lucide-react"
-import { NavBar } from "@/components/nav-bar"
-import { Footer } from "@/components/footer"
+import Link from "next/link"
+import { Monitor, Smartphone, ArrowRight } from "lucide-react"
 
 export const metadata = {
   title: "Mobile coming soon — tadan",
@@ -11,8 +10,6 @@ export const metadata = {
 export default function MobileSoonPage() {
   return (
     <div className="relative min-h-screen flex flex-col bg-white">
-      <NavBar variant="transparent" />
-
       <main className="relative z-[2] flex-1 flex items-center justify-center px-5 py-20 sm:py-28">
         <div className="max-w-md w-full text-center animate-fade-up">
           <div className="mx-auto mb-7 inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-orange-50 ring-1 ring-orange-200/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.6)]">
@@ -30,27 +27,18 @@ export default function MobileSoonPage() {
             full ad-compliance scanner is available on desktop for now.
           </p>
 
-          <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-gray-50 ring-1 ring-gray-200 px-4 py-2.5 text-[13px] font-medium text-gray-700">
-            <Monitor className="h-4 w-4 text-gray-500" strokeWidth={2} />
-            Visit tadan on a desktop browser
-          </div>
-
-          <div className="mt-12 text-[12px] text-gray-400 leading-relaxed">
-            <p>Want a heads-up when mobile launches?</p>
-            <p className="mt-1">
-              Drop us a line at{" "}
-              <a
-                href="mailto:hello@tadan.app"
-                className="text-orange-500 hover:underline underline-offset-2"
-              >
-                hello@tadan.app
-              </a>
-            </p>
-          </div>
+          <Link
+            href="/"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-orange-500 hover:bg-orange-600 active:scale-[0.98] pl-4 pr-1.5 py-1.5 text-[14px] font-semibold text-white shadow-lg shadow-orange-500/25 ring-1 ring-orange-500/20 transition-all"
+          >
+            <Monitor className="h-4 w-4" strokeWidth={2.25} />
+            <span className="px-1.5">Open on desktop</span>
+            <span className="w-8 h-8 rounded-full bg-white/15 inline-flex items-center justify-center">
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }
