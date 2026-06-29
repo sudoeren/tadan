@@ -557,27 +557,13 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
 
       {result.variants.length > 0 && (
         <section>
-          <div className="flex items-end justify-between mb-3">
-            <div>
-              <h2 className="text-[15px] font-semibold text-gray-900 tracking-tight">
-                Safe rewrites
-              </h2>
-              <p className="text-[12px] text-gray-500 mt-0.5">
-                Same hook. Different techniques. Zero banned-account regret.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() =>
-                navigator.clipboard.writeText(
-                  result.variants.map((v) => v.text).join("\n\n")
-                )
-              }
-              className="text-[12px] text-gray-500 hover:text-gray-900 transition-colors inline-flex items-center gap-1.5"
-            >
-              <Copy className="w-3.5 h-3.5" />
-              Copy all
-            </button>
+          <div className="mb-3">
+            <h2 className="text-[15px] font-semibold text-gray-900 tracking-tight">
+              Safe rewrites
+            </h2>
+            <p className="text-[12px] text-gray-500 mt-0.5">
+              Same hook. Different techniques. Zero banned-account regret.
+            </p>
           </div>
           <div className="space-y-3">
             {result.variants.map((v, i) => (
