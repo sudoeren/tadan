@@ -137,6 +137,42 @@ body {
   }
 }
 
+@keyframes pipeline-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pipeline-fill {
+  from {
+    stroke-dashoffset: var(--dash-length);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pipeline-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes pipeline-flow-vertical {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+@keyframes gauge-fill {
+  from {
+    stroke-dashoffset: var(--gauge-circumference);
+  }
+  to {
+    stroke-dashoffset: var(--gauge-target);
+  }
+}
+
 .animate-fade-up {
   animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -161,13 +197,33 @@ body {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
+.animate-pipeline-spin {
+  animation: pipeline-spin 1.2s linear infinite;
+}
+
+.animate-pipeline-flow {
+  animation: pipeline-flow 1s linear infinite;
+}
+
+.animate-pipeline-flow-vertical {
+  animation: pipeline-flow-vertical 1s linear infinite;
+}
+
+.animate-gauge-fill {
+  animation: gauge-fill 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-fade-down,
   .animate-fade-in,
   .animate-hero-rise,
   .animate-marquee,
-  .animate-pulse-dot {
+  .animate-pulse-dot,
+  .animate-pipeline-spin,
+  .animate-pipeline-flow,
+  .animate-pipeline-flow-vertical,
+  .animate-gauge-fill {
     animation: none;
   }
 }
