@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
+import { useSession } from "@/lib/auth-client"
 import type { Platform, Violation } from "@/types"
 import { NavBar } from "@/components/nav-bar"
 import AnalyzerForm from "@/components/analyzer-form"
 import PipelineView, { type StageName } from "@/components/pipeline-view"
 import ScanResult from "@/components/scan-result"
+import { SignInRequired } from "@/components/sign-in-required"
 
 interface Result {
   id: string
@@ -24,6 +26,7 @@ interface Result {
 type View = "form" | "scanning" | "result"
 
 export default function AnalyzerPage() {
+  const { data: session, isPending: sessionPending } = useSession()
   const searchParams = useSearchParams()
   const scanId = searchParams.get("scan")
   const quickInput = searchParams.get("input")
@@ -41,6 +44,8 @@ export default function AnalyzerPage() {
   const autoRunRef = useRef(false)
 
   useEffect(() => {
+    if (sessionPending) return
+
     if (!quickInput) return
 
     queueMicrotask(() => {
@@ -67,7 +72,7 @@ export default function AnalyzerPage() {
       url.searchParams.delete("platforms")
       window.history.replaceState({}, "", url.toString())
     })
-  }, [quickInput, quickMode, quickPlatforms])
+  }, [quickInput, quickMode, quickPlatforms, sessionPending])
 
   useEffect(() => {
     if (!scanId) return
@@ -232,6 +237,12 @@ export default function AnalyzerPage() {
       url.searchParams.delete("scan")
       window.history.replaceState({}, "", url.toString())
     }
+  }
+
+  if (!sessionPending && !session && !scanId && !quickInput) {
+    return (
+      <SignInRequired message="Create a free account to keep scanning ads and landing pages. No credit card required." />
+    )
   }
 
   return (

@@ -32,10 +32,7 @@ export async function POST(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
-
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
+  const userId = session?.user?.id ?? null
 
   const body = await request.json()
   const { inputType, content, url, platforms, stream = false } = body
@@ -73,7 +70,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (stream) {
-    return handleStream(request, session.user.id, {
+    return handleStream(request, userId, {
       inputType,
       content,
       url,
@@ -86,7 +83,7 @@ export async function POST(request: NextRequest) {
     await waitForEmbeddings()
 
     const result = await runPipeline(
-      session.user.id,
+      userId,
       inputType,
       content,
       url,
@@ -104,7 +101,7 @@ export async function POST(request: NextRequest) {
 
 async function handleStream(
   request: NextRequest,
-  userId: string,
+  userId: string | null,
   params: {
     inputType: string
     content?: string
@@ -150,33 +147,6 @@ async function handleStream(
         )
         log("critic", Date.now() - tCritic)
 
-        const tSave = Date.now()
-        const [saved] = await db
-          .insert(analyses)
-          .values({
-            userId,
-            inputType,
-            rawContent: rawContent.slice(0, 10000),
-            platform: platforms.join(","),
-            riskScore: analysisResult.riskScore,
-            positiveAspects: analysisResult.positiveAspects,
-            status: "completed",
-          })
-          .returning()
-
-        const violationsInsertPromise =
-          analysisResult.violations.length > 0
-            ? db.insert(violationsTable).values(
-                analysisResult.violations.map((v) => ({
-                  analysisId: saved.id,
-                  text: v.text,
-                  reason: v.reason,
-                  level: v.level,
-                  ruleSource: platforms.join(","),
-                }))
-              )
-            : Promise.resolve()
-
         let variants: {
           text: string
           parts: { headline: string; body: string; cta: string }
@@ -201,26 +171,56 @@ async function handleStream(
           log("optimizer", Date.now() - tOpt)
         }
 
-        await violationsInsertPromise
-        log("db.save.analysis+violations", Date.now() - tSave)
+        let analysisId: string | null = null
+        if (userId) {
+          const tSave = Date.now()
+          const [saved] = await db
+            .insert(analyses)
+            .values({
+              userId,
+              inputType,
+              rawContent: rawContent.slice(0, 10000),
+              platform: platforms.join(","),
+              riskScore: analysisResult.riskScore,
+              positiveAspects: analysisResult.positiveAspects,
+              status: "completed",
+            })
+            .returning()
+          analysisId = saved.id
 
-        if (variants.length > 0) {
-          const tVar = Date.now()
-          await db.insert(variantsTable).values(
-            variants.map((v, i) => ({
-              analysisId: saved.id,
-              variantText: v.text,
-              variantIndex: i,
-              variantParts: v.parts,
-            }))
-          )
-          log("db.save.variants", Date.now() - tVar)
+          if (analysisResult.violations.length > 0) {
+            await db.insert(violationsTable).values(
+              analysisResult.violations.map((v) => ({
+                analysisId: saved.id,
+                text: v.text,
+                reason: v.reason,
+                level: v.level,
+                ruleSource: platforms.join(","),
+              }))
+            )
+          }
+
+          if (variants.length > 0) {
+            const tVar = Date.now()
+            await db.insert(variantsTable).values(
+              variants.map((v, i) => ({
+                analysisId: saved.id,
+                variantText: v.text,
+                variantIndex: i,
+                variantParts: v.parts,
+              }))
+            )
+            log("db.save.variants", Date.now() - tVar)
+          }
+          log("db.save.analysis+violations", Date.now() - tSave)
+        } else {
+          console.log("[tadan] db.save.skipped (no user)")
         }
 
         log("TOTAL", Date.now() - t0)
 
         send("result", {
-          id: saved.id,
+          id: analysisId,
           riskScore: analysisResult.riskScore,
           violations: analysisResult.violations,
           positiveAspects: analysisResult.positiveAspects,
@@ -254,7 +254,7 @@ async function handleStream(
 }
 
 async function runPipeline(
-  userId: string,
+  userId: string | null,
   inputType: string,
   content: string | undefined,
   url: string | undefined,
@@ -281,33 +281,6 @@ async function runPipeline(
   )
   log("critic", Date.now() - tCritic)
 
-  const tSave = Date.now()
-  const [saved] = await db
-    .insert(analyses)
-    .values({
-      userId,
-      inputType,
-      rawContent: rawContent.slice(0, 10000),
-      platform: platforms.join(","),
-      riskScore: analysisResult.riskScore,
-      positiveAspects: analysisResult.positiveAspects,
-      status: "completed",
-    })
-    .returning()
-
-  const violationsInsertPromise =
-    analysisResult.violations.length > 0
-      ? db.insert(violationsTable).values(
-          analysisResult.violations.map((v) => ({
-            analysisId: saved.id,
-            text: v.text,
-            reason: v.reason,
-            level: v.level,
-            ruleSource: platforms.join(","),
-          }))
-        )
-      : Promise.resolve()
-
   let variants: {
     text: string
     parts: { headline: string; body: string; cta: string }
@@ -331,26 +304,56 @@ async function runPipeline(
     log("optimizer", Date.now() - tOpt)
   }
 
-  await violationsInsertPromise
-  log("db.save.analysis+violations", Date.now() - tSave)
+  let analysisId: string | null = null
+  if (userId) {
+    const tSave = Date.now()
+    const [saved] = await db
+      .insert(analyses)
+      .values({
+        userId,
+        inputType,
+        rawContent: rawContent.slice(0, 10000),
+        platform: platforms.join(","),
+        riskScore: analysisResult.riskScore,
+        positiveAspects: analysisResult.positiveAspects,
+        status: "completed",
+      })
+      .returning()
+    analysisId = saved.id
 
-  if (variants.length > 0) {
-    const tVar = Date.now()
-    await db.insert(variantsTable).values(
-      variants.map((v, i) => ({
-        analysisId: saved.id,
-        variantText: v.text,
-        variantIndex: i,
-        variantParts: v.parts,
-      }))
-    )
-    log("db.save.variants", Date.now() - tVar)
+    if (analysisResult.violations.length > 0) {
+      await db.insert(violationsTable).values(
+        analysisResult.violations.map((v) => ({
+          analysisId: saved.id,
+          text: v.text,
+          reason: v.reason,
+          level: v.level,
+          ruleSource: platforms.join(","),
+        }))
+      )
+    }
+
+    if (variants.length > 0) {
+      const tVar = Date.now()
+      await db.insert(variantsTable).values(
+        variants.map((v, i) => ({
+          analysisId: saved.id,
+          variantText: v.text,
+          variantIndex: i,
+          variantParts: v.parts,
+        }))
+      )
+      log("db.save.variants", Date.now() - tVar)
+    }
+    log("db.save.analysis+violations", Date.now() - tSave)
+  } else {
+    console.log("[tadan] db.save.skipped (no user)")
   }
 
   log("TOTAL", Date.now() - t0)
 
   return {
-    id: saved.id,
+    id: analysisId,
     riskScore: analysisResult.riskScore,
     violations: analysisResult.violations,
     positiveAspects: analysisResult.positiveAspects,

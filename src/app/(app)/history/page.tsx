@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
+import { useSession } from "@/lib/auth-client"
 import {
   AlertTriangle,
   Check,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react"
 import type { AnalysisRecord } from "@/types"
 import { NavBar } from "@/components/nav-bar"
+import { SignInRequired } from "@/components/sign-in-required"
 
 const PLATFORM_COLORS: Record<string, string> = {
   meta: "#1877F2",
@@ -36,6 +38,7 @@ function scoreColor(n: number) {
 }
 
 export default function HistoryPage() {
+  const { data: session, isPending: sessionPending } = useSession()
   const [records, setRecords] = useState<AnalysisRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<"all" | "flagged" | "clean">("all")
@@ -137,6 +140,12 @@ export default function HistoryPage() {
     } finally {
       setDeleting(false)
     }
+  }
+
+  if (!sessionPending && !session) {
+    return (
+      <SignInRequired message="Your scan history is saved to your account. Sign in to view it." />
+    )
   }
 
   return (

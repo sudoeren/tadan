@@ -104,31 +104,55 @@ export default function HomePage() {
   const [searchCount, setSearchCount] = useState(0)
   const [quotaBlocked, setQuotaBlocked] = useState(false)
   const [pendingNext, setPendingNext] = useState("")
+  const [resetAt, setResetAt] = useState<number | null>(null)
   const FREE_SEARCH_LIMIT = 1
+  const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
 
   useEffect(() => {
     queueMicrotask(() => {
       try {
-        const stored = window.localStorage.getItem("tadan:searchCount")
-        if (stored) {
-          const n = parseInt(stored, 10)
-          if (!Number.isNaN(n) && n > 0) setSearchCount(n)
+        const raw = window.localStorage.getItem("tadan:searchQuota")
+        if (raw) {
+          const parsed = JSON.parse(raw) as {
+            count: number
+            resetAt: number
+          }
+          if (Date.now() >= parsed.resetAt) {
+            const fresh = {
+              count: 0,
+              resetAt: Date.now() + QUOTA_WINDOW_MS,
+            }
+            window.localStorage.setItem("tadan:searchQuota", JSON.stringify(fresh))
+            setSearchCount(0)
+            setResetAt(fresh.resetAt)
+          } else {
+            setSearchCount(parsed.count)
+            setResetAt(parsed.resetAt)
+          }
+        } else {
+          const fresh = {
+            count: 0,
+            resetAt: Date.now() + QUOTA_WINDOW_MS,
+          }
+          window.localStorage.setItem("tadan:searchQuota", JSON.stringify(fresh))
+          setResetAt(fresh.resetAt)
         }
       } catch {
         // localStorage unavailable (private mode etc.) — ignore
       }
     })
-  }, [])
+  }, [QUOTA_WINDOW_MS])
 
   useEffect(() => {
     if (session) {
       queueMicrotask(() => {
         try {
-          window.localStorage.removeItem("tadan:searchCount")
+          window.localStorage.removeItem("tadan:searchQuota")
         } catch {
           // ignore
         }
         setSearchCount(0)
+        setResetAt(null)
       })
     }
   }, [session])
@@ -196,11 +220,13 @@ export default function HomePage() {
               }
 
               const nextCount = searchCount + 1
+              const newResetAt = resetAt ?? Date.now() + QUOTA_WINDOW_MS
               setSearchCount(nextCount)
+              setResetAt(newResetAt)
               try {
                 window.localStorage.setItem(
-                  "tadan:searchCount",
-                  String(nextCount)
+                  "tadan:searchQuota",
+                  JSON.stringify({ count: nextCount, resetAt: newResetAt })
                 )
               } catch {
                 // ignore
@@ -278,7 +304,7 @@ export default function HomePage() {
             {!session && !isPending && !quotaBlocked && (
               <p className="mt-2.5 text-center text-[12px] text-gray-500">
                 {searchCount > 0
-                  ? "You've used your free search."
+                  ? "You've used your free search. Resets in 24 hours."
                   : "1 free search. No sign-up needed."}
               </p>
             )}
