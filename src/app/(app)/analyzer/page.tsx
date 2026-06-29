@@ -132,12 +132,17 @@ export default function AnalyzerPage() {
 
   const canRun = input.trim().length > 0 && platforms.length > 0
 
+  function normalizeUrl(raw: string): string {
+    return raw.match(/^https?:\/\//) ? raw : `https://${raw}`
+  }
+
   async function run(e: React.FormEvent) {
     e.preventDefault()
     if (!canRun || loading) return
     setLoading(true)
     setError("")
     setStage("Scanning policies…")
+    const url = mode === "url" ? normalizeUrl(input) : undefined
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -145,7 +150,7 @@ export default function AnalyzerPage() {
         body: JSON.stringify({
           inputType: mode,
           content: mode === "text" ? input : undefined,
-          url: mode === "url" ? input : undefined,
+          url,
           platforms,
           stream: true,
         }),
