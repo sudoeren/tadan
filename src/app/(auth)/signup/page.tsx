@@ -169,17 +169,35 @@ export default function SignUpPage() {
     if (code.length !== 6) return
     setError("")
     setLoading(true)
-    const { error } = await authClient.emailOtp.verifyEmail({
+
+    const { error: verifyError } = await authClient.emailOtp.verifyEmail({
       email,
       otp: code,
     })
-    setLoading(false)
-    if (error) {
-      setError(error.message || "Invalid or expired code")
+
+    if (verifyError) {
+      setError(verifyError.message || "Invalid or expired code")
       setCode("")
+      setLoading(false)
       codeInputRef.current?.focus()
       return
     }
+
+    const { error: signInError } = await authClient.signIn.email({
+      email,
+      password,
+    })
+
+    if (signInError) {
+      setError(
+        signInError.message ||
+          "Account created but sign-in failed. Please log in manually."
+      )
+      setLoading(false)
+      return
+    }
+
+    setLoading(false)
     markHasAuthed()
     router.push("/analyzer")
     router.refresh()
