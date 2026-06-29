@@ -191,13 +191,22 @@ export default function HomePage() {
             {isPending ? (
               <div className="h-10 w-28 animate-pulse rounded-full bg-gray-100" />
             ) : session ? (
-              <Link
-                href="/analyzer"
-                  className="bg-orange-500 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-orange-600 hover:shadow-lg transition-all inline-flex items-center gap-2"
-              >
-                Open analyzer
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </Link>
+              <>
+                <Link
+                  href="/analyzer"
+                  className="group bg-orange-500 text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/30 active:scale-[0.98] transition-all inline-flex items-center gap-2"
+                >
+                  Open analyzer
+                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+                <Link
+                  href="/how-it-works"
+                  className="group bg-white text-gray-700 ring-1 ring-gray-200 text-sm font-medium px-6 py-2.5 rounded-full hover:ring-orange-500 hover:text-orange-500 transition-all inline-flex items-center gap-2"
+                >
+                  How it works
+                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </>
             ) : (
               <>
                 <Link
@@ -218,17 +227,12 @@ export default function HomePage() {
           </div>
 
           <div className="animate-fade-up [animation-delay:580ms] mt-7 sm:mt-9 flex flex-wrap items-center justify-center gap-3">
-            {PLATFORM_LOGOS.map(({ name, Logo, tint }) => (
+            {PLATFORM_LOGOS.map(({ name, Logo }) => (
               <div
                 key={name}
-                className="flex items-center gap-2.5 rounded-2xl bg-white/70 backdrop-blur-sm pl-1.5 pr-3.5 py-1.5 hover:bg-white transition-all"
+                className="flex items-center gap-2 rounded-2xl bg-white/70 backdrop-blur-sm px-3.5 py-1.5 hover:bg-white transition-all"
               >
-                <span
-                  className="w-8 h-8 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: `${tint}1f` }}
-                >
-                  <Logo className="w-4 h-4" />
-                </span>
+                <Logo className="w-4 h-4" />
                 <span className="text-[13px] text-gray-700 font-medium">
                   {name}
                 </span>
