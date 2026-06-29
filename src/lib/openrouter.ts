@@ -2,6 +2,9 @@ const OPENROUTER_BASE_URL =
   process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1"
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 
+export const DEFAULT_MODEL =
+  process.env.DEFAULT_OPENROUTER_MODEL || "google/gemini-2.5-flash-preview"
+
 interface OpenRouterMessage {
   role: "system" | "user" | "assistant"
   content: string

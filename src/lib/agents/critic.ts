@@ -1,4 +1,4 @@
-import { openRouterCompletion, extractJsonFromResponse } from "@/lib/openrouter"
+import { openRouterCompletion, extractJsonFromResponse, DEFAULT_MODEL } from "@/lib/openrouter"
 import { META_AD_POLICIES } from "@/lib/policies/meta"
 import { GOOGLE_ADS_POLICIES } from "@/lib/policies/google"
 import { TABOOLA_POLICIES } from "@/lib/policies/taboola"
@@ -113,7 +113,7 @@ export async function analyzeContent(
   const systemPrompt =
     CRITIC_SYSTEM_PROMPT + "\n\n## Platform Policies\n\n" + policyContext
 
-  const model = "google/gemini-2.5-flash-preview"
+  const model = DEFAULT_MODEL
 
   const response = await openRouterCompletion({
     model,

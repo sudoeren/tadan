@@ -1,4 +1,4 @@
-import { openRouterCompletion, extractJsonFromResponse } from "@/lib/openrouter"
+import { openRouterCompletion, extractJsonFromResponse, DEFAULT_MODEL } from "@/lib/openrouter"
 import type { Platform, Violation } from "@/types"
 
 const OPTIMIZER_SYSTEM_PROMPT = `You are an elite affiliate marketing copywriter who rewrites ad copy to pass platform compliance checks while maximizing conversion. You understand the difference between what algorithms flag and what humans buy.
@@ -96,7 +96,7 @@ export async function generateVariants(
   const userPrompt = buildOptimizerUserPrompt(original, violations, platforms)
 
   const response = await openRouterCompletion({
-    model: "google/gemini-2.5-flash-preview",
+    model: DEFAULT_MODEL,
     messages: [
       { role: "system", content: OPTIMIZER_SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
