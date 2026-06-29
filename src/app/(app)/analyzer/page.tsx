@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import type { Platform, Violation } from "@/types"
 import { NavBar } from "@/components/nav-bar"
@@ -39,6 +38,7 @@ export default function AnalyzerPage() {
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState("")
   const [loadingExisting, setLoadingExisting] = useState<string | null>(null)
+  const autoRunRef = useRef(false)
 
   useEffect(() => {
     if (!quickInput) return
@@ -60,6 +60,7 @@ export default function AnalyzerPage() {
           .filter((p): p is Platform => valid.includes(p as Platform))
         if (parsed.length > 0) setPlatforms(parsed)
       }
+      autoRunRef.current = true
       const url = new URL(window.location.href)
       url.searchParams.delete("input")
       url.searchParams.delete("mode")
@@ -127,8 +128,7 @@ export default function AnalyzerPage() {
 
   const canRun = input.trim().length > 0 && platforms.length > 0
 
-  async function run(e: React.FormEvent) {
-    e.preventDefault()
+  async function executeRun() {
     if (!canRun) return
     setError("")
     setView("scanning")
@@ -195,6 +195,29 @@ export default function AnalyzerPage() {
   function normalizeUrl(raw: string): string {
     return raw.match(/^https?:\/\//) ? raw : `https://${raw}`
   }
+
+  function run(e: React.FormEvent) {
+    e.preventDefault()
+    void executeRun()
+  }
+
+  const executeRunRef = useRef(executeRun)
+  useEffect(() => {
+    executeRunRef.current = executeRun
+  })
+
+  useEffect(() => {
+    if (
+      autoRunRef.current &&
+      canRun &&
+      view === "form" &&
+      !result &&
+      !error
+    ) {
+      autoRunRef.current = false
+      void executeRunRef.current()
+    }
+  }, [canRun, view, result, error])
 
   function resetForm() {
     setInput("")
