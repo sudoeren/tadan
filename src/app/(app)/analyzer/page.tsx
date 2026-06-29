@@ -23,7 +23,7 @@ export default function AnalyzerPage() {
   const scanId = searchParams.get("scan")
 
   const [view, setView] = useState<View>("form")
-  const [mode, setMode] = useState<"text" | "url">("text")
+  const [mode, setMode] = useState<"text" | "url">("url")
   const [input, setInput] = useState("")
   const [platforms, setPlatforms] = useState<Platform[]>([])
   const [stage, setStage] = useState<StageName>("loading")
@@ -148,7 +148,7 @@ export default function AnalyzerPage() {
   function resetForm() {
     setInput("")
     setPlatforms([])
-    setMode("text")
+    setMode("url")
     setResult(null)
     setError("")
     setStage("loading")

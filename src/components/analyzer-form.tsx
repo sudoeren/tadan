@@ -101,8 +101,8 @@ export default function AnalyzerForm({
       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
         <div className="inline-flex items-center gap-1 bg-gray-200/80 rounded-full p-1">
           {[
-            { value: "text", label: "Ad copy", icon: FileText },
             { value: "url", label: "Landing page", icon: Link2 },
+            { value: "text", label: "Ad copy", icon: FileText },
           ].map((opt) => {
             const Icon = opt.icon
             const active = mode === opt.value
