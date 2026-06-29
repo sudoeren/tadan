@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 const ITEMS = [
   {
     q: "Which platforms do you support?",
-    a: "Meta Ads (Facebook + Instagram), Google Ads, and Taboola. TikTok and Outbrain coming next.",
+    a: "Meta Ads (Facebook + Instagram), Google Ads, TikTok, and Taboola. More networks on the roadmap.",
   },
   {
     q: "What does the risk score mean?",
@@ -14,7 +14,7 @@ const ITEMS = [
   },
   {
     q: "How are safe variants generated?",
-    a: "Our optimizer agent uses 8 distinct copywriting techniques — empowerment framing, curiosity hooks, social proof, specificity, and more. Each variant keeps the marketing hook while staying compliant.",
+    a: "Our optimizer agent uses 8 distinct copywriting techniques — empowerment framing, curiosity hooks, social proof, specificity, and more. Each variant is split into headline, body, and CTA so you can drop them straight into your ad platform.",
   },
   {
     q: "Does it work on landing pages?",
@@ -22,7 +22,7 @@ const ITEMS = [
   },
   {
     q: "Is my data used to train models?",
-    a: "No. Your ad copy, landing pages, and scan history are never used for training. Embeddings live in your database.",
+    a: "No. Your ad copy, landing pages, and scan history are never used for training. Embeddings live in your own database.",
   },
 ]
 
