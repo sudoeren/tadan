@@ -608,10 +608,11 @@ export default function HowItWorksPage() {
               <div className="text-xl font-semibold text-gray-900">vs.</div>
 
               {/* With tadan */}
-              <div className="flex flex-col items-center rounded-xl border border-orange-200 bg-white p-8">
+              <div className="relative flex flex-col items-center rounded-xl border border-orange-200 bg-white p-8">
                 <div className="mb-3 text-xs font-medium uppercase tracking-wide text-orange-500">
                   With tadan
                 </div>
+                <div className="relative">
                 <svg
                   width="320"
                   height="200"
@@ -914,6 +915,9 @@ export default function HowItWorksPage() {
                     ✓
                   </text>
                 </svg>
+                {/* Tadan logo overlaid on hub circle (SVG hub is at viewBox 70,50 → 140px, 100px in 320x200) */}
+                <Logo className="absolute left-[140px] top-[100px] -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-gray-900" />
+                </div>
               </div>
             </div>
           </div>
