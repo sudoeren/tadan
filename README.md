@@ -38,7 +38,7 @@ Policy rules are embedded via `openai/text-embedding-3-small` (1536-dim) and sto
 | Language | TypeScript |
 | UI | Tailwind CSS v4 + Shadcn UI (base-nova, light-only) |
 | Auth | Better Auth (email/password) |
-| Database | PostgreSQL 16 + pgvector (Docker) |
+| Database | PostgreSQL 16 + pgvector (Docker, auto-init) |
 | ORM | Drizzle ORM |
 | LLM Chat | OpenRouter API (gemini-2.5-flash-preview) |
 | Embeddings | OpenRouter API (text-embedding-3-small, 1536d) |
@@ -55,13 +55,7 @@ cd tadan
 bun install
 ```
 
-### 2. Start PostgreSQL
-
-```bash
-docker-compose up -d
-```
-
-### 3. Environment variables
+### 2. Environment variables
 
 Copy `.env.example` to `.env.local` and fill in:
 
@@ -72,33 +66,61 @@ BETTER_AUTH_SECRET=<generate with: openssl rand -base64 32>
 BETTER_AUTH_URL=http://localhost:3000
 ```
 
-### 4. Run database migrations
-
-```bash
-bun run db:generate
-bun run db:migrate
-```
-
-### 5. Start dev server and open
+### 3. Start dev server
 
 ```bash
 bun dev
 ```
 
+That's it. The `predev` hook automatically:
+- Starts the PostgreSQL container (`docker compose up -d`) if not running
+- Waits for Postgres to be ready
+- Runs the `docker/initdb/00-setup.sh` script on first boot — creates the `vector` extension and applies every SQL file in `drizzle/`
+- Generates migrations with `drizzle-kit generate` if the `drizzle/` folder is empty
+
 Open [http://localhost:3000](http://localhost:3000) — sign up, paste ad copy, analyze.
 
 Policy embeddings are auto-seeded on the first analysis request (no manual step needed).
+
+### When you change the schema
+
+```bash
+bun run db:generate   # regenerate SQL files in drizzle/
+bun run db:reset      # drop the volume, re-init container, re-apply migrations
+```
+
+`db:reset` is only needed when schema changes — normal `bun dev` runs use the existing volume.
+
+## How the auto-init works
+
+```
+bun dev
+  └─ predev: bun scripts/dev-db.mjs
+        ├─ docker ps → running?  no → docker compose up -d db
+        ├─ wait for :5432 to accept connections
+        └─ drizzle/*.sql exists?  no → bunx drizzle-kit generate
+
+docker compose up (first boot only)
+  └─ entrypoint runs files in /docker-entrypoint-initdb.d
+        └─ 00-setup.sh
+              ├─ CREATE EXTENSION vector
+              └─ apply every /migrations/*.sql in order
+```
+
+`00-setup.sh` runs only on the **first** boot of a fresh `pgdata` volume. Schema changes after that require `bun run db:reset` (which drops the volume, so init runs again).
 
 ## Scripts
 
 | Command | Description |
 |---|---|
-| `bun dev` | Start dev server with Turbopack |
+| `bun dev` | Start dev server (runs `predev` first) |
 | `bun run build` | Production build |
 | `bun start` | Start production server |
 | `bun run lint` | Run ESLint |
-| `bun run db:generate` | Generate Drizzle migrations |
-| `bun run db:migrate` | Apply migrations to database |
+| `bun run db:up` | Start Postgres + wait for ready (no dev server) |
+| `bun run db:reset` | Drop Postgres volume and re-init from scratch |
+| `bun run db:generate` | Generate Drizzle SQL from `src/lib/db/schema.ts` |
+| `bun run db:migrate` | Apply migrations via Drizzle Kit (alternative to init script) |
 | `bun run db:studio` | Open Drizzle Studio (DB GUI) |
 | `bun run test` | Run unit tests (Vitest) |
 | `bun run test:watch` | Run tests in watch mode |
@@ -108,8 +130,13 @@ Policy embeddings are auto-seeded on the first analysis request (no manual step 
 
 ```
 tadan/
-├── docker-compose.yml         # PostgreSQL 16 + pgvector
+├── docker-compose.yml         # PostgreSQL 16 + pgvector + auto-init mounts
+├── docker/
+│   └── initdb/
+│       └── 00-setup.sh        # vector extension + apply drizzle/*.sql on first boot
 ├── drizzle.config.ts          # Drizzle Kit config
+├── scripts/
+│   └── dev-db.mjs             # predev: ensure Postgres is up + migrations exist
 ├── vitest.config.ts           # Vitest config
 ├── playwright.config.ts       # Playwright e2e config
 ├── src/
@@ -161,7 +188,7 @@ tadan/
 │   └── e2e/
 │       └── home.spec.ts
 └── drizzle/
-    └── migrations/            # SQL migration files
+    └── *.sql                  # SQL migration files (committed; consumed by init script)
 ```
 
 ## API

@@ -11,6 +11,8 @@ services:
       POSTGRES_DB: tadan
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+      - ./drizzle:/migrations:ro
 
 volumes:
   pgdata:
