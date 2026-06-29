@@ -75,10 +75,16 @@ export async function seedPolicyEmbeddings(): Promise<{
   const { META_AD_POLICIES } = await import("@/lib/policies/meta")
   const { GOOGLE_ADS_POLICIES } = await import("@/lib/policies/google")
   const { TABOOLA_POLICIES } = await import("@/lib/policies/taboola")
+  const { TIKTOK_POLICIES } = await import("@/lib/policies/tiktok")
 
   const rules: { platform: string; category: string; ruleText: string; embedding: string }[] = []
 
-  for (const policy of [META_AD_POLICIES, GOOGLE_ADS_POLICIES, TABOOLA_POLICIES]) {
+  for (const policy of [
+    META_AD_POLICIES,
+    GOOGLE_ADS_POLICIES,
+    TABOOLA_POLICIES,
+    TIKTOK_POLICIES,
+  ]) {
     for (const cat of policy.categories) {
       for (const rule of cat.rules) {
         rules.push({

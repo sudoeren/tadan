@@ -5,7 +5,7 @@ export interface AnalysisInput {
   platforms: Platform[]
 }
 
-export type Platform = "meta" | "google" | "taboola"
+export type Platform = "meta" | "google" | "taboola" | "tiktok"
 
 export type ViolationLevel = "Red" | "Yellow" | "Green"
 

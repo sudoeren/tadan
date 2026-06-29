@@ -43,12 +43,18 @@ const PLATFORMS: {
   {
     value: "taboola",
     label: "Taboola",
-    color: "#6C2BD9",
+    color: "#1E5BD9",
     tint: {
-      bg: "bg-purple-50",
-      border: "border-purple-300",
-      text: "text-purple-700",
+      bg: "bg-blue-50",
+      border: "border-blue-300",
+      text: "text-blue-700",
     },
+  },
+  {
+    value: "tiktok",
+    label: "TikTok",
+    color: "#000000",
+    tint: { bg: "bg-gray-100", border: "border-gray-300", text: "text-gray-900" },
   },
 ]
 
@@ -348,16 +354,50 @@ export default function AnalyzerPage() {
                         {p.value === "taboola" && (
                           <svg className="w-4 h-4" viewBox="0 0 24 24">
                             <rect
-                              x="2"
-                              y="4"
-                              width="20"
-                              height="16"
-                              rx="2"
+                              width="24"
+                              height="24"
+                              rx="5"
                               fill={on ? "white" : p.color}
                             />
-                            <path
-                              d="M7 8h3l2 4-2 4H7l2-4-2-4zM14 8h3v8h-3z"
+                            <ellipse
+                              cx="8.5"
+                              cy="9"
+                              rx="2.4"
+                              ry="3"
                               fill={on ? p.color : "white"}
+                            />
+                            <ellipse
+                              cx="15.5"
+                              cy="9"
+                              rx="2.4"
+                              ry="3"
+                              fill={on ? p.color : "white"}
+                            />
+                            <path
+                              d="M 5.5 14 Q 12 20 18.5 14 L 18.5 16 Q 12 22 5.5 16 Z"
+                              fill={on ? p.color : "white"}
+                            />
+                          </svg>
+                        )}
+                        {p.value === "tiktok" && (
+                          <svg className="w-4 h-4" viewBox="0 0 24 24">
+                            <g transform="translate(-1 0)">
+                              <path
+                                d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.892 2.892 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.932 2.932 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.65a8.16 8.16 0 0 0 4.77 1.52V6.78a4.85 4.85 0 0 1-1.84-.09Z"
+                                fill="#25F4EE"
+                                opacity={on ? 0 : 1}
+                              />
+                            </g>
+                            <g transform="translate(1 0)">
+                              <path
+                                d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.892 2.892 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.932 2.932 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.65a8.16 8.16 0 0 0 4.77 1.52V6.78a4.85 4.85 0 0 1-1.84-.09Z"
+                                fill="#FE2C55"
+                                opacity={on ? 0 : 1}
+                              />
+                            </g>
+                            <path
+                              d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.892 2.892 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.932 2.932 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.65a8.16 8.16 0 0 0 4.77 1.52V6.78a4.85 4.85 0 0 1-1.84-.09Z"
+                              fill={on ? "white" : "#000"}
                             />
                           </svg>
                         )}

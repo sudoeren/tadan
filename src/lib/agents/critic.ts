@@ -2,6 +2,7 @@ import { openRouterCompletion, extractJsonFromResponse } from "@/lib/openrouter"
 import { META_AD_POLICIES } from "@/lib/policies/meta"
 import { GOOGLE_ADS_POLICIES } from "@/lib/policies/google"
 import { TABOOLA_POLICIES } from "@/lib/policies/taboola"
+import { TIKTOK_POLICIES } from "@/lib/policies/tiktok"
 import { retrieveRelevantPolicies } from "@/lib/rag"
 import type { Platform, AnalysisResult, ViolationLevel } from "@/types"
 
@@ -9,6 +10,7 @@ const POLICY_MAP = {
   meta: META_AD_POLICIES,
   google: GOOGLE_ADS_POLICIES,
   taboola: TABOOLA_POLICIES,
+  tiktok: TIKTOK_POLICIES,
 } as const
 
 const CRITIC_SYSTEM_PROMPT = `You are a senior ad compliance officer with deep expertise in affiliate marketing and native advertising. Your job is to scan ad copy and landing page content against platform advertising policies and identify violations that could lead to account bans or ad disapprovals.
