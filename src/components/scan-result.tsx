@@ -7,7 +7,7 @@ import {
   ArrowRight,
   Check,
   Copy,
-  Wand2,
+  FileEdit,
   Globe,
   ShieldCheck,
   BadgeCheck,
@@ -289,7 +289,7 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
     })
   }
   bullets.push({
-    icon: Wand2,
+    icon: FileEdit,
     label: "Safe variants generated",
     sublabel: "compliant rewrites",
     value: String(result.variants.length),
