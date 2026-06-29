@@ -24,6 +24,33 @@ export class ValidationError extends AppError {
   }
 }
 
+export function toUserFriendlyError(error: unknown): string {
+  if (error instanceof AppError) {
+    return error.message
+  }
+
+  if (error instanceof Error) {
+    const msg = error.message
+    if (msg.includes("ECONNREFUSED") || msg.includes("ENOTFOUND")) {
+      return "Database is unreachable. Make sure Docker is running."
+    }
+    if (msg.includes("relation") && msg.includes("does not exist")) {
+      return "Database schema is missing. Run `bun run db:reset` to apply migrations."
+    }
+    if (msg.includes("vector")) {
+      return "Vector storage error. Run `bun run db:reset` to fix the database."
+    }
+    if (msg.includes("OPENROUTER_API_KEY")) {
+      return "AI service is not configured. Contact support."
+    }
+    if (msg.includes("ETIMEDOUT") || msg.includes("timeout")) {
+      return "Request timed out. Please try again."
+    }
+  }
+
+  return "Something went wrong. Please try again."
+}
+
 export async function withRetry<T>(
   fn: () => Promise<T>,
   options: { maxRetries?: number; baseDelayMs?: number } = {}

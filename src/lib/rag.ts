@@ -4,7 +4,6 @@ import { platformPolicies } from "@/lib/db/schema"
 import { cosineDistance, sql } from "drizzle-orm"
 
 const EMBEDDING_MODEL = "openai/text-embedding-3-small"
-const EMBEDDING_DIMENSIONS = 1536
 const TOP_K = 8
 const SIMILARITY_THRESHOLD = 0.3
 
@@ -123,7 +122,7 @@ export async function seedPolicyEmbeddings(): Promise<{
       platform: rule.platform,
       category: rule.category,
       ruleText: rule.ruleText,
-      embedding: sql`${rule.embedding}::vector(${EMBEDDING_DIMENSIONS})`,
+      embedding: sql`${rule.embedding}::vector`,
     })
   }
 

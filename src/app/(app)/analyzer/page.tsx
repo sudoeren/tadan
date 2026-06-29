@@ -198,7 +198,7 @@ export default function AnalyzerPage() {
         setLoading(false)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error")
+      setError(err instanceof Error ? err.message : "Something went wrong")
       setLoading(false)
     }
   }

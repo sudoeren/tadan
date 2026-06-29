@@ -7,7 +7,7 @@ import { scrapeLandingPage, formatScrapedContent } from "@/lib/scraper"
 import { analyzeContent } from "@/lib/agents/critic"
 import { generateVariants } from "@/lib/agents/optimizer"
 import { ensurePolicyEmbeddings } from "@/lib/rag"
-import { withRetry, AppError, ValidationError } from "@/lib/errors"
+import { withRetry, AppError, ValidationError, toUserFriendlyError } from "@/lib/errors"
 import type { Platform } from "@/types"
 
 // Start seeding on module load so it's already in progress when first request arrives
@@ -95,8 +95,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result)
   } catch (error) {
     const code = error instanceof AppError ? error.code : "INTERNAL_ERROR"
-    console.error(`[tadan] Analysis failed: ${code}`)
-    const message = error instanceof Error ? error.message : "Internal server error"
+    console.error(`[tadan] Analysis failed: ${code}`, error)
+    const message = toUserFriendlyError(error)
     const status = error instanceof ValidationError ? 400 : 500
     return NextResponse.json({ error: message }, { status })
   }
@@ -206,7 +206,7 @@ async function handleStream(
       } catch (error) {
         console.error("[tadan] Stream error:", error)
         send("error", {
-          error: error instanceof Error ? error.message : "Analysis failed",
+          error: toUserFriendlyError(error),
         })
       } finally {
         controller.close()
