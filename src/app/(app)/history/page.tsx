@@ -11,6 +11,9 @@ import {
   FileText,
   Link2,
   ArrowRight,
+  ListFilter,
+  Flag,
+  ShieldCheck,
 } from "lucide-react"
 import type { AnalysisRecord } from "@/types"
 import { NavBar } from "@/components/nav-bar"
@@ -115,25 +118,32 @@ export default function HistoryPage() {
             ) : (
               <>
                 <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-                  <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1">
+                  <div className="inline-flex items-center gap-1 bg-gray-200/80 rounded-full p-1">
                     {[
-                      { value: "all", label: `All (${records.length})` },
-                      { value: "flagged", label: "Flagged" },
-                      { value: "clean", label: "Clean" },
+                      {
+                        value: "all",
+                        label: `All (${records.length})`,
+                        icon: ListFilter,
+                      },
+                      { value: "flagged", label: "Flagged", icon: Flag },
+                      { value: "clean", label: "Clean", icon: ShieldCheck },
                     ].map((opt) => {
+                      const Icon = opt.icon
                       const active = filter === opt.value
                       return (
                         <button
                           key={opt.value}
+                          type="button"
                           onClick={() =>
                             setFilter(opt.value as "all" | "flagged" | "clean")
                           }
-                          className={`px-3.5 py-1.5 text-[12px] font-medium rounded-full transition-all ${
+                          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium rounded-full transition-all ${
                             active
-                              ? "bg-white text-gray-900 shadow-sm"
-                              : "text-gray-500 hover:text-gray-700"
+                              ? "bg-orange-500 text-white shadow-sm"
+                              : "text-gray-500 hover:text-gray-800"
                           }`}
                         >
+                          <Icon className="w-3.5 h-3.5" />
                           {opt.label}
                         </button>
                       )
