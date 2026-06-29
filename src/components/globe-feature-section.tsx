@@ -44,10 +44,12 @@ export default function GlobeFeatureSection() {
           </h2>
           <Link
             href="/how-it-works"
-            className="mt-7 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-black transition-colors"
+            className="group mt-7 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full hover:bg-black transition-all duration-300"
           >
-            <span className="px-1.5">See how it works</span>
-            <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center">
+            <span className="px-1.5 transition-transform duration-300 group-hover:translate-x-0.5">
+              See how it works
+            </span>
+            <span className="w-8 h-8 rounded-full bg-orange-500 text-white inline-flex items-center justify-center transition-transform duration-300 group-hover:rotate-45">
               <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
