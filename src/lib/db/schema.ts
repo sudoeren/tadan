@@ -59,6 +59,9 @@ export const analyses = pgTable("analyses", {
   rawContent: text("raw_content").notNull(),
   platform: text("platform").notNull(),
   riskScore: integer("risk_score"),
+  positiveAspects: jsonb("positive_aspects").$type<
+    { label: string; description: string }[]
+  >(),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })

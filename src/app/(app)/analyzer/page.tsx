@@ -13,6 +13,7 @@ interface Result {
   id: string
   riskScore: number
   violations: Violation[]
+  positiveAspects: { label: string; description: string }[]
   variants: {
     text: string
     parts?: { headline: string; body: string; cta: string }
@@ -65,6 +66,7 @@ export default function AnalyzerPage() {
           id: found.id,
           riskScore: found.riskScore ?? 0,
           violations: found.violations || [],
+          positiveAspects: found.positiveAspects || [],
           variants: (found.variants || []).map((v: {
             variantText: string
             variantParts: { headline: string; body: string; cta: string } | null
@@ -143,7 +145,10 @@ export default function AnalyzerPage() {
               setError(d.error)
               setView("form")
             } else if (typeof d.riskScore === "number") {
-              setResult(d)
+              setResult({
+                ...d,
+                positiveAspects: d.positiveAspects ?? [],
+              })
               setStage("done")
               setView("result")
             }

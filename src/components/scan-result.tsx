@@ -10,14 +10,8 @@ import {
   FileEdit,
   Globe,
   ShieldCheck,
-  BadgeCheck,
-  Sparkles,
-  MousePointerClick,
-  Zap,
-  Search,
-  Eye,
 } from "lucide-react"
-import type { Platform, Violation } from "@/types"
+import type { Platform, Violation, PositiveAspect } from "@/types"
 import { cn } from "@/lib/utils"
 
 interface Variant {
@@ -31,6 +25,7 @@ interface Result {
   id: string
   riskScore: number
   violations: Violation[]
+  positiveAspects: PositiveAspect[]
   variants: Variant[]
 }
 
@@ -237,97 +232,6 @@ function BulletCard({ item }: { item: BulletItem }) {
   )
 }
 
-interface CheckItem {
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
-  label: string
-  description: string
-}
-
-function CheckRow({ item }: { item: CheckItem }) {
-  const Icon = item.icon
-  return (
-    <div className="flex items-start gap-3 py-3">
-      <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
-        <Icon className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-semibold text-gray-900 leading-tight">
-          {item.label}
-        </p>
-        <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
-          {item.description}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function AllClearCard({ platforms }: { platforms: Platform[] }) {
-  const checks: CheckItem[] = [
-    {
-      icon: ShieldCheck,
-      label: "No policy violations",
-      description: `Passed all checks across ${platforms.length} platform${platforms.length !== 1 ? "s" : ""}`,
-    },
-    {
-      icon: Search,
-      label: "No red-flag phrases",
-      description: "Avoided guarantees, health claims, and financial promises",
-    },
-    {
-      icon: Zap,
-      label: "Strong hook structure",
-      description: "Opening line creates clear curiosity or value",
-    },
-    {
-      icon: MousePointerClick,
-      label: "Clear call-to-action",
-      description: "Single, unambiguous action for the reader to take",
-    },
-    {
-      icon: Eye,
-      label: "No clickbait or bait-and-switch",
-      description: "Headline matches the offer's actual promise",
-    },
-  ]
-
-  return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-50 to-emerald-100/60 ring-1 ring-emerald-200/70 p-5 flex flex-col h-full">
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.15),transparent_60%)]"
-      />
-      <div className="relative mb-3 flex items-center gap-3">
-        <div className="relative">
-          <div
-            aria-hidden
-            className="absolute inset-0 -m-2 rounded-full bg-emerald-400/20 blur-lg"
-          />
-          <div className="relative h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-[0_4px_20px_rgba(16,185,129,0.4)] ring-3 ring-white">
-            <BadgeCheck
-              className="h-7 w-7 text-white"
-              strokeWidth={2.5}
-            />
-          </div>
-        </div>
-        <div>
-          <p className="text-[16px] font-semibold text-emerald-700 tracking-tight leading-tight">
-            All clear
-          </p>
-          <p className="text-[11px] text-emerald-600/80 leading-tight">
-            Ship this ad with confidence
-          </p>
-        </div>
-      </div>
-      <div className="relative divide-y divide-emerald-200/60">
-        {checks.map((c, i) => (
-          <CheckRow key={i} item={c} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
 function VariantCard({ variant, index }: { variant: Variant; index: number }) {
   const hasParts = variant.parts && (variant.parts.headline || variant.parts.body || variant.parts.cta)
   const headline = variant.parts?.headline || ""
@@ -462,7 +366,7 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-5 lg:gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5 lg:gap-6 items-stretch">
         <div className="flex justify-center lg:justify-start">
           <ScoreGauge score={result.riskScore} />
         </div>
@@ -472,12 +376,6 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
             <BulletCard key={i} item={b} />
           ))}
         </div>
-
-        {allClear && (
-          <div className="lg:w-72">
-            <AllClearCard platforms={platforms} />
-          </div>
-        )}
       </div>
 
       <div className="flex justify-end">
@@ -573,64 +471,42 @@ export default function ScanResult({ result, platforms, onScanAnother }: ScanRes
         </section>
       )}
 
-      {allClear && (
+      {allClear && result.positiveAspects.length > 0 && (
         <section>
-          <div className="flex items-end justify-between mb-3">
-            <div>
-              <h2 className="text-[15px] font-semibold text-gray-900 tracking-tight">
-                Why this passed
-              </h2>
-              <p className="text-[12px] text-gray-500 mt-0.5">
-                What our critic agent verified before giving you the green light.
-              </p>
-            </div>
+          <div className="mb-3">
+            <h2 className="text-[15px] font-semibold text-gray-900 tracking-tight">
+              Why this passed
+            </h2>
+            <p className="text-[12px] text-gray-500 mt-0.5">
+              What our critic agent verified from your actual ad.
+            </p>
           </div>
           <div className="rounded-2xl bg-white/90 ring-1 ring-gray-200/70 p-4">
             <ul className="divide-y divide-gray-100">
-              {[
-                {
-                  icon: ShieldCheck,
-                  label: "Compliant across all platform policies",
-                  detail: `Matched against ${platforms.join(", ")} without red flags.`,
-                },
-                {
-                  icon: Eye,
-                  label: "Headline matches the offer",
-                  detail: "No bait-and-switch or clickbait detected.",
-                },
-                {
-                  icon: Sparkles,
-                  label: "Hook + structure preserved",
-                  detail: "Your marketing intent survived the scan.",
-                },
-                {
-                  icon: MousePointerClick,
-                  label: "Clear call-to-action",
-                  detail: "The reader knows exactly what to do next.",
-                },
-              ].map((item, i, arr) => {
-                return (
-                  <li
-                    key={i}
-                    className={cn(
-                      "flex items-start gap-3 py-3",
-                      i === arr.length - 1 && "pb-0"
-                    )}
-                  >
-                    <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-gray-900 leading-tight">
-                        {item.label}
-                      </p>
-                      <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
-                        {item.detail}
-                      </p>
-                    </div>
-                  </li>
-                )
-              })}
+              {result.positiveAspects.map((item, i, arr) => (
+                <li
+                  key={i}
+                  className={cn(
+                    "flex items-start gap-3 py-3",
+                    i === arr.length - 1 && "pb-0"
+                  )}
+                >
+                  <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check
+                      className="h-3.5 w-3.5 text-white"
+                      strokeWidth={3}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-gray-900 leading-tight">
+                      {item.label}
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
+                      {item.description}
+                    </p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </section>

@@ -34,6 +34,7 @@ export async function GET() {
 
     const enriched = records.map((r) => ({
       ...r,
+      positiveAspects: r.positiveAspects ?? [],
       violations: violationRows.filter((v) => v.analysisId === r.id),
       variants: variantRows
         .filter((v) => v.analysisId === r.id)

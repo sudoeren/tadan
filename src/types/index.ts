@@ -15,9 +15,15 @@ export interface Violation {
   level: ViolationLevel
 }
 
+export interface PositiveAspect {
+  label: string
+  description: string
+}
+
 export interface AnalysisResult {
   riskScore: number
   violations: Violation[]
+  positiveAspects: PositiveAspect[]
 }
 
 export interface Variant {

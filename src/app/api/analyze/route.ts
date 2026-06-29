@@ -159,6 +159,7 @@ async function handleStream(
             rawContent: rawContent.slice(0, 10000),
             platform: platforms.join(","),
             riskScore: analysisResult.riskScore,
+            positiveAspects: analysisResult.positiveAspects,
             status: "completed",
           })
           .returning()
@@ -222,6 +223,7 @@ async function handleStream(
           id: saved.id,
           riskScore: analysisResult.riskScore,
           violations: analysisResult.violations,
+          positiveAspects: analysisResult.positiveAspects,
           variants: variants.map((v) => ({
             text: v.text,
             parts: v.parts,
@@ -288,6 +290,7 @@ async function runPipeline(
       rawContent: rawContent.slice(0, 10000),
       platform: platforms.join(","),
       riskScore: analysisResult.riskScore,
+      positiveAspects: analysisResult.positiveAspects,
       status: "completed",
     })
     .returning()
@@ -350,6 +353,7 @@ async function runPipeline(
     id: saved.id,
     riskScore: analysisResult.riskScore,
     violations: analysisResult.violations,
+    positiveAspects: analysisResult.positiveAspects,
     variants: variants.map((v) => ({
       text: v.text,
       parts: v.parts,
