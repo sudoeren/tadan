@@ -13,12 +13,28 @@ const ITEMS = [
     a: "A 0–100 score where 0–25 is clean, 26–60 needs review, 61–85 is risky, and 86+ is bannable. The score is the maximum across all selected platforms.",
   },
   {
+    q: "How fast is a scan?",
+    a: "Most scans finish in 10-30 seconds end-to-end. The critic agent runs first to find violations, then the optimizer agent rewrites them in parallel with the database save. You'll see four live stages: loading policies, reading content, analyzing, and rewriting.",
+  },
+  {
     q: "How are safe variants generated?",
     a: "Our optimizer agent uses 8 distinct copywriting techniques — empowerment framing, curiosity hooks, social proof, specificity, and more. Each variant is split into headline, body, and CTA so you can drop them straight into your ad platform.",
   },
   {
     q: "Does it work on landing pages?",
     a: "Yes. Drop a URL, we scrape with Cheerio, format the content, and run the same pipeline. We also flag metadata issues like missing privacy policies and bait-and-switch headlines.",
+  },
+  {
+    q: "What does the 'Why this passed' section mean?",
+    a: "When your ad is clean, the critic agent lists the specific things it did well — quoting the actual headline, CTA, or claim. It's not a generic checklist. If nothing specific comes back, the section stays hidden.",
+  },
+  {
+    q: "Can I delete my scan history?",
+    a: "Yes. Open any scan from history to view it, or use the Select button to pick one or many scans and delete them in bulk. Deletion is permanent and also wipes the linked violations and rewrites.",
+  },
+  {
+    q: "How does the RAG matching work?",
+    a: "Your ad is embedded with OpenAI's text-embedding-3-small and matched against 1,200+ real policy rules stored as pgvector embeddings. Only the top 8 most relevant rules are passed to the critic LLM, so the model focuses on what actually matters for your copy.",
   },
   {
     q: "Is my data used to train models?",
