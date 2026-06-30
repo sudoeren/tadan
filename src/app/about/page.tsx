@@ -67,7 +67,7 @@ export default function AboutPage() {
 
           <div className="rounded-3xl bg-white ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-7 sm:p-10 space-y-5 text-[15px] leading-relaxed text-gray-700">
             <p>
-              <span className="text-orange-500 font-semibold">tadan</span> checks ad copy and landing
+              Meet <span className="text-orange-500 font-semibold">tadan</span>. It checks ad copy and landing
               pages against the policies of Meta, Google, Taboola, and TikTok
               and tells you exactly which rules you might be breaking. It
               surfaces safe rewrites that keep your marketing hook intact.
