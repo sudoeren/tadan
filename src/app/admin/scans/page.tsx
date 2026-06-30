@@ -233,10 +233,10 @@ function AdminScansContent({ userId }: { userId: string | null }) {
                     key={opt.value}
                     type="button"
                     onClick={() => changePlatform(opt.value)}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium rounded-full transition-all ${
+                    className={`inline-flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium rounded-full transition-all duration-200 ${
                       active
-                        ? "bg-orange-500 text-white shadow-sm"
-                        : "text-gray-500 hover:text-gray-800"
+                        ? "bg-orange-500 text-white shadow-sm scale-105"
+                        : "text-gray-500 hover:text-gray-800 hover:bg-gray-300/50"
                     }`}
                   >
                     {opt.label}
