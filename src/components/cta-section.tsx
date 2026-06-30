@@ -92,25 +92,10 @@ export function CtaSection({ bgUrl }: CtaSectionProps) {
             filter: "contrast(1.08) saturate(1.2)",
           }}
         >
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/5 to-black/20"
-          />
-
-          {/* Soft fade at the bottom of the card — blends the image into the surrounding white */}
-          <div
-            aria-hidden
-            className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 lg:h-40 pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.85) 85%, rgba(255,255,255,1) 100%)",
-            }}
-          />
-
           <img
             src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
             alt=""
-            className="pointer-events-none absolute left-0 bottom-0 h-full w-80 sm:w-96 lg:w-[28rem] object-cover object-top select-none"
+            className="pointer-events-none absolute left-0 bottom-0 h-full w-96 sm:w-[28rem] lg:w-[36rem] object-cover object-top select-none"
           />
 
           <div className="relative">
