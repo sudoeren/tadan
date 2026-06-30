@@ -217,7 +217,7 @@ export async function generateVariants(
       { role: "user", content: userPrompt },
     ],
     temperature: 0.6,
-    maxTokens: 1800,
+    maxTokens: 1200,
     responseFormat: { type: "json_object" },
   })
 

@@ -18,14 +18,13 @@ const CRITIC_SYSTEM_PROMPT = [
   "",
   "## Review Methodology",
   "",
-  "1. **Read the entire content.** Understand the offer, hook, and conversion flow.",
-  "2. **Check every sentence, phrase, word choice, and implied claim** against the platform policies provided.",
-  "3. **Be aggressive but accurate.** Better to flag borderline content than miss a violation that gets the account banned.",
-  "4. **Context matters.** A phrase that seems harmless in one context could be a policy violation in another (e.g. guarantee in a financial ad vs. a product warranty).",
+  "1. Read the entire content. Understand the offer, hook, and conversion flow.",
+  "2. Check every sentence, phrase, word choice, and implied claim against the platform policies provided.",
+  "3. Be aggressive but accurate. Better to flag borderline content than miss a violation that gets the account banned.",
+  "4. Context matters. A phrase that seems harmless in one context could be a policy violation in another (e.g. guarantee in a financial ad vs. a product warranty).",
   "",
-  "## Risk Scoring",
+  "## Risk Scoring (0-100)",
   "",
-  "Assign a risk score from 0 to 100:",
   "- 0-25 (Safe): Fully compliant. Ships without edits.",
   "- 26-60 (Low Risk): Minor wording issues. Likely approved but could be flagged.",
   "- 61-85 (High Risk): Policy violations present. Likely rejected or account flagged.",
@@ -33,52 +32,22 @@ const CRITIC_SYSTEM_PROMPT = [
   "",
   "## Violation Levels",
   "",
-  "- Red: Direct policy violation that can cause immediate account suspension (e.g. financial promises, health cure claims, misleading information, prohibited content).",
-  "- Yellow: Borderline content that may cause ad disapproval (e.g. excessive caps, aggressive tone, unclear disclosures, minor landing page issues).",
+  "- Red: Direct policy violation that can cause immediate account suspension (financial promises, health cure claims, misleading info, prohibited content).",
+  "- Yellow: Borderline content that may cause ad disapproval (excessive caps, aggressive tone, unclear disclosures, minor landing page issues).",
   "",
-  "## Key Red Flags to Watch For",
+  "## Red Flags",
   "",
-  "- Guaranteed income or earnings claims",
-  "- Before/after comparisons, miracle cures",
-  "- Negative self-perception targeting",
-  "- Clickbait or sensationalist headlines",
-  "- Misleading scarcity/urgency without basis",
-  "- Missing privacy policy or disclosures",
-  "- Bait-and-switch landing pages",
-  "- Excessive skin exposure in imagery language",
-  '- Personal attribute assertions ("Are you overweight?")',
+  "Guaranteed income/earnings, before/after, miracle cures, negative self-perception targeting, clickbait, false scarcity/urgency, missing privacy policy or disclosures, bait-and-switch landing pages, excessive skin exposure in imagery language, personal attribute questions ('Are you overweight?').",
   "",
   "## Output Format",
   "",
   "Respond ONLY with valid JSON. No markdown, no commentary.",
   "",
-  '{',
-  '  "risk_score": number,',
-  '  "violations": [',
-  "    {",
-  '      "text": "exact violating text from the content",',
-  '      "reason": "specific policy rule violated and why it is problematic",',
-  '      "level": "Red" | "Yellow"',
-  "    }",
-  "  ],",
-  '  "positiveAspects": [',
-  "    {",
-  '      "label": "short title (2-4 words)",',
-  '      "description": "one sentence referencing actual content from the ad"',
-  "    }",
-  "  ]",
-  "}",
+  '{"risk_score": number, "violations": [{"text": "exact violating text", "reason": "specific policy rule violated and why it is problematic", "level": "Red" | "Yellow"}], "positiveAspects": [{"label": "short title (2-4 words)", "description": "one sentence referencing actual content from the ad"}]}',
   "",
   "## Positive Aspects",
   "",
-  "When the ad is largely compliant (risk_score <= 25), populate positiveAspects with 3-5 specific things this ad does well. Each item must:",
-  "- Reference the actual content of the ad (e.g. quote or paraphrase the real headline / CTA / claim)",
-  '- Be verifiable from the text - no generic platitudes like "Strong hook structure"',
-  "- Focus on absence of risky patterns (no medical claims, no financial promises, no personal attribute targeting) or concrete strengths (clear CTA, single action, privacy link, specific numbers, social proof, transparency)",
-  "",
-  "If risk_score > 25, positiveAspects can be an empty array. Only call out positives for genuinely clean ads.",
-  "",
-  "If there are no violations, also return risk_score 0 and a full positiveAspects array.",
+  "When the ad is largely compliant (risk_score <= 25), populate positiveAspects with 3-5 specific things this ad does well. Each must reference the actual content of the ad - no generic platitudes. If risk_score > 25 or no violations, positiveAspects is an empty array.",
 ].join("\n")
 
 function buildPolicyContext(platforms: Platform[]): string {
@@ -102,13 +71,14 @@ export async function analyzeContent(
   useRag = true
 ): Promise<AnalysisResult> {
   let ragPolicies = ""
+  let ragSucceeded = false
 
   if (useRag) {
     try {
       const relevant = await retrieveRelevantPolicies(content, platforms)
       if (relevant.length > 0) {
         ragPolicies =
-          "\n## Most Relevant Policy Rules (RAG-matched)\n" +
+          "## Most Relevant Policy Rules (RAG-matched)\n" +
           relevant
             .map(
               (r) =>
@@ -116,15 +86,19 @@ export async function analyzeContent(
             )
             .join("\n") +
           "\n"
+        ragSucceeded = true
       }
     } catch {
       // RAG unavailable, fall through to full policy docs
-      useRag = false
     }
   }
 
-  const policyContext = useRag
-    ? ragPolicies + "\n## Full Policy Reference\n" + buildPolicyContext(platforms)
+  // Only include the full policy reference if RAG didn't yield results.
+  // When RAG succeeds, the top-K matched rules are the ones the LLM needs
+  // to evaluate the ad — sending every category of every platform
+  // duplicates the same information and dramatically inflates the prompt.
+  const policyContext = ragSucceeded
+    ? ragPolicies
     : buildPolicyContext(platforms)
 
   const systemPrompt =
@@ -142,7 +116,7 @@ export async function analyzeContent(
       },
     ],
     temperature: 0.1,
-    maxTokens: 4096,
+    maxTokens: 1500,
     responseFormat: { type: "json_object" },
   })
 

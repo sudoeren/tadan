@@ -4,7 +4,7 @@ import { platformPolicies } from "@/lib/db/schema"
 import { inArray, sql } from "drizzle-orm"
 
 const EMBEDDING_MODEL = "openai/text-embedding-3-small"
-const TOP_K = 8
+const TOP_K = 5
 const SIMILARITY_THRESHOLD = 0.3
 
 interface PolicyRule {
