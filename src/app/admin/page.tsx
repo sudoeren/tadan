@@ -80,14 +80,10 @@ export default function AdminStatsPage() {
             value={stats?.totals.users ?? 0}
             tone="default"
             loading={loading}
-            icon={<Users className="w-4 h-4 text-gray-400" />}
           />
           <StatCard
             label="Scans today"
             value={stats?.totals.today ?? 0}
-            hint={
-              stats ? `${stats.totals.analyses}` : undefined
-            }
             tone="default"
             loading={loading}
           />
