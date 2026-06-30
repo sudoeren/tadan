@@ -6,7 +6,7 @@ import { analyses, violations as violationsTable, variants as variantsTable } fr
 import { scrapeLandingPage, formatScrapedContent } from "@/lib/scraper"
 import { analyzeContent } from "@/lib/agents/critic"
 import { generateVariants } from "@/lib/agents/optimizer"
-import { ensurePolicyEmbeddings } from "@/lib/rag"
+import { ensurePolicyEmbeddings, retrieveRelevantPolicies } from "@/lib/rag"
 import { withRetry, AppError, ValidationError, toUserFriendlyError } from "@/lib/errors"
 import { rateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit"
 import type { Platform } from "@/types"
@@ -145,14 +145,26 @@ async function handleStream(
         await waitForEmbeddings()
         log("embeddings", Date.now() - tEmbed)
 
-        let rawContent: string
+        let rawContent = ""
+        let precomputedRag: Awaited<
+          ReturnType<typeof retrieveRelevantPolicies>
+        > | null = null
 
         if (inputType === "url") {
           send("progress", { stage: "scraping", message: "Fetching landing page..." })
           const tScrape = Date.now()
-          const scraped = await withRetry(() => scrapeLandingPage(url!))
-          rawContent = formatScrapedContent(scraped)
-          log("scrape", Date.now() - tScrape)
+          // Scrape and RAG embedding in parallel. The RAG uses the URL
+          // as the query (URL is a strong prior for landing page content).
+          // analyzeContent falls back to the full policy docs if RAG is
+          // empty, matching the non-parallel behavior.
+          const [, ragResult] = await Promise.all([
+            withRetry(() => scrapeLandingPage(url!)).then((scraped) => {
+              rawContent = formatScrapedContent(scraped)
+            }),
+            retrieveRelevantPolicies(url!, platforms).catch(() => []),
+          ])
+          precomputedRag = ragResult
+          log("scrape+rag", Date.now() - tScrape)
         } else {
           rawContent = content!.trim()
         }
@@ -160,7 +172,7 @@ async function handleStream(
         send("progress", { stage: "analyzing", message: "Analyzing against platform policies..." })
         const tCritic = Date.now()
         const analysisResult = await withRetry(() =>
-          analyzeContent(rawContent, platforms)
+          analyzeContent(rawContent, platforms, true, precomputedRag ?? undefined)
         )
         log("critic", Date.now() - tCritic)
 
@@ -281,20 +293,33 @@ async function runPipeline(
   const log = (label: string, ms: number) =>
     console.log(`[tadan] ${label} ${ms}ms`)
 
-  let rawContent: string
+  let rawContent = ""
+  let precomputedRag: Awaited<
+    ReturnType<typeof retrieveRelevantPolicies>
+  > | null = null
 
   if (inputType === "url") {
+    // Scrape and start the RAG embedding in parallel. The RAG uses the
+    // URL itself as the query (the URL is a strong prior for the landing
+    // page content), so it doesn't have to wait for the scrape to finish.
+    // If the URL-based RAG comes back empty, analyzeContent falls back
+    // to the full policy docs — same as the non-parallel path.
     const tScrape = Date.now()
-    const scraped = await withRetry(() => scrapeLandingPage(url!))
-    rawContent = formatScrapedContent(scraped)
-    log("scrape", Date.now() - tScrape)
+    const [, ragResult] = await Promise.all([
+      withRetry(() => scrapeLandingPage(url!)).then((scraped) => {
+        rawContent = formatScrapedContent(scraped)
+      }),
+      retrieveRelevantPolicies(url!, platforms).catch(() => []),
+    ])
+    precomputedRag = ragResult
+    log("scrape+rag", Date.now() - tScrape)
   } else {
     rawContent = content!.trim()
   }
 
   const tCritic = Date.now()
   const analysisResult = await withRetry(() =>
-    analyzeContent(rawContent, platforms)
+    analyzeContent(rawContent, platforms, true, precomputedRag ?? undefined)
   )
   log("critic", Date.now() - tCritic)
 

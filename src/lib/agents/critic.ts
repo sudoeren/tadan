@@ -3,8 +3,13 @@ import { META_AD_POLICIES } from "@/lib/policies/meta"
 import { GOOGLE_ADS_POLICIES } from "@/lib/policies/google"
 import { TABOOLA_POLICIES } from "@/lib/policies/taboola"
 import { TIKTOK_POLICIES } from "@/lib/policies/tiktok"
-import { retrieveRelevantPolicies } from "@/lib/rag"
+import { retrieveRelevantPolicies, type PolicyRule } from "@/lib/rag"
 import type { Platform, AnalysisResult, ViolationLevel } from "@/types"
+
+// For very short content, the full policy docs are small enough that RAG
+// doesn't add useful signal — it just adds an embedding API call (~500ms).
+// Below this length we skip RAG and use the full docs directly.
+const SHORT_CONTENT_RAG_SKIP = 200
 
 const POLICY_MAP = {
   meta: META_AD_POLICIES,
@@ -68,29 +73,40 @@ function buildPolicyContext(platforms: Platform[]): string {
 export async function analyzeContent(
   content: string,
   platforms: Platform[],
-  useRag = true
+  useRag = true,
+  precomputedRag?: PolicyRule[]
 ): Promise<AnalysisResult> {
   let ragPolicies = ""
   let ragSucceeded = false
 
   if (useRag) {
-    try {
-      const relevant = await retrieveRelevantPolicies(content, platforms)
-      if (relevant.length > 0) {
-        ragPolicies =
-          "## Most Relevant Policy Rules (RAG-matched)\n" +
-          relevant
-            .map(
-              (r) =>
-                `- [${r.platform}] ${r.category}: ${r.ruleText}`
-            )
-            .join("\n") +
-          "\n"
-        ragSucceeded = true
+    if (precomputedRag && precomputedRag.length > 0) {
+      // RAG was pre-fetched by the caller (e.g. in parallel with scraping
+      // a landing page). Use it directly without making another
+      // embedding API call.
+      ragSucceeded = true
+    } else if (content.length >= SHORT_CONTENT_RAG_SKIP) {
+      // For very short content, the full policy docs are sufficient and
+      // RAG doesn't add useful signal — skip the embedding round-trip.
+      try {
+        const relevant = await retrieveRelevantPolicies(content, platforms)
+        if (relevant.length > 0) {
+          ragSucceeded = true
+        }
+      } catch {
+        // RAG unavailable, fall through to full policy docs
       }
-    } catch {
-      // RAG unavailable, fall through to full policy docs
     }
+  }
+
+  if (ragSucceeded) {
+    const relevant = precomputedRag ?? []
+    ragPolicies =
+      "## Most Relevant Policy Rules (RAG-matched)\n" +
+      relevant
+        .map((r) => `- [${r.platform}] ${r.category}: ${r.ruleText}`)
+        .join("\n") +
+      "\n"
   }
 
   // Only include the full policy reference if RAG didn't yield results.
