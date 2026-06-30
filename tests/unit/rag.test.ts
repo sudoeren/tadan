@@ -34,7 +34,7 @@ beforeEach(() => {
   mockedCompletion.mockReset()
 })
 
-describe("RAG pipeline — bug regression: empty precomputedRag must fall through to full policy docs", () => {
+describe("RAG pipeline - bug regression: empty precomputedRag must fall through to full policy docs", () => {
   it("falls back to full policy docs when precomputedRag is an empty array (not a valid RAG hit)", async () => {
     mockLLMResponse({
       risk_score: 78,
@@ -98,7 +98,7 @@ describe("RAG pipeline — bug regression: empty precomputedRag must fall throug
   })
 })
 
-describe("RAG pipeline — short input skip behavior", () => {
+describe("RAG pipeline - short input skip behavior", () => {
   it("uses full policy docs for very short content (skips RAG round-trip)", async () => {
     mockLLMResponse({
       risk_score: 0,
@@ -116,7 +116,7 @@ describe("RAG pipeline — short input skip behavior", () => {
   })
 })
 
-describe("policy database — structural integrity for RAG indexing", () => {
+describe("policy database - structural integrity for RAG indexing", () => {
   it("every policy rule is a non-empty string", () => {
     const all = [
       ...META_AD_POLICIES.categories,

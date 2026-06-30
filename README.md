@@ -135,9 +135,9 @@ For very short inputs (< 200 chars), RAG is skipped entirely. The full policy do
 
 A few things in the codebase are simpler than they would be in a production SaaS. Calling them out so the trade-offs are explicit:
 
-- **In-memory rate limiter** (`src/lib/rate-limit.ts`): a `Map` keyed on hashed IP / user-id, with TTL eviction. Fast, no infra, zero setup. Single-process only — if tadan ever runs across multiple instances, this becomes a per-instance cap (effectively a 2× or 3× raise in the limit) and would need to move to Redis or a similar shared store. Lifting it is a small refactor, not a redesign.
-- **Module-level `embeddingsVerified` flag** (`src/lib/rag.ts`): the seed-once check uses a boolean cached at module load. This avoids a `count(*)` query on every first request per process. Like the rate limiter, it's per-process — multi-instance deploys would seed each instance independently. The seed is idempotent and cheap, so worst case is a few redundant queries on cold start, not a correctness issue.
-- **Desktop-only**: tadan is currently optimized for desktop. Mobile visitors get a `/mobile-soon` page served by a `proxy.ts` UA-rewrite rather than a broken layout. A full mobile-responsive UI is on the near-term roadmap — the desktop-first product is the right scope for the build challenge, and the mobile path is a known follow-up, not a gap.
+- **In-memory rate limiter** (`src/lib/rate-limit.ts`): a `Map` keyed on hashed IP / user-id, with TTL eviction. Fast, no infra, zero setup. Single-process only. If tadan ever runs across multiple instances, this becomes a per-instance cap (effectively a 2× or 3× raise in the limit) and would need to move to Redis or a similar shared store. Lifting it is a small refactor, not a redesign.
+- **Module-level `embeddingsVerified` flag** (`src/lib/rag.ts`): the seed-once check uses a boolean cached at module load. This avoids a `count(*)` query on every first request per process. Like the rate limiter, it's per-process. Multi-instance deploys would seed each instance independently. The seed is idempotent and cheap, so worst case is a few redundant queries on cold start, not a correctness issue.
+- **Desktop-only**: tadan is currently optimized for desktop. Mobile visitors get a `/mobile-soon` page served by a `proxy.ts` UA-rewrite rather than a broken layout. A full mobile-responsive UI is on the near-term roadmap. The desktop-first product is the right scope for the build challenge, and the mobile path is a known follow-up, not a gap.
 - **Client-side free-search quota**: the `1 free search` limit on the landing page is enforced in `localStorage` and is trivially bypassable (incognito, clear storage, etc.). It's a UX hint to drive sign-ups, not a security boundary. The server-side rate limiter is the real guard.
 
 ---
@@ -379,7 +379,7 @@ Trigger policy embedding seeding. Optional `SEED_API_KEY` env var guards the end
 
 Each policy file is sourced from the platform's official ad policy page and includes a `source` URL plus a "last reviewed" date.
 
-**Roadmap:** Outbrain, X Ads, and LinkedIn are next on the list. The policy database is modular — adding a new network is one new file in `src/lib/policies/` plus a one-line addition to `POLICY_MAP` in `src/lib/agents/critic.ts`.
+**Roadmap:** Outbrain, X Ads, and LinkedIn are next on the list. The policy database is modular. Adding a new network is one new file in `src/lib/policies/` plus a one-line addition to `POLICY_MAP` in `src/lib/agents/critic.ts`.
 
 ---
 

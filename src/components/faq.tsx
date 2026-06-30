@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 const ITEMS = [
   {
     q: "Which platforms do you support?",
-    a: "Meta Ads (Facebook + Instagram), Google Ads, TikTok, and Taboola. Outbrain, X Ads, and LinkedIn are on the roadmap — the policy database is modular, so adding a new network is a single new file plus a one-line addition to the policy map.",
+    a: "Meta Ads (Facebook + Instagram), Google Ads, TikTok, and Taboola. Outbrain, X Ads, and LinkedIn are on the roadmap. The policy database is modular, so adding a new network is a single new file plus a one-line addition to the policy map.",
   },
   {
     q: "What does the risk score mean?",
@@ -42,7 +42,7 @@ const ITEMS = [
   },
   {
     q: "Do you have a mobile app?",
-    a: "Not yet — tadan is currently desktop only while we polish the small-screen experience. Mobile support is on the near-term roadmap; in the meantime, mobile visitors see a coming-soon page rather than a broken layout.",
+    a: "Not yet. tadan is currently desktop only while we polish the small-screen experience. Mobile support is on the near-term roadmap. In the meantime, mobile visitors see a coming-soon page rather than a broken layout.",
   },
 ]
 

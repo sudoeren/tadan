@@ -39,7 +39,7 @@ beforeEach(() => {
   mockedCompletion.mockReset()
 })
 
-describe("optimizer agent — variant generation", () => {
+describe("optimizer agent - variant generation", () => {
   it("returns three distinct variants with parts (headline, body, cta)", async () => {
     mockLLMResponse({
       variants: [

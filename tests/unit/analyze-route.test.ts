@@ -110,7 +110,7 @@ beforeEach(() => {
   mockedFormat.mockReturnValue("scraped content")
 })
 
-describe("POST /api/analyze — input validation", () => {
+describe("POST /api/analyze - input validation", () => {
   it("returns 400 when inputType is missing", async () => {
     const res = await POST(makeRequest({ platforms: ["meta"] }))
     expect(res.status).toBe(400)
@@ -195,7 +195,7 @@ describe("POST /api/analyze — input validation", () => {
   })
 })
 
-describe("POST /api/analyze — successful text analysis (no stream)", () => {
+describe("POST /api/analyze - successful text analysis (no stream)", () => {
   it("calls analyzeContent and returns the result", async () => {
     mockedAnalyze.mockResolvedValue({
       riskScore: 75,
@@ -251,7 +251,7 @@ describe("POST /api/analyze — successful text analysis (no stream)", () => {
   })
 })
 
-describe("POST /api/analyze — URL input", () => {
+describe("POST /api/analyze - URL input", () => {
   it("scrapes the URL and uses the scraped content for analysis", async () => {
     mockedScrape.mockResolvedValue({
       title: "Landing",
@@ -284,7 +284,7 @@ describe("POST /api/analyze — URL input", () => {
   })
 })
 
-describe("POST /api/analyze — authenticated user gets a stable userId", () => {
+describe("POST /api/analyze - authenticated user gets a stable userId", () => {
   it("uses userId-based rate limiting when authenticated", async () => {
     mockedAuth.mockResolvedValue({
       user: { id: "user-123", email: "x@y.com" },
@@ -302,7 +302,7 @@ describe("POST /api/analyze — authenticated user gets a stable userId", () => 
   })
 })
 
-describe("POST /api/analyze — error handling", () => {
+describe("POST /api/analyze - error handling", () => {
   it("returns 500 on unexpected LLM error", async () => {
     mockedAnalyze.mockRejectedValue(new Error("OPENROUTER_API_KEY is not configured"))
 
