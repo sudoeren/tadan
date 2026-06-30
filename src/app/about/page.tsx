@@ -98,7 +98,7 @@ export default function AboutPage() {
                   rel={isExternal ? "noopener noreferrer" : undefined}
                   className="group rounded-2xl bg-white ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:ring-orange-200 p-5 transition-all flex items-center gap-3"
                 >
-                  <div className="h-10 w-10 shrink-0 rounded-xl bg-orange-50 ring-1 ring-orange-200/60 flex items-center justify-center text-orange-600">
+                  <div className="shrink-0 text-orange-600">
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
