@@ -84,7 +84,7 @@ export function CtaSection({ bgUrl }: CtaSectionProps) {
           <img
             src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
             alt=""
-            className="pointer-events-none absolute left-0 bottom-0 w-[26rem] sm:w-[30rem] lg:w-[36rem] h-16 sm:h-20 lg:h-24 object-cover object-bottom select-none"
+            className="pointer-events-none absolute left-0 bottom-0 w-[30rem] sm:w-[36rem] lg:w-[42rem] h-[96px] sm:h-[112px] lg:h-[128px] object-cover object-bottom select-none"
           />
 
           <div className="relative">
