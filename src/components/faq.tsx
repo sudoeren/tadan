@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 const ITEMS = [
@@ -34,7 +34,7 @@ const ITEMS = [
   },
   {
     q: "How does the RAG matching work?",
-    a: "Your ad is embedded with OpenAI's text-embedding-3-small and matched against 1,200+ real policy rules stored as pgvector embeddings. Only the top 8 most relevant rules are passed to the critic LLM, so the model focuses on what actually matters for your copy.",
+    a: "Your ad is embedded with OpenAI's text-embedding-3-small and matched against policy rules stored as pgvector embeddings. Only the most relevant rules are passed to the critic LLM, so the model focuses on what actually matters for your copy.",
   },
   {
     q: "Is my data used to train models?",
@@ -46,33 +46,13 @@ export function Faq() {
   const [open, setOpen] = useState(0)
   const questionRefs = useRef<(HTMLButtonElement | null)[]>([])
 
-  // Scroll-based tracking: update the active question as the user scrolls
-  useEffect(() => {
-    const elements = questionRefs.current.filter(Boolean) as HTMLButtonElement[]
-    if (elements.length === 0) return
+  function prev() {
+    setOpen((o) => Math.max(0, o - 1))
+  }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Find the most visible question — the one with the highest
-        // intersection ratio that is in the viewport
-        let best: { index: number; ratio: number } | null = null
-        for (const entry of entries) {
-          const idx = elements.indexOf(entry.target as HTMLButtonElement)
-          if (idx === -1) continue
-          if (!best || entry.intersectionRatio > best.ratio) {
-            best = { index: idx, ratio: entry.intersectionRatio }
-          }
-        }
-        if (best && best.ratio > 0) {
-          setOpen(best.index)
-        }
-      },
-      { threshold: [0, 0.3, 0.6, 1] }
-    )
-
-    for (const el of elements) observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
+  function next() {
+    setOpen((o) => Math.min(ITEMS.length - 1, o + 1))
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-start">
@@ -112,16 +92,42 @@ export function Faq() {
         })}
       </div>
 
-      {/* Answer panel */}
+      {/* Answer panel with nav arrows */}
       <div className="md:sticky md:top-28">
-        <div className="rounded-2xl bg-gray-50 p-6 sm:p-8 min-h-[180px]">
-          <span className="font-mono text-[11px] tracking-wider text-orange-500 uppercase">
-            {String(open + 1).padStart(2, "0")} / {String(ITEMS.length).padStart(2, "0")}
-          </span>
-          <h3 className="mt-3 text-[20px] sm:text-[22px] font-medium text-gray-900 leading-snug">
+        <div className="rounded-2xl bg-gray-50 p-6 sm:p-8 min-h-[180px] flex flex-col">
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-mono text-[11px] tracking-wider text-orange-500 uppercase">
+              {String(open + 1).padStart(2, "0")} / {String(ITEMS.length).padStart(2, "0")}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={prev}
+                disabled={open === 0}
+                aria-label="Previous question"
+                className="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent transition-all"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={next}
+                disabled={open === ITEMS.length - 1}
+                aria-label="Next question"
+                className="inline-flex items-center justify-center w-7 h-7 rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent transition-all"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <h3 className="text-[20px] sm:text-[22px] font-medium text-gray-900 leading-snug">
             {ITEMS[open].q}
           </h3>
-          <p className="mt-4 text-[14px] sm:text-[15px] text-gray-600 leading-relaxed">
+          <p className="mt-4 text-[14px] sm:text-[15px] text-gray-600 leading-relaxed flex-1">
             {ITEMS[open].a}
           </p>
         </div>
