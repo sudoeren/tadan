@@ -227,7 +227,7 @@ function AdminScansContent({ userId }: { userId: string | null }) {
                     onClick={() => changePlatform(opt.value)}
                     className={`inline-flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium rounded-full transition-all ${
                       active
-                        ? "bg-white text-gray-900 shadow-sm"
+                        ? "bg-orange-500 text-white shadow-sm"
                         : "text-gray-500 hover:text-gray-800"
                     }`}
                   >
