@@ -162,9 +162,6 @@ export default function AdminUserDetailPage() {
 
         <header className="animate-fade-up rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-7">
           <div className="flex items-start gap-4 flex-wrap">
-            <div className="h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 ring-1 ring-white/40 text-white font-semibold flex items-center justify-center text-xl">
-              {(user.name || user.email).slice(0, 1).toUpperCase()}
-            </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-[20px] sm:text-[24px] font-semibold text-gray-900">

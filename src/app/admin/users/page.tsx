@@ -212,9 +212,6 @@ export default function AdminUsersPage() {
                     key={u.id}
                     className="flex items-center gap-4 p-4 sm:p-5 hover:bg-gray-50/60 transition-colors"
                   >
-                    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 ring-1 ring-white/40 text-white font-semibold flex items-center justify-center text-sm">
-                      {(u.name || u.email).slice(0, 1).toUpperCase()}
-                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-[14px] font-medium text-gray-900 truncate">
