@@ -47,6 +47,24 @@ const SECTIONS = [
           address, user agent, timestamps) to operate the service, prevent
           abuse, and debug issues.
         </p>
+        <p>
+          <strong>Anonymous analytics.</strong> We use{" "}
+          <a
+            href="https://umami.is"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-900 underline underline-offset-2 decoration-gray-300 hover:decoration-gray-900"
+          >
+            Umami
+          </a>{" "}
+          to collect anonymized, aggregate page-view statistics (which
+          pages are visited, what device or country a visit came from).
+          This helps us understand how tadan is used so we can prioritize
+          improvements. Umami is configured to be cookie-less and does not
+          collect any personally identifiable information. You can opt out
+          by enabling your browser&apos;s &ldquo;Do Not Track&rdquo; signal —
+          Umami respects it automatically.
+        </p>
       </>
     ),
   },
@@ -78,6 +96,12 @@ const SECTIONS = [
           advertising cookies.
         </p>
         <p>
+          <strong>Analytics.</strong> Our self-hosted Umami instance is
+          configured without cookies. It identifies unique visitors using
+          a one-way hash of IP address + user agent that is rotated every
+          24 hours, and does not set anything in your browser&apos;s storage.
+        </p>
+        <p>
           <strong>Local storage.</strong> We store one flag in your
           browser&apos;s localStorage to remember whether you have signed in
           on this device before. This is used only to route the
@@ -101,6 +125,21 @@ const SECTIONS = [
           We also use a managed Postgres database (with the pgvector
           extension) to store your scans and the policy document embeddings
           our scanner compares against.
+        </p>
+        <p>
+          For aggregate, anonymized usage analytics we use{" "}
+          <a
+            href="https://umami.is"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-900 underline underline-offset-2 decoration-gray-300 hover:decoration-gray-900"
+          >
+            Umami
+          </a>
+          , self-hosted on our own infrastructure. The analytics script
+          receives only the current page URL, referrer, viewport size, and
+          a rotated visitor hash. It does not receive your account email,
+          scan content, or any other input you type into tadan.
         </p>
         <p>
           We do not sell your data. We do not share your scan content with
@@ -197,7 +236,7 @@ export default function PrivacyPage() {
               Privacy Policy
             </h1>
             <p className="mt-3 text-sm text-gray-500">
-              Last updated: January 2026
+              Last updated: June 2026
             </p>
           </div>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
+import Script from "next/script"
 import { BackgroundLayer } from "@/components/background-layer"
 import "./globals.css"
 
@@ -13,6 +14,10 @@ export const metadata: Metadata = {
   description:
     "Scan ad copy and landing pages against Meta, Google, and Taboola policies. Get instant risk scores, violations, and safe alternatives that preserve your marketing hook.",
 }
+
+const UMAMI_SRC =
+  "https://umami-x7rusnpsmhmu5aj8gy6wfrb2.erencakar.com/script.js"
+const UMAMI_WEBSITE_ID = "fcb4e1ef-4b38-44fe-82ae-d4ab82e1102c"
 
 export default function RootLayout({
   children,
@@ -33,6 +38,11 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col text-foreground relative isolate">
         <BackgroundLayer />
         {children}
+        <Script
+          src={UMAMI_SRC}
+          data-website-id={UMAMI_WEBSITE_ID}
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
