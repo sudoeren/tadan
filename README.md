@@ -1,6 +1,6 @@
-# tadan — AI-First Ad Compliance Platform
+# tadan - AI-First Ad Compliance Platform
 
-Scan ad copy and landing pages against Meta Ads, Google Ads, and Taboola policies. Get instant risk scores, policy violations, and safe alternatives that preserve your marketing hook — before your ad account gets banned.
+Scan ad copy and landing pages against Meta Ads, Google Ads, and Taboola policies. Get instant risk scores, policy violations, and safe alternatives that preserve your marketing hook, before your ad account gets banned.
 
 ## Architecture
 
@@ -22,8 +22,8 @@ Dashboard → risk gauge, violations table, variant cards
 
 ### Dual-Agent System
 
-- **Critic Agent** — Scans content against platform policies via LLM. Optionally uses RAG (pgvector similarity search) to retrieve only the most relevant policy rules for lower token cost and higher accuracy. Returns structured violations and a 0-100 risk score.
-- **Optimizer Agent** — Takes violations and original copy, generates 3 compliant variants using 8 distinct copywriting techniques (curiosity hooks, empowerment framing, social proof, etc.) without killing the marketing hook.
+- **Critic Agent**: Scans content against platform policies via LLM. Optionally uses RAG (pgvector similarity search) to retrieve only the most relevant policy rules for lower token cost and higher accuracy. Returns structured violations and a 0-100 risk score.
+- **Optimizer Agent**: Takes violations and original copy, generates 3 compliant variants using 8 distinct copywriting techniques (curiosity hooks, empowerment framing, social proof, etc.) without killing the marketing hook.
 
 ### RAG Pipeline
 
@@ -75,10 +75,10 @@ bun dev
 That's it. The `predev` hook automatically:
 - Starts the PostgreSQL container (`docker compose up -d`) if not running
 - Waits for Postgres to be ready
-- Runs the `docker/initdb/00-setup.sh` script on first boot — creates the `vector` extension and applies every SQL file in `drizzle/`
+- Runs the `docker/initdb/00-setup.sh` script on first boot: creates the `vector` extension and applies every SQL file in `drizzle/`
 - Generates migrations with `drizzle-kit generate` if the `drizzle/` folder is empty
 
-Open [http://localhost:3000](http://localhost:3000) — sign up, paste ad copy, analyze.
+Open [http://localhost:3000](http://localhost:3000), sign up, paste ad copy, analyze.
 
 Policy embeddings are auto-seeded on the first analysis request (no manual step needed).
 
@@ -89,7 +89,7 @@ bun run db:generate   # regenerate SQL files in drizzle/
 bun run db:reset      # drop the volume, re-init container, re-apply migrations
 ```
 
-`db:reset` is only needed when schema changes — normal `bun dev` runs use the existing volume.
+`db:reset` is only needed when schema changes; normal `bun dev` runs use the existing volume.
 
 ## How the auto-init works
 
@@ -149,9 +149,9 @@ tadan/
 │   │   │   └── signup/page.tsx
 │   │   ├── history/page.tsx
 │   │   └── api/
-│   │       ├── analyze/route.ts   # POST — full pipeline + SSE stream
-│   │       ├── scrape/route.ts    # POST — URL preview
-│   │       ├── seed/route.ts      # POST — seed policy embeddings
+│   │       ├── analyze/route.ts   # POST: full pipeline + SSE stream
+│   │       ├── scrape/route.ts    # POST: URL preview
+│   │       ├── seed/route.ts      # POST: seed policy embeddings
 │   │       └── auth/[...all]/route.ts
 │   ├── components/
 │   │   ├── ui/                # Shadcn components
@@ -204,7 +204,7 @@ Analyze ad copy or landing page for policy compliance. Supports streaming via SS
   "content": "Your ad copy...", // required when inputType is "text"
   "url": "https://...",         // required when inputType is "url"
   "platforms": ["meta", "google", "taboola"],
-  "stream": true                // optional — enables SSE streaming
+  "stream": true                // optional, enables SSE streaming
 }
 
 // Response (non-streaming)
@@ -214,7 +214,7 @@ Analyze ad copy or landing page for policy compliance. Supports streaming via SS
   "violations": [
     {
       "text": "guaranteed earnings",
-      "reason": "Financial promise without evidence — Google Evrak dışı financial vaat yasağı",
+      "reason": "Financial promise without evidence: Google Evrak dışı financial vaat yasağı",
       "level": "Red"
     }
   ],
