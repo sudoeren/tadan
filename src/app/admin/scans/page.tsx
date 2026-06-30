@@ -177,25 +177,16 @@ function AdminScansContent({ userId }: { userId: string | null }) {
 
         {showingUserFilter && (
           <div className="animate-fade-up [animation-delay:60ms] flex items-center justify-between gap-3 flex-wrap rounded-2xl bg-white/60 ring-1 ring-gray-200 px-4 py-3">
-            <div className="flex items-center gap-3 min-w-0 flex-1">
-              <div className="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 text-white font-semibold flex items-center justify-center text-sm">
-                {userLoading
-                  ? "…"
-                  : (filteredUser?.name || filteredUser?.email || "?")
-                      .slice(0, 1)
-                      .toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <p className="text-[13px] font-medium text-gray-900 truncate">
-                  Showing scans for{" "}
-                  {filteredUser?.name || filteredUser?.email || "this user"}
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-gray-900 truncate">
+                Showing scans for{" "}
+                {filteredUser?.name || filteredUser?.email || "this user"}
+              </p>
+              {filteredUser?.email && filteredUser.name && (
+                <p className="text-[12px] text-gray-500 truncate">
+                  {filteredUser.email}
                 </p>
-                {filteredUser?.email && filteredUser.name && (
-                  <p className="text-[12px] text-gray-500 truncate">
-                    {filteredUser.email}
-                  </p>
-                )}
-              </div>
+              )}
             </div>
             <div className="flex items-center gap-2">
               {filteredUser && (

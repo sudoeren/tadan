@@ -80,7 +80,7 @@ export default function AdminUsersPage() {
 
   return (
     <div className="relative z-[2] px-5 sm:px-8 pb-16">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6">
         <header className="animate-fade-up">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/30 backdrop-blur-xl ring-1 ring-white/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_4px_20px_rgba(0,0,0,0.04)] px-3.5 py-1.5 mb-3">
             <Users className="w-3.5 h-3.5 text-gray-600" />
@@ -97,9 +97,9 @@ export default function AdminUsersPage() {
           </p>
         </header>
 
-        <div className="animate-fade-up [animation-delay:60ms] flex items-center justify-between gap-3 flex-wrap rounded-2xl bg-orange-50/60 ring-1 ring-orange-200/50 px-4 py-3">
-          <div className="flex items-center gap-2 text-[13px] text-gray-700">
-            <FileText className="w-4 h-4 text-orange-600" />
+        <div className="animate-fade-up [animation-delay:60ms] flex items-center justify-between gap-3 flex-wrap rounded-2xl bg-white/60 ring-1 ring-gray-200 px-4 py-3">
+          <div className="flex items-center gap-2 text-[13px] text-gray-600">
+            <FileText className="w-4 h-4 text-gray-500" />
             <span>
               Looking for a specific scan? Browse the global feed.
             </span>
