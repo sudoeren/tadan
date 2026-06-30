@@ -1,10 +1,18 @@
 <p align="center">
-  <img src="./public/logo.png" alt="tadan" width="96" />
+  <img src="./public/logo.png" alt="tadan" width="120" />
 </p>
 
-# tadan: AI-first ad compliance for media buyers
+<h1 align="center">tadan: AI-first ad compliance for media buyers</h1>
 
-> **Live demo:** [tadan.erencakar.com](https://tadan.erencakar.com). Paste an ad or drop a URL, get a risk score + violations + safe rewrites in ~5 seconds.
+<p align="center">
+  <a href="https://tadan.erencakar.com">
+    <img src="https://img.shields.io/badge/LIVE_DEMO-tadan.erencakar.com-F97316?style=for-the-badge" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
+  <em>Paste an ad or drop a landing page URL. Get a risk score, specific policy violations, and three safe rewrites in about 5 seconds.</em>
+</p>
 
 ---
 
@@ -130,7 +138,7 @@ For very short inputs (< 200 chars), RAG is skipped entirely. The full policy do
 ### 1. Clone and install
 
 ```bash
-git clone <repo-url> tadan
+git clone https://github.com/sudoeren/tadan
 cd tadan
 bun install
 ```
@@ -364,4 +372,4 @@ Each policy file is sourced from the platform's official ad policy page and incl
 
 ## License
 
-[MIT](./LICENSE)
+[License](./LICENSE)
