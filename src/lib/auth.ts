@@ -52,5 +52,8 @@ export const auth = betterAuth({
       },
     }),
   ],
-  trustedOrigins: [process.env.BETTER_AUTH_URL!],
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL!,
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  ].filter(Boolean) as string[],
 })
