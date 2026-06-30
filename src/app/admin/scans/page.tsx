@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import {
   AlertTriangle,
@@ -47,6 +47,14 @@ function scoreColor(n: number) {
 }
 
 export default function AdminScansPage() {
+  return (
+    <Suspense>
+      <AdminScansPageInner />
+    </Suspense>
+  )
+}
+
+function AdminScansPageInner() {
   const searchParams = useSearchParams()
   const userId = searchParams.get("userId")?.trim() || null
   return <AdminScansContent key={userId ?? "all"} userId={userId} />
