@@ -81,6 +81,7 @@ export function CtaSection({ bgUrl }: CtaSectionProps) {
             filter: "contrast(1.08) saturate(1.2)",
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
             alt=""

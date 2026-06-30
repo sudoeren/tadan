@@ -11,7 +11,6 @@ import {
   Check,
   ChevronLeft,
   FileText,
-  Link2,
   Loader2,
   Mail,
   ShieldCheck,

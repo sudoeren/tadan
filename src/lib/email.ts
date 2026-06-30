@@ -177,18 +177,6 @@ export function verificationOtpEmail({
 
   const subject = subjectByType[type]
   const headline = headlineByType[type]
-  const bodyHtml = `
-<p style="margin:0 0 24px 0;">${bodyByType[type]}</p>
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
-<tr>
-<td style="background-color:#fff7ed;border:2px dashed #fdba74;border-radius:16px;padding:20px 32px;text-align:center;">
-<span style="font-family:'SF Mono',Menlo,Monaco,Consolas,monospace;font-size:36px;font-weight:700;letter-spacing:8px;color:#ea580c;">${escapeHtml(otp)}</span>
-</td>
-</tr>
-</table>
-<p style="margin:24px 0 0 0;font-size:12px;color:#9ca3af;">This code is for ${escapeHtml(email)} and expires in 5 minutes.</p>
-`
-
   const otpBlock = `<div style="background-color:#fff7ed;border:2px dashed #fdba74;border-radius:16px;padding:20px 32px;text-align:center;margin:0 auto;display:inline-block;"><span style="font-family:'SF Mono',Menlo,Monaco,Consolas,monospace;font-size:36px;font-weight:700;letter-spacing:8px;color:#ea580c;">${escapeHtml(otp)}</span></div>`
 
   const html = `<!DOCTYPE html>

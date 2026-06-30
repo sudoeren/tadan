@@ -105,8 +105,6 @@ function AdminScansContent({ userId }: { userId: string | null }) {
     }
   }, [userId])
 
-  const userLoading = !!userId && !filteredUser
-
   useEffect(() => {
     const load = async () => {
       setLoading(true)

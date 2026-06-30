@@ -50,7 +50,7 @@ Generated artifacts (see `.gitignore`). The `predev` hook produces them on first
 
 ## Testing
 
-- Unit (Vitest, jsdom): `bun test` or `bun test:watch`. Single file: `bunx vitest run tests/unit/foo.test.ts`.
+- Unit (Vitest, jsdom): `bun run test` or `bun run test:watch`. Use `bun run test` (not `bun test`, which uses bun's native runner and ignores vitest config). Single file: `bunx vitest run tests/unit/foo.test.ts`.
 - E2E (Playwright): `bun test:e2e`. `playwright.config.ts` auto-starts `bun run dev` via `webServer`, so you don't need to launch it manually unless debugging setup.
 - E2E `reuseExistingServer: !process.env.CI` — locally it reuses a running dev server.
 - `tests/unit/setup.ts` imports `@testing-library/jest-dom/vitest`.

@@ -377,6 +377,7 @@ export default function HomePage() {
         />
 
         {/* Grass — fixed, blurs & fades on scroll */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png"
           alt=""

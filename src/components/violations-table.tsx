@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge"
 import type { Violation } from "@/types"
 
 const LEVEL_STYLES: Record<string, string> = {
