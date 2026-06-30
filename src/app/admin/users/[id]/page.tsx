@@ -72,15 +72,16 @@ export default function AdminUserDetailPage() {
 
   const stats = useMemo(() => {
     if (records.length === 0) {
-      return { total: 0, flagged: 0, avg: 0, totalViolations: 0, totalVariants: 0 }
+      return { total: 0, today: 0, flagged: 0, avg: 0, totalViolations: 0 }
     }
+    const now = new Date()
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const today = records.filter(
+      (r) => new Date(r.createdAt) >= todayStart
+    ).length
     const flagged = records.filter((r) => (r.riskScore ?? 0) > 60).length
     const totalViolations = records.reduce(
       (acc, r) => acc + (r.violations?.length ?? 0),
-      0
-    )
-    const totalVariants = records.reduce(
-      (acc, r) => acc + (r.variants?.length ?? 0),
       0
     )
     const scored = records.filter(
@@ -92,7 +93,7 @@ export default function AdminUserDetailPage() {
         : Math.round(
             scored.reduce((acc, r) => acc + r.riskScore, 0) / scored.length
           )
-    return { total: records.length, flagged, avg, totalViolations, totalVariants }
+    return { total: records.length, today, flagged, avg, totalViolations }
   }, [records])
 
   async function handleDelete() {
@@ -229,6 +230,7 @@ export default function AdminUserDetailPage() {
 
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-3">
             <Stat label="Scans" value={stats.total} />
+            <Stat label="Today scans" value={stats.today} />
             <Stat label="Flagged" value={stats.flagged} tone={stats.flagged > 0 ? "warning" : "default"} />
             <Stat
               label="Avg. score"
@@ -236,7 +238,6 @@ export default function AdminUserDetailPage() {
               tone={stats.avg > 60 ? "danger" : "default"}
             />
             <Stat label="Violations" value={stats.totalViolations} />
-            <Stat label="Variants" value={stats.totalVariants} />
           </div>
         </header>
 
