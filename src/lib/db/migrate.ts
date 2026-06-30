@@ -1,9 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres"
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 import { Pool } from "pg"
-import crypto from "node:crypto"
-import fs from "node:fs"
-import path from "node:path"
 
 let runOnce: Promise<void> | null = null
 
@@ -27,18 +24,10 @@ export function runMigrations(): Promise<void> {
   return runOnce
 }
 
-interface JournalEntry {
-  tag: string
-  when: number
-}
-
-interface Journal {
-  entries: JournalEntry[]
-}
-
 async function runMigrationsWithBootstrapping(pool: Pool) {
-  // Ensure the drizzle tracking table exists. Drizzle creates this lazily
-  // the first time migrate() runs, but we want to read it ourselves first.
+  // Ensure the drizzle tracking schema/table exist. Drizzle creates these
+  // lazily on the first migrate() call, but we want to inspect them
+  // ourselves first to decide whether to bootstrap.
   await pool.query(`
     CREATE SCHEMA IF NOT EXISTS drizzle;
     CREATE TABLE IF NOT EXISTS drizzle.__drizzle_migrations (
@@ -48,8 +37,9 @@ async function runMigrationsWithBootstrapping(pool: Pool) {
     );
   `)
 
-  // Heuristic: is the application schema already in place? Check for the
-  // `users` table in the public schema, which is the most fundamental table.
+  // Heuristic: is the application schema already in place? We check for
+  // the `users` table in the public schema as the most reliable signal
+  // that initdb has run and the schema is fully applied.
   const schemaCheck = await pool.query<{ exists: boolean }>(`
     SELECT EXISTS (
       SELECT 1 FROM information_schema.tables
@@ -58,6 +48,7 @@ async function runMigrationsWithBootstrapping(pool: Pool) {
   `)
   const schemaExists = schemaCheck.rows[0]?.exists === true
 
+  // Check whether the migrations tracking table already has any rows.
   const trackingCheck = await pool.query<{ count: string }>(`
     SELECT count(*)::text as count FROM drizzle.__drizzle_migrations
   `)
@@ -65,40 +56,35 @@ async function runMigrationsWithBootstrapping(pool: Pool) {
 
   if (schemaExists && trackingEmpty) {
     // The application schema is already in place (e.g., created by the
-    // docker initdb script from a previous deploy), but the drizzle
-    // migrations tracking table is empty. This means drizzle would try
-    // to re-apply migrations and fail with "relation already exists".
-    // Bootstrap the tracking table by marking every current journal
-    // migration as already applied, using the same hash and created_at
-    // drizzle would have used. After this, drizzle's normal migrate()
-    // will skip them because the latest created_at in the tracking
-    // table will be >= every journal entry's folderMillis.
-    const journalPath = path.join(process.cwd(), "drizzle/meta/_journal.json")
-    const journal = JSON.parse(fs.readFileSync(journalPath, "utf-8")) as Journal
-
-    for (const entry of journal.entries) {
-      const sqlPath = path.join(process.cwd(), "drizzle", `${entry.tag}.sql`)
-      const sqlContent = fs.readFileSync(sqlPath, "utf-8")
-      const hash = crypto
-        .createHash("sha256")
-        .update(sqlContent)
-        .digest("hex")
-
-      await pool.query(
-        `INSERT INTO drizzle.__drizzle_migrations (hash, created_at) VALUES ($1, $2)
-         ON CONFLICT DO NOTHING`,
-        [hash, entry.when]
-      )
-    }
+    // docker initdb script which applies drizzle/*.sql directly) but the
+    // drizzle migrations tracking table is empty. Without intervention,
+    // drizzle's migrator would try to re-apply every migration and fail
+    // with "relation already exists" on the first CREATE TABLE.
+    //
+    // Bootstrap the tracking table with a single marker whose created_at
+    // is set to a far-future value (well past any real migration
+    // timestamp — drizzle's `when` values are millisecond Unix
+    // timestamps, currently around 1.78e12). Drizzle's migrator compares
+    // `lastDbMigration.created_at < migration.folderMillis` to decide
+    // whether to apply a migration, so a marker in the year 2286+
+    // effectively marks every current migration as already applied.
+    // Any future migration with a smaller folderMillis will still be
+    // applied normally.
+    const BOOTSTRAP_TIMESTAMP = "9999999999999"
+    await pool.query(
+      `INSERT INTO drizzle.__drizzle_migrations (hash, created_at)
+       VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+      ["bootstrap-marker", BOOTSTRAP_TIMESTAMP]
+    )
     console.log(
-      `[tadan] bootstrapped ${journal.entries.length} migration(s) (schema already in place)`
+      "[tadan] bootstrapped migrations tracking (schema already in place)"
     )
   }
 
-  // Now run drizzle's normal migrate. If bootstrap just ran, the existing
-  // migrations are already marked as applied and will be skipped. Any new
-  // migration added later (with a higher folderMillis) will be applied
-  // normally here.
+  // Run drizzle's normal migrate. If we just bootstrapped, the existing
+  // migrations are already marked as applied and will be skipped. Any
+  // new migration added later (with a smaller folderMillis than the
+  // bootstrap marker) will be applied here.
   const db = drizzle({ client: pool })
   await migrate(db, { migrationsFolder: "./drizzle" })
 }
