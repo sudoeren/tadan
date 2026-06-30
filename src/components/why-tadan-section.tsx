@@ -27,12 +27,12 @@ export default function WhyTadanSection() {
             {/* Single vertical line in the middle */}
             <div
               aria-hidden
-              className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gray-200"
+              className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gray-300"
             />
             {/* Single horizontal line in the middle */}
             <div
               aria-hidden
-              className="hidden md:block absolute left-0 right-0 top-1/2 h-px bg-gray-200"
+              className="hidden md:block absolute left-0 right-0 top-1/2 h-[2px] bg-gray-300"
             />
 
             {[
@@ -44,7 +44,7 @@ export default function WhyTadanSection() {
               {
                 n: "02",
                 title: "Stop getting banned after launch",
-                body: "RAG over 1,200+ real Meta, Google, and Taboola policy rules. Not vibes. Not LLM guessing.",
+                body: "RAG over curated policy rules from Meta, Google, Taboola, and TikTok. Not vibes. Not LLM guessing.",
               },
               {
                 n: "03",
