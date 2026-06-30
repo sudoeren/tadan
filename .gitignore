@@ -35,8 +35,10 @@ yarn-error.log*
 !.env.example
 
 # drizzle
-drizzle/meta
-drizzle/*.sql
+# Migrations are committed to git so the Docker build can use the
+# exact SQL we ship (e.g. CREATE TABLE IF NOT EXISTS for idempotency
+# against an already-initialized volume). Do NOT regenerate at build
+# time — see Dockerfile.
 
 # vercel
 .vercel

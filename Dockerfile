@@ -14,7 +14,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN bunx drizzle-kit generate
+# NOTE: drizzle-kit generate is intentionally NOT run here.
+# The migration files (drizzle/*.sql + drizzle/meta/*) are committed to
+# git (see .gitignore comment) so this build uses the exact SQL we ship.
+# Schema changes are added via `bun run db:generate` locally and the
+# resulting file is committed alongside the schema change.
 RUN bun run build
 
 FROM node:${NODE_VERSION}-alpine AS runner
