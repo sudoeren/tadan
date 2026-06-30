@@ -41,6 +41,7 @@ export interface AnalysisRecord {
   id: string
   inputType: string
   rawContent: string
+  sourceUrl?: string | null
   platform: string
   riskScore: number | null
   status: string

@@ -201,21 +201,22 @@ async function handleStream(
         }
 
         let analysisId: string | null = null
-        if (userId) {
-          const tSave = Date.now()
-          const [saved] = await db
-            .insert(analyses)
-            .values({
-              userId,
-              inputType,
-              rawContent: rawContent.slice(0, 10000),
-              platform: platforms.join(","),
-              riskScore: analysisResult.riskScore,
-              positiveAspects: analysisResult.positiveAspects,
-              status: "completed",
-            })
-            .returning()
-          analysisId = saved.id
+          if (userId) {
+            const tSave = Date.now()
+            const [saved] = await db
+              .insert(analyses)
+              .values({
+                userId,
+                inputType,
+                rawContent: rawContent.slice(0, 10000),
+                sourceUrl: inputType === "url" ? url : null,
+                platform: platforms.join(","),
+                riskScore: analysisResult.riskScore,
+                positiveAspects: analysisResult.positiveAspects,
+                status: "completed",
+              })
+              .returning()
+            analysisId = saved.id
 
           if (analysisResult.violations.length > 0) {
             await db.insert(violationsTable).values(
@@ -355,6 +356,7 @@ async function runPipeline(
         userId,
         inputType,
         rawContent: rawContent.slice(0, 10000),
+        sourceUrl: inputType === "url" ? url : null,
         platform: platforms.join(","),
         riskScore: analysisResult.riskScore,
         positiveAspects: analysisResult.positiveAspects,

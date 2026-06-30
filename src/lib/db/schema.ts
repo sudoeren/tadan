@@ -56,6 +56,7 @@ export const analyses = pgTable("analyses", {
     .references(() => users.id, { onDelete: "cascade" }),
   inputType: text("input_type").notNull(),
   rawContent: text("raw_content").notNull(),
+  sourceUrl: text("source_url"),
   platform: text("platform").notNull(),
   riskScore: integer("risk_score"),
   positiveAspects: jsonb("positive_aspects").$type<

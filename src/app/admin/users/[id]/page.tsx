@@ -264,17 +264,16 @@ export default function AdminUserDetailPage() {
                       {score}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        {r.inputType === "url" ? (
-                          <Link2 className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                        ) : (
-                          <FileText className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                        )}
-                        <p className="text-[14px] text-gray-900 truncate font-medium">
-                          {r.rawContent}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3 text-[12px] text-gray-500 flex-wrap">
+                      <p className="text-[14px] font-semibold text-gray-900 truncate leading-snug">
+                        {r.inputType === "url" && r.sourceUrl
+                          ? r.sourceUrl
+                          : r.rawContent.slice(0, 80)}
+                      </p>
+                      <div className="flex items-center gap-3 text-[12px] text-gray-500 flex-wrap mt-0.5">
+                        <span className="inline-flex items-center gap-1 text-gray-400">
+                          {r.inputType === "url" ? "URL" : "Text"}
+                        </span>
+                        <span className="text-gray-300">·</span>
                         <PlatformList platform={r.platform} />
                         <span className="text-gray-300">·</span>
                         <span>
