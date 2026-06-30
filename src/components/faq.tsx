@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 const ITEMS = [
@@ -44,6 +44,35 @@ const ITEMS = [
 
 export function Faq() {
   const [open, setOpen] = useState(0)
+  const questionRefs = useRef<(HTMLButtonElement | null)[]>([])
+
+  // Scroll-based tracking: update the active question as the user scrolls
+  useEffect(() => {
+    const elements = questionRefs.current.filter(Boolean) as HTMLButtonElement[]
+    if (elements.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find the most visible question — the one with the highest
+        // intersection ratio that is in the viewport
+        let best: { index: number; ratio: number } | null = null
+        for (const entry of entries) {
+          const idx = elements.indexOf(entry.target as HTMLButtonElement)
+          if (idx === -1) continue
+          if (!best || entry.intersectionRatio > best.ratio) {
+            best = { index: idx, ratio: entry.intersectionRatio }
+          }
+        }
+        if (best && best.ratio > 0) {
+          setOpen(best.index)
+        }
+      },
+      { threshold: [0, 0.3, 0.6, 1] }
+    )
+
+    for (const el of elements) observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-start">
@@ -54,6 +83,7 @@ export function Faq() {
           return (
             <button
               key={item.q}
+              ref={(el) => { questionRefs.current[i] = el }}
               onClick={() => setOpen(i)}
               className={cn(
                 "group flex items-start gap-4 sm:gap-5 text-left py-5 sm:py-6 border-t border-gray-200 transition-colors",
