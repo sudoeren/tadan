@@ -50,16 +50,6 @@ function TikTokLogo({ className }: { className?: string }) {
   )
 }
 
-function OutbrainLogo({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" fill="#EE6E37" />
-      <circle cx="12" cy="12" r="4.5" fill="white" />
-      <circle cx="12" cy="12" r="2" fill="#EE6E37" />
-    </svg>
-  )
-}
-
 interface CtaSectionProps {
   bgUrl: string
 }
@@ -111,8 +101,7 @@ export function CtaSection({ bgUrl }: CtaSectionProps) {
                 <GoogleLogo className="w-4 h-4" />
                 <TaboolaLogo className="w-4 h-4" />
                 <TikTokLogo className="w-4 h-4" />
-                <OutbrainLogo className="w-4 h-4" />
-                <span>Meta, Google, Taboola, TikTok, and Outbrain.</span>
+                <span>Meta, Google, Taboola, and TikTok.</span>
               </div>
             </div>
           </div>

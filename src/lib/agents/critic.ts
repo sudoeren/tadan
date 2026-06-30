@@ -91,6 +91,7 @@ export async function analyzeContent(
       try {
         const relevant = await retrieveRelevantPolicies(content, platforms)
         if (relevant.length > 0) {
+          precomputedRag = relevant
           ragSucceeded = true
         }
       } catch {

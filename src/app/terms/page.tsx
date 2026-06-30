@@ -25,7 +25,8 @@ const SECTIONS = [
     body: (
       <p>
         tadan scans ad copy and landing pages against the published
-        policies of Meta (Facebook + Instagram), Google Ads, and Taboola.
+        policies of Meta (Facebook + Instagram), Google Ads, TikTok, and
+        Taboola.
         It returns a risk score, a list of flagged policy violations, and
         suggested compliant rewrites. The output is informational only —
         it is not a guarantee of approval, and we do not submit ads on
@@ -106,8 +107,8 @@ const SECTIONS = [
         The tadan brand, interface, scoring algorithm, and the curated
         policy document set are owned by us. You may not copy, resell, or
         redistribute them without written permission. The underlying
-        platform policies (Meta, Google, Taboola) remain the property of
-        their respective owners.
+        platform policies (Meta, Google, TikTok, Taboola) remain the property
+        of their respective owners.
       </p>
     ),
   },

@@ -78,22 +78,11 @@ function TikTokLogo({ className }: { className?: string }) {
   )
 }
 
-function OutbrainLogo({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" fill="#EE6E37" />
-      <circle cx="12" cy="12" r="4.5" fill="white" />
-      <circle cx="12" cy="12" r="2" fill="#EE6E37" />
-    </svg>
-  )
-}
-
 const PLATFORM_LOGOS = [
   { name: "Meta", Logo: MetaLogo, tint: "#1877F2" },
   { name: "Google", Logo: GoogleLogo, tint: "#EA4335" },
   { name: "Taboola", Logo: TaboolaLogo, tint: "#6C2BD9" },
   { name: "TikTok", Logo: TikTokLogo, tint: "#000000" },
-  { name: "Outbrain", Logo: OutbrainLogo, tint: "#EE6E37" },
 ] as const
 
 export default function HomePage() {
@@ -195,8 +184,8 @@ export default function HomePage() {
           </h1>
 
           <p className="animate-fade-up [animation-delay:220ms] mt-5 sm:mt-6 text-gray-600 text-base sm:text-lg lg:text-xl leading-relaxed max-w-xl">
-            Scan ad copy and landing pages against Meta, Google, and Taboola
-            policies. Get safe rewrites that keep your hook.
+            Scan ad copy and landing pages against Meta, Google, TikTok, and
+            Taboola policies. Get safe rewrites that keep your hook.
           </p>
 
           <form

@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "tadan - Ad Compliance AI",
   description:
-    "Scan ad copy and landing pages against Meta, Google, and Taboola policies. Get instant risk scores, violations, and safe alternatives that preserve your marketing hook.",
+    "Scan ad copy and landing pages against Meta, Google, TikTok, and Taboola policies. Get instant risk scores, violations, and safe alternatives that preserve your marketing hook.",
 }
 
 const UMAMI_SRC =
