@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { analyses, users, variants, violations } from "@/lib/db/schema"
-import { desc, eq, inArray, sql } from "drizzle-orm"
+import { and, desc, eq, inArray, ilike, sql } from "drizzle-orm"
 import { requireAdmin } from "@/lib/admin"
 
 const DEFAULT_LIMIT = 30
@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
   const limitParam = Number.parseInt(url.searchParams.get("limit") ?? "", 10)
   const offsetParam = Number.parseInt(url.searchParams.get("offset") ?? "", 10)
   const userId = url.searchParams.get("userId")?.trim() || null
+  const platform = url.searchParams.get("platform")?.trim() || null
   const limit = Math.min(
     Math.max(Number.isFinite(limitParam) ? limitParam : DEFAULT_LIMIT, 1),
     MAX_LIMIT
@@ -24,7 +25,11 @@ export async function GET(request: NextRequest) {
   const offset = Math.max(Number.isFinite(offsetParam) ? offsetParam : 0, 0)
 
   try {
-    const whereClause = userId ? eq(analyses.userId, userId) : undefined
+    const conditions: ReturnType<typeof eq | typeof ilike>[] = []
+    if (userId) conditions.push(eq(analyses.userId, userId))
+    if (platform) conditions.push(ilike(analyses.platform, `%${platform}%`))
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
     const [{ count: total }] = await db
       .select({ count: sql<number>`count(*)::int` })

@@ -36,6 +36,9 @@ interface FilteredUser {
   name: string | null
 }
 
+const PLATFORMS = ["meta", "google", "taboola", "tiktok"] as const
+type PlatformFilter = (typeof PLATFORMS)[number] | "all"
+
 function scoreColor(n: number) {
   if (n <= 25) return "text-emerald-600 bg-emerald-50 ring-emerald-200"
   if (n <= 60) return "text-amber-600 bg-amber-50 ring-amber-200"
@@ -56,8 +59,14 @@ function AdminScansContent({ userId }: { userId: string | null }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [offset, setOffset] = useState(0)
+  const [platform, setPlatform] = useState<PlatformFilter>("all")
   const [filteredUser, setFilteredUser] = useState<FilteredUser | null>(null)
   const limit = 30
+
+  function changePlatform(next: PlatformFilter) {
+    setPlatform(next)
+    setOffset(0)
+  }
 
   useEffect(() => {
     if (!userId) return
@@ -100,6 +109,7 @@ function AdminScansContent({ userId }: { userId: string | null }) {
           offset: String(offset),
         })
         if (userId) params.set("userId", userId)
+        if (platform !== "all") params.set("platform", platform)
         const res = await fetch(`/api/admin/scans?${params.toString()}`)
         if (!res.ok) {
           const data = await res.json().catch(() => ({}))
@@ -116,7 +126,7 @@ function AdminScansContent({ userId }: { userId: string | null }) {
       }
     }
     load()
-  }, [offset, userId])
+  }, [offset, userId, platform])
 
   const showingUserFilter = !!userId
 
@@ -200,13 +210,42 @@ function AdminScansContent({ userId }: { userId: string | null }) {
           </div>
         )}
 
+        <div className="animate-fade-up [animation-delay:80ms] flex items-center gap-3 flex-wrap">
+          {!showingUserFilter && (
+            <div className="inline-flex items-center gap-1 bg-gray-200/80 rounded-full p-1">
+              {(
+                [
+                  { value: "all", label: "All" },
+                  ...PLATFORMS.map((p) => ({ value: p, label: p })),
+                ] as const
+              ).map((opt) => {
+                const active = platform === opt.value
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => changePlatform(opt.value)}
+                    className={`inline-flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium rounded-full transition-all ${
+                      active
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
         {error && (
           <div className="rounded-2xl bg-red-50 ring-1 ring-red-200 px-5 py-4 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        <div className="animate-fade-up [animation-delay:80ms] rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-7">
+        <div className="animate-fade-up [animation-delay:120ms] rounded-3xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 sm:p-7">
           {loading ? (
             <div className="flex items-center justify-center py-16 text-gray-400">
               <Loader2 className="w-5 h-5 animate-spin mr-2" />

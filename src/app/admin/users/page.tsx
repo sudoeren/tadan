@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSession } from "@/lib/auth-client"
 import {
   AlertTriangle,
@@ -28,9 +28,6 @@ interface AdminUser {
   lastScanAt: string | Date | null
 }
 
-const PLATFORMS = ["meta", "google", "taboola", "tiktok"] as const
-type PlatformFilter = (typeof PLATFORMS)[number] | "all"
-
 export default function AdminUsersPage() {
   const { data: session } = useSession()
   const [records, setRecords] = useState<AdminUser[]>([])
@@ -39,20 +36,26 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [q, setQ] = useState("")
-  const [platform, setPlatform] = useState<PlatformFilter>("all")
+  const [inputValue, setInputValue] = useState("")
   const [offset, setOffset] = useState(0)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const limit = 25
 
-  function changeQ(next: string) {
-    setQ(next)
-    setOffset(0)
+  function handleSearch(next: string) {
+    setInputValue(next)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      setQ(next)
+      setOffset(0)
+    }, 300)
   }
 
-  function changePlatform(next: PlatformFilter) {
-    setPlatform(next)
-    setOffset(0)
-  }
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     const load = async () => {
@@ -64,7 +67,6 @@ export default function AdminUsersPage() {
           offset: String(offset),
         })
         if (q.trim()) params.set("q", q.trim())
-        if (platform !== "all") params.set("platform", platform)
 
         const res = await fetch(`/api/admin/users?${params.toString()}`)
         if (!res.ok) {
@@ -82,7 +84,7 @@ export default function AdminUsersPage() {
       }
     }
     load()
-  }, [q, platform, offset])
+  }, [q, offset])
 
   async function handleDelete(user: AdminUser) {
     if (user.id === session?.user.id) return
@@ -148,41 +150,17 @@ export default function AdminUsersPage() {
           </Link>
         </div>
 
-        <div className="animate-fade-up [animation-delay:80ms] flex items-center gap-3 flex-wrap">
-          <label className="relative flex-1 min-w-[220px]">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="animate-fade-up [animation-delay:80ms]">
+          <label className="relative block max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-500" />
             <input
               type="search"
-              value={q}
-              onChange={(e) => changeQ(e.target.value)}
+              value={inputValue}
+              onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search by email or name…"
               className="w-full pl-11 pr-4 h-11 rounded-full bg-white/80 backdrop-blur-xl ring-1 ring-gray-200 focus:ring-orange-400 focus:outline-none text-sm text-gray-900 placeholder:text-gray-400"
             />
           </label>
-          <div className="inline-flex items-center gap-1 bg-gray-200/80 rounded-full p-1">
-            {(
-              [
-                { value: "all", label: "All" },
-                ...PLATFORMS.map((p) => ({ value: p, label: p })),
-              ] as const
-            ).map((opt) => {
-              const active = platform === opt.value
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => changePlatform(opt.value)}
-                  className={`inline-flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium rounded-full transition-all ${
-                    active
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-500 hover:text-gray-800"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              )
-            })}
-          </div>
         </div>
 
         {error && (
@@ -202,87 +180,84 @@ export default function AdminUsersPage() {
               No users match these filters.
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
-              {records.map((u) => {
-                const isAdmin = isTargetAdmin(u.email)
-                const self = isSelf(u.id)
-                const disabled = isAdmin || self
-                return (
-                  <div
-                    key={u.id}
-                    className="flex items-center gap-4 p-4 sm:p-5 hover:bg-gray-50/60 transition-colors"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-[14px] font-medium text-gray-900 truncate">
-                          {u.name || u.email}
-                        </p>
-                        {isAdmin && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-700 bg-orange-50 ring-1 ring-orange-200 px-2 py-0.5 rounded-full">
-                            <ShieldCheck className="w-3 h-3" />
-                            Admin
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[13px]">
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="px-5 py-3.5 font-semibold text-gray-700">User</th>
+                    <th className="px-5 py-3.5 font-semibold text-gray-700 text-right">Scans</th>
+                    <th className="px-5 py-3.5 font-semibold text-gray-700 text-right hidden md:table-cell">Last scan</th>
+                    <th className="px-5 py-3.5 font-semibold text-gray-700 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {records.map((u) => {
+                    const isAdmin = isTargetAdmin(u.email)
+                    const self = isSelf(u.id)
+                    const disabled = isAdmin || self
+                    return (
+                      <tr key={u.id} className="hover:bg-gray-50/60 transition-colors">
+                        <td className="px-5 py-4 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-medium text-gray-900 truncate max-w-[200px]">
+                              {u.name || u.email}
+                            </p>
+                          </div>
+                          <p className="text-[12px] text-gray-500 truncate max-w-[240px]">
+                            {u.email}
+                          </p>
+                        </td>
+                        <td className="px-5 py-4 text-right">
+                          <span className="tabular-nums font-medium text-gray-900">
+                            {u.analysisCount}
                           </span>
-                        )}
-                        {!u.emailVerified && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 ring-1 ring-amber-200 px-2 py-0.5 rounded-full">
-                            <AlertTriangle className="w-3 h-3" />
-                            Unverified
+                        </td>
+                        <td className="px-5 py-4 text-right hidden md:table-cell">
+                          <span className="text-gray-500 text-[12px]">
+                            {u.lastScanAt
+                              ? new Date(u.lastScanAt).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                })
+                              : "—"}
                           </span>
-                        )}
-                      </div>
-                      <p className="text-[12px] text-gray-500 truncate">
-                        {u.email}
-                        {u.name ? null : (
-                          <span className="ml-2 text-gray-400">· no name set</span>
-                        )}
-                      </p>
-                    </div>
-                    <div className="hidden sm:flex flex-col items-end shrink-0">
-                      <span className="text-[12px] text-gray-500">
-                        {u.analysisCount} scan
-                        {u.analysisCount !== 1 ? "s" : ""}
-                      </span>
-                      <span className="text-[11px] text-gray-400">
-                        {u.lastScanAt
-                          ? `Last ${new Date(u.lastScanAt).toLocaleDateString(
-                              "en-US",
-                              { month: "short", day: "numeric" }
-                            )}`
-                          : "No scans"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <Link
-                        href={`/admin/users/${u.id}`}
-                        className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 hover:text-gray-900 px-3 py-1.5 rounded-full transition-colors"
-                      >
-                        View
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(u)}
-                        disabled={disabled || deletingId === u.id}
-                        title={
-                          self
-                            ? "You can't delete your own account."
-                            : isAdmin
-                              ? "Admins can only be removed from ADMIN_EMAILS."
-                              : "Delete user"
-                        }
-                        className="inline-flex items-center gap-1.5 text-[12px] font-medium text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed px-3 py-1.5 rounded-full transition-colors"
-                      >
-                        {deletingId === u.id ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-3.5 h-3.5" />
-                        )}
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
+                        </td>
+                        <td className="px-5 py-4 text-right">
+                          <div className="inline-flex items-center gap-1">
+                            <Link
+                              href={`/admin/users/${u.id}`}
+                              className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-500 hover:text-gray-900 px-3 py-1.5 rounded-full transition-colors"
+                            >
+                              View
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(u)}
+                              disabled={disabled || deletingId === u.id}
+                              title={
+                                self
+                                  ? "You can't delete your own account."
+                                  : isAdmin
+                                    ? "Admins can only be removed from ADMIN_EMAILS."
+                                    : "Delete user"
+                              }
+                              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed px-3 py-1.5 rounded-full transition-colors"
+                            >
+                              {deletingId === u.id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <Trash2 className="w-3.5 h-3.5" />
+                              )}
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
