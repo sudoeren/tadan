@@ -65,20 +65,20 @@ export default function AboutPage() {
 
           <div className="rounded-3xl bg-white ring-1 ring-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-7 sm:p-10 space-y-5 text-[15px] leading-relaxed text-gray-700">
             <p>
-              tadan checks ad copy and landing pages against the policies of
-              Meta, Google, and Taboola and tells you exactly which rules you
-              might be breaking — with safe rewrites that keep your marketing
-              hook.
+              <span className="text-orange-500 font-semibold">tadan</span> checks ad copy and landing
+              pages against the policies of Meta, Google, Taboola, and TikTok
+              and tells you exactly which rules you might be breaking. It
+              surfaces safe rewrites that keep your marketing hook intact.
             </p>
             <p>
-              The whole product — the policy ingestion pipeline, the embedding
+              The whole product (the policy ingestion pipeline, the embedding
               search, the critic + optimizer agents, and the UI you&apos;re
-              looking at — was built and shipped by one person: me, Eren
+              looking at) was built and shipped by one person: me, Eren
               Çakar.
             </p>
             <p>
               It&apos;s still early. If something feels rough, that&apos;s on
-              me. If you have feedback — especially the painful kind —
+              me. If you have feedback, especially the painful kind,
               I&apos;d genuinely love to hear it.
             </p>
           </div>
