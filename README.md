@@ -135,6 +135,8 @@ For very short inputs (< 200 chars), RAG is skipped entirely. The full policy do
 
 ## Getting Started
 
+> **Requirement:** Docker (or any local Postgres 16 + pgvector instance) is required for local development. The `predev` script auto-starts a `tadan-db` container via `docker compose`, so Docker Desktop / Docker Engine must be installed and running. If you already have a Postgres+pgvector instance reachable at `DATABASE_URL`, Docker is optional — just set the URL in `.env.local` and run `bun run db:generate && bun run db:migrate` once.
+
 ### 1. Clone and install
 
 ```bash
