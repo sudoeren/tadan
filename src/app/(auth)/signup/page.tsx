@@ -508,7 +508,7 @@ export default function SignUpPage() {
                           }}
                           type="text"
                           inputMode="numeric"
-                          autoComplete={i === 0 ? "one-time-code" : "off"}
+                          autoComplete="off"
                           maxLength={1}
                           className="w-12 sm:w-14 h-14 sm:h-16 text-center text-2xl font-bold rounded-2xl border border-gray-300 bg-white/90 text-gray-900 outline-none transition-all focus:border-gray-900 focus:ring-4 focus:ring-gray-900/10"
                           value={code[i] ?? ""}
