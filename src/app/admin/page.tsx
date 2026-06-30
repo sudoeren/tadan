@@ -74,7 +74,7 @@ export default function AdminStatsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4 animate-fade-up [animation-delay:80ms]">
+        <div className="grid grid-cols-3 gap-4 animate-fade-up [animation-delay:80ms]">
           <StatCard
             label="Total users"
             value={stats?.totals.users ?? 0}
@@ -86,8 +86,14 @@ export default function AdminStatsPage() {
             label="Scans today"
             value={stats?.totals.today ?? 0}
             hint={
-              stats ? `${stats.totals.analyses} total` : undefined
+              stats ? `${stats.totals.analyses}` : undefined
             }
+            tone="default"
+            loading={loading}
+          />
+          <StatCard
+            label="Scans"
+            value={stats?.totals.analyses ?? 0}
             tone="default"
             loading={loading}
           />
