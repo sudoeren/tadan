@@ -50,7 +50,7 @@ export default function AboutPage() {
     <div className="relative min-h-screen bg-white flex flex-col">
       <NavBar variant="transparent" />
 
-      <main className="relative z-[1] flex-1 pt-28 sm:pt-32 pb-12 px-5 sm:px-8">
+      <main className="relative z-[1] flex-1 pt-28 sm:pt-32 pb-4 px-5 sm:px-8">
         <article className="mx-auto max-w-3xl">
           <div className="mb-10">
             <p className="text-[12px] uppercase tracking-[0.2em] text-gray-400 font-medium">
