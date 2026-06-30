@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ArrowUpRight, Mail, User } from "lucide-react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
+import { Logo } from "@/components/logo"
 
 export const metadata = {
   title: "About — tadan",
@@ -55,8 +56,9 @@ export default function AboutPage() {
             <p className="text-[12px] uppercase tracking-[0.2em] text-gray-400 font-medium">
               About
             </p>
-            <h1 className="mt-3 text-4xl sm:text-5xl font-normal leading-[1.05] tracking-tight text-gray-900">
-              tadan
+            <h1 className="mt-3 flex items-center gap-2 sm:gap-3 text-4xl sm:text-5xl font-normal leading-[1.05] tracking-tight">
+              <Logo className="w-9 h-9 sm:w-11 sm:h-11 text-orange-500" />
+              <span className="text-orange-500">tadan</span>
             </h1>
             <p className="mt-3 text-base sm:text-lg text-gray-700 font-medium">
               Built solo by Eren Çakar.
