@@ -210,10 +210,10 @@ const SECTIONS = [
       <p>
         Questions about this policy or your data? Email us at{" "}
         <a
-          href="mailto:privacy@tadan.app"
+          href="mailto:tadan@erencakar.com"
           className="text-gray-900 underline underline-offset-2 decoration-gray-300 hover:decoration-gray-900"
         >
-          privacy@tadan.app
+          tadan@erencakar.com
         </a>
         .
       </p>

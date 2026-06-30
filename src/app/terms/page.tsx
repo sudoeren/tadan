@@ -167,10 +167,10 @@ const SECTIONS = [
       <p>
         Questions about these terms? Email us at{" "}
         <a
-          href="mailto:legal@tadan.app"
+          href="mailto:tadan@erencakar.com"
           className="text-gray-900 underline underline-offset-2 decoration-gray-300 hover:decoration-gray-900"
         >
-          legal@tadan.app
+          tadan@erencakar.com
         </a>
         .
       </p>

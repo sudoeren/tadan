@@ -24,6 +24,12 @@ export function Footer() {
             <div className="flex items-center gap-5">
               <nav className="flex items-center gap-5">
                 <Link
+                  href="/about"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  About
+                </Link>
+                <Link
                   href="/privacy"
                   className="hover:text-gray-900 transition-colors"
                 >
