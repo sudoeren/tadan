@@ -70,7 +70,7 @@ export default function AboutPage() {
               Meet <span className="text-orange-500 font-semibold">tadan</span>. The only policy expert that works weekends. It checks ad copy and landing
               pages against the policies of Meta, Google, Taboola, and TikTok
               and tells you exactly which rules you might be breaking. It
-              surfaces safe rewrites that keep your marketing hook intact.
+              surfaces safe rewrites that keep your marketing hook intact. Because at the end of the day, tadan exists to make ad compliance suck less - for everyone.
             </p>
             <p>
               The whole product (the policy ingestion pipeline, the embedding
@@ -82,6 +82,8 @@ export default function AboutPage() {
               It&apos;s still early. If something feels rough, that&apos;s on
               me. If you have feedback, especially the painful kind,
               I&apos;d genuinely love to hear it.
+            </p>
+            <p>
             </p>
           </div>
 
