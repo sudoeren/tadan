@@ -4,7 +4,8 @@ import { useState, useEffect, useSyncExternalStore } from "react"
 import Link from "next/link"
 import { useSession, signOut } from "@/lib/auth-client"
 import { hasAuthed, markHasAuthed } from "@/lib/auth-state"
-import { ArrowUpRight, Menu, X } from "lucide-react"
+import { isAdminEmail } from "@/lib/admin-shared"
+import { ArrowUpRight, LayoutDashboard, Menu, X } from "lucide-react"
 import { Logo } from "@/components/logo"
 
 const SCROLL_THRESHOLD = 8
@@ -26,6 +27,7 @@ export function NavBar({
     getServerHasAuthed
   )
   const isTransparent = variant === "transparent"
+  const isAdmin = isAdminEmail(session?.user?.email)
 
   useEffect(() => {
     if (session) {
@@ -109,12 +111,23 @@ export function NavBar({
           {isPending ? (
             <div className="h-9 w-20 animate-pulse rounded-full bg-gray-100" />
           ) : session ? (
-            <button
-              onClick={() => signOut()}
-              className="bg-orange-500 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-orange-600 transition-colors"
-            >
-              Sign out
-            </button>
+            <>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  aria-label="Admin panel"
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-full text-orange-500 hover:bg-orange-500/10 transition-colors"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                </Link>
+              )}
+              <button
+                onClick={() => signOut()}
+                className="bg-orange-500 text-white text-[13px] font-medium px-4 sm:px-5 py-2 rounded-full hover:bg-orange-600 transition-colors"
+              >
+                Sign out
+              </button>
+            </>
           ) : (
             <Link
               href={ctaHref}
