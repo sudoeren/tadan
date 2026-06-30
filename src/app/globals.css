@@ -77,6 +77,17 @@ body {
   }
 }
 
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(120%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fade-down {
   from {
     opacity: 0;
@@ -177,6 +188,10 @@ body {
   animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .animate-fade-down {
   animation: fade-down 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -223,7 +238,8 @@ body {
   .animate-pipeline-spin,
   .animate-pipeline-flow,
   .animate-pipeline-flow-vertical,
-  .animate-gauge-fill {
+  .animate-gauge-fill,
+  .animate-slide-up {
     animation: none;
   }
 }

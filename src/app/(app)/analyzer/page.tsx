@@ -9,6 +9,7 @@ import AnalyzerForm from "@/components/analyzer-form"
 import PipelineView, { type StageName } from "@/components/pipeline-view"
 import ScanResult from "@/components/scan-result"
 import { SignInRequired } from "@/components/sign-in-required"
+import AuthPromptModal from "@/components/auth-prompt-modal"
 
 interface Result {
   id: string
@@ -49,6 +50,7 @@ function AnalyzerPageInner() {
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState("")
   const [loadingExisting, setLoadingExisting] = useState<string | null>(null)
+  const [authPromptOpen, setAuthPromptOpen] = useState(false)
   const autoRunRef = useRef(false)
 
   useEffect(() => {
@@ -125,6 +127,9 @@ function AnalyzerPageInner() {
           })),
         })
         setView("result")
+        if (!session) {
+          setAuthPromptOpen(true)
+        }
       } catch (err) {
         if (cancelled) return
         setError(err instanceof Error ? err.message : "Failed to load")
@@ -195,6 +200,9 @@ function AnalyzerPageInner() {
               })
               setStage("done")
               setView("result")
+              if (!session) {
+                setAuthPromptOpen(true)
+              }
             }
           } catch {}
         }
@@ -333,6 +341,12 @@ function AnalyzerPageInner() {
           </div>
         </div>
       </div>
+
+      <AuthPromptModal
+        open={authPromptOpen}
+        onDismiss={() => setAuthPromptOpen(false)}
+        scanId={result?.id ?? null}
+      />
     </div>
   )
 }

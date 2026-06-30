@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { openRouterCompletion } from "@/lib/openrouter"
-import { analyzeContent } from "@/lib/agents/critic"
+import {
+  analyzeContent,
+  computeDeterministicRiskScore,
+  finalizeRiskScore,
+  RED_WEIGHT,
+  YELLOW_WEIGHT,
+  RISK_SCORE_MAX,
+} from "@/lib/agents/critic"
 import { META_AD_POLICIES } from "@/lib/policies/meta"
 import { GOOGLE_ADS_POLICIES } from "@/lib/policies/google"
 import { TIKTOK_POLICIES } from "@/lib/policies/tiktok"
@@ -320,5 +327,144 @@ describe("critic agent — golden cases", () => {
     await expect(
       analyzeContent("Test ad copy.", ["meta"], false)
     ).rejects.toThrow(/Empty response/)
+  })
+})
+
+describe("deterministic risk score", () => {
+  it("returns 0 when there are no violations", () => {
+    expect(computeDeterministicRiskScore([])).toBe(0)
+  })
+
+  it("weights Red violations at 20 each", () => {
+    expect(
+      computeDeterministicRiskScore([
+        { text: "a", reason: "r", level: "Red" },
+      ])
+    ).toBe(RED_WEIGHT)
+    expect(
+      computeDeterministicRiskScore([
+        { text: "a", reason: "r", level: "Red" },
+        { text: "b", reason: "r", level: "Red" },
+        { text: "c", reason: "r", level: "Red" },
+      ])
+    ).toBe(3 * RED_WEIGHT)
+  })
+
+  it("weights Yellow violations at 5 each", () => {
+    expect(
+      computeDeterministicRiskScore([
+        { text: "a", reason: "r", level: "Yellow" },
+      ])
+    ).toBe(YELLOW_WEIGHT)
+  })
+
+  it("mixes Red and Yellow weights additively", () => {
+    const score = computeDeterministicRiskScore([
+      { text: "a", reason: "r", level: "Red" },
+      { text: "b", reason: "r", level: "Yellow" },
+      { text: "c", reason: "r", level: "Yellow" },
+    ])
+    expect(score).toBe(RED_WEIGHT + 2 * YELLOW_WEIGHT)
+  })
+
+  it("caps the deterministic score at 100", () => {
+    const many = Array.from({ length: 10 }, (_, i) => ({
+      text: `v${i}`,
+      reason: "r",
+      level: "Red" as const,
+    }))
+    expect(computeDeterministicRiskScore(many)).toBe(RISK_SCORE_MAX)
+  })
+})
+
+describe("finalizeRiskScore — deterministic floor over LLM", () => {
+  it("uses the LLM score when no violations exist (LLM signal preserved)", () => {
+    expect(finalizeRiskScore([], 12)).toBe(12)
+    expect(finalizeRiskScore([], 5)).toBe(5)
+    expect(finalizeRiskScore([], 0)).toBe(0)
+  })
+
+  it("clamps a too-high LLM score to 100", () => {
+    expect(finalizeRiskScore([], 250)).toBe(RISK_SCORE_MAX)
+    expect(finalizeRiskScore([{ text: "x", reason: "r", level: "Red" }], 999)).toBe(
+      RISK_SCORE_MAX
+    )
+  })
+
+  it("clamps a negative LLM score to 0", () => {
+    expect(finalizeRiskScore([], -10)).toBe(0)
+  })
+
+  it("rounds fractional LLM scores", () => {
+    expect(finalizeRiskScore([], 12.6)).toBe(13)
+    expect(finalizeRiskScore([], 12.4)).toBe(12)
+  })
+
+  it("uses deterministic score as a floor when LLM under-scores", () => {
+    const violations = [
+      { text: "guaranteed $500/day", reason: "financial", level: "Red" as const },
+      { text: "limited spots", reason: "scarcity", level: "Yellow" as const },
+    ]
+    const deterministic = computeDeterministicRiskScore(violations)
+    expect(finalizeRiskScore(violations, 5)).toBe(deterministic)
+    expect(finalizeRiskScore(violations, 15)).toBe(deterministic)
+  })
+
+  it("keeps a higher LLM score (no floor cap)", () => {
+    const violations = [
+      { text: "guaranteed $500/day", reason: "financial", level: "Red" as const },
+    ]
+    expect(finalizeRiskScore(violations, 85)).toBe(85)
+  })
+
+  it("falls back to deterministic when LLM score is non-numeric", () => {
+    const violations = [
+      { text: "x", reason: "r", level: "Red" as const },
+    ]
+    expect(finalizeRiskScore(violations, NaN)).toBe(RED_WEIGHT)
+  })
+})
+
+describe("analyzeContent — score stability (A/B identical-input determinism)", () => {
+  it("returns the same risk score for identical input on repeated calls", async () => {
+    const payload = {
+      risk_score: 73,
+      violations: [
+        buildViolation("guaranteed $500/day", "financial", "Red"),
+        buildViolation("are you struggling", "personal attribute", "Red"),
+      ],
+      positiveAspects: [],
+    }
+    mockLLMResponse(payload)
+    const first = await analyzeContent(
+      "Guaranteed $500/day. Are you struggling with debt?",
+      ["meta", "google", "tiktok", "taboola"],
+      false
+    )
+
+    mockLLMResponse(payload)
+    const second = await analyzeContent(
+      "Guaranteed $500/day. Are you struggling with debt?",
+      ["meta", "google", "tiktok", "taboola"],
+      false
+    )
+
+    expect(first.riskScore).toBe(second.riskScore)
+  })
+
+  it("raises an under-scored LLM response to the deterministic floor", async () => {
+    mockLLMResponse({
+      risk_score: 8,
+      violations: [
+        buildViolation("guaranteed $500/day", "financial", "Red"),
+      ],
+      positiveAspects: [],
+    })
+    const result = await analyzeContent(
+      "Guaranteed $500/day. Click now.",
+      ["meta"],
+      false
+    )
+    expect(result.riskScore).toBe(RED_WEIGHT)
   })
 })

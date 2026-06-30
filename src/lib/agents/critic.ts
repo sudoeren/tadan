@@ -4,7 +4,7 @@ import { GOOGLE_ADS_POLICIES } from "@/lib/policies/google"
 import { TABOOLA_POLICIES } from "@/lib/policies/taboola"
 import { TIKTOK_POLICIES } from "@/lib/policies/tiktok"
 import { retrieveRelevantPolicies, type PolicyRule } from "@/lib/rag"
-import type { Platform, AnalysisResult, ViolationLevel } from "@/types"
+import type { Platform, AnalysisResult, Violation, ViolationLevel } from "@/types"
 
 // For very short content, the full policy docs are small enough that RAG
 // doesn't add useful signal — it just adds an embedding API call (~500ms).
@@ -167,13 +167,43 @@ export async function analyzeContent(
       description: p.description.trim(),
     }))
 
+  const violations: Violation[] = parsed.violations.map((v) => ({
+    text: v.text,
+    reason: v.reason,
+    level: v.level as ViolationLevel,
+  }))
+
   return {
-    riskScore: parsed.risk_score,
-    violations: parsed.violations.map((v) => ({
-      text: v.text,
-      reason: v.reason,
-      level: v.level as ViolationLevel,
-    })),
+    riskScore: finalizeRiskScore(violations, parsed.risk_score),
+    violations,
     positiveAspects,
   }
+}
+
+export const RED_WEIGHT = 20
+export const YELLOW_WEIGHT = 5
+export const RISK_SCORE_MAX = 100
+
+export function computeDeterministicRiskScore(violations: Violation[]): number {
+  let score = 0
+  for (const v of violations) {
+    if (v.level === "Red") score += RED_WEIGHT
+    else if (v.level === "Yellow") score += YELLOW_WEIGHT
+  }
+  return Math.min(RISK_SCORE_MAX, score)
+}
+
+export function finalizeRiskScore(
+  violations: Violation[],
+  llmScore: number
+): number {
+  const deterministic = computeDeterministicRiskScore(violations)
+  if (typeof llmScore !== "number" || Number.isNaN(llmScore)) {
+    return deterministic
+  }
+  const clampedLlm = Math.max(
+    0,
+    Math.min(RISK_SCORE_MAX, Math.round(llmScore))
+  )
+  return Math.max(deterministic, clampedLlm)
 }
