@@ -7,6 +7,7 @@ import { useSession } from "@/lib/auth-client"
 import {
   AlertTriangle,
   ArrowLeft,
+  ArrowRight,
   Check,
   ChevronLeft,
   FileText,
@@ -197,7 +198,15 @@ export default function AdminUserDetailPage() {
                 ID: {user.id}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Link
+                href={`/admin/scans?userId=${user.id}`}
+                className="inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-700 hover:text-gray-900 ring-1 ring-gray-200 hover:ring-gray-300 px-3.5 py-1.5 rounded-full transition-colors"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                View in scan feed
+                <ArrowRight className="w-3 h-3 text-gray-400" />
+              </Link>
               <button
                 type="button"
                 onClick={handleDelete}

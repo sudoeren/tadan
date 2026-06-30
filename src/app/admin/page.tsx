@@ -1,7 +1,16 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
-import { BarChart3, Flag, ShieldCheck, TrendingUp, Users } from "lucide-react"
+import {
+  ArrowRight,
+  BarChart3,
+  FileText,
+  Flag,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+} from "lucide-react"
 import { StatCard } from "@/components/admin/stat-card"
 import { PlatformBadge } from "@/components/admin/platform-badge"
 
@@ -199,6 +208,48 @@ export default function AdminStatsPage() {
             )}
           </section>
         </div>
+
+        <section className="animate-fade-up [animation-delay:320ms]">
+          <h2 className="text-[12px] uppercase tracking-wider text-gray-500 font-medium mb-3 px-1">
+            Quick actions
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Link
+              href="/admin/users"
+              className="group rounded-2xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.10)] hover:ring-orange-200 p-5 transition-all flex items-center gap-4"
+            >
+              <div className="h-11 w-11 shrink-0 rounded-xl bg-orange-50 ring-1 ring-orange-200/60 flex items-center justify-center text-orange-600">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-semibold text-gray-900">
+                  Browse users
+                </p>
+                <p className="text-[12px] text-gray-500 mt-0.5">
+                  Search, filter, delete
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+            </Link>
+            <Link
+              href="/admin/scans"
+              className="group rounded-2xl bg-white/80 backdrop-blur-xl ring-1 ring-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.10)] hover:ring-orange-200 p-5 transition-all flex items-center gap-4"
+            >
+              <div className="h-11 w-11 shrink-0 rounded-xl bg-orange-50 ring-1 ring-orange-200/60 flex items-center justify-center text-orange-600">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-semibold text-gray-900">
+                  View scan feed
+                </p>
+                <p className="text-[12px] text-gray-500 mt-0.5">
+                  Every scan, across every user
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+            </Link>
+          </div>
+        </section>
       </div>
     </div>
   )

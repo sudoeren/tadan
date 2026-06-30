@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url)
   const limitParam = Number.parseInt(url.searchParams.get("limit") ?? "", 10)
   const offsetParam = Number.parseInt(url.searchParams.get("offset") ?? "", 10)
+  const userId = url.searchParams.get("userId")?.trim() || null
   const limit = Math.min(
     Math.max(Number.isFinite(limitParam) ? limitParam : DEFAULT_LIMIT, 1),
     MAX_LIMIT
@@ -23,11 +24,14 @@ export async function GET(request: NextRequest) {
   const offset = Math.max(Number.isFinite(offsetParam) ? offsetParam : 0, 0)
 
   try {
+    const whereClause = userId ? eq(analyses.userId, userId) : undefined
+
     const [{ count: total }] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(analyses)
+      .where(whereClause)
 
-    const rows = await db
+    const baseQuery = db
       .select({
         id: analyses.id,
         inputType: analyses.inputType,
@@ -45,6 +49,10 @@ export async function GET(request: NextRequest) {
       .orderBy(desc(analyses.createdAt))
       .limit(limit)
       .offset(offset)
+
+    const rows = whereClause
+      ? await baseQuery.where(whereClause)
+      : await baseQuery
 
     const ids = rows.map((r) => r.id)
     let violationCountRows: { analysisId: string; count: number }[] = []

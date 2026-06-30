@@ -5,7 +5,9 @@ import { useEffect, useState } from "react"
 import { useSession } from "@/lib/auth-client"
 import {
   AlertTriangle,
+  ArrowRight,
   ChevronRight,
+  FileText,
   Loader2,
   Search,
   Trash2,
@@ -129,6 +131,22 @@ export default function AdminUsersPage() {
             that shouldn&apos;t be here.
           </p>
         </header>
+
+        <div className="animate-fade-up [animation-delay:60ms] flex items-center justify-between gap-3 flex-wrap rounded-2xl bg-orange-50/60 ring-1 ring-orange-200/50 px-4 py-3">
+          <div className="flex items-center gap-2 text-[13px] text-gray-700">
+            <FileText className="w-4 h-4 text-orange-600" />
+            <span>
+              Looking for a specific scan? Browse the global feed.
+            </span>
+          </div>
+          <Link
+            href="/admin/scans"
+            className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white bg-orange-500 hover:bg-orange-600 px-3.5 py-1.5 rounded-full transition-colors"
+          >
+            Open scan feed
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
 
         <div className="animate-fade-up [animation-delay:80ms] flex items-center gap-3 flex-wrap">
           <label className="relative flex-1 min-w-[220px]">
