@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
-  Link2,
   Loader2,
   Users,
   X,
@@ -49,7 +48,7 @@ function scoreColor(n: number) {
 
 export default function AdminScansPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <AdminScansPageInner />
     </Suspense>
   )
@@ -58,7 +57,7 @@ export default function AdminScansPage() {
 function AdminScansPageInner() {
   const searchParams = useSearchParams()
   const userId = searchParams.get("userId")?.trim() || null
-  return <AdminScansContent key={userId ?? "all"} userId={userId} />
+  return <AdminScansContent key={userId} userId={userId} />
 }
 
 function AdminScansContent({ userId }: { userId: string | null }) {
