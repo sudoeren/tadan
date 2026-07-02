@@ -16,58 +16,7 @@
 
 ---
 
-## Built for the It's Today Media Build Challenge
 
-The contest brief asked three things. Here are the answers.
-
-### 1. What does this tool do?
-
-**tadan** scans ad copy and landing pages against the actual advertising policies of Meta, Google, TikTok, and Taboola, then gives the buyer three things:
-
-1. **A 0–100 risk score** with a traffic-light breakdown of *why* it scored that way.
-2. **Specific, citable violations**: the exact phrase in the ad, the policy rule it breaks, and the severity (Red = account-ban risk, Yellow = ad-disapproval risk).
-3. **Three compliant rewrites** of the original ad, each using a different copywriting angle (curiosity / empowerment / social proof), with the marketing hook preserved.
-
-It accepts two input modes:
-
-- **Text mode**: paste raw ad copy.
-- **URL mode**: point it at a landing page. tadan scrapes the page, runs RAG over the policy database, and reports the issues with the page itself (bait-and-switch signals, missing privacy policy, misleading UI).
-
-The full pipeline runs in ~4–6 seconds end-to-end on a 4-platform scan, with SSE streaming so the UI can show each stage as it completes.
-
-### 2. Why did you build THIS one?
-
-I built this because I kept watching the same scenario play out, and there is no good tool for it.
-
-A media buyer spends an afternoon crafting a 12-variant creative test for a financial offer. Three of the variants use language patterns that have been red-flagged on every platform for years: *"guaranteed $500/day"*, *"Are you struggling with debt?"*, *"limited spots remaining"*. The buyer's account gets flagged within 48 hours, sometimes within 6. They lose the ad account, the pixel data, the lookalike audiences built on top of it, and the offer flow that was driving 6× ROAS last week.
-
-The existing solutions all miss the actual pain:
-
-- **Meta's / Google's official policy docs** are 200-page PDFs that don't match how a buyer reads a hook.
-- **Generic "AI copywriting" tools** rewrite the ad into something safe, but kill the hook. Compliance teams reject it, performance teams ignore it.
-- **Policy compliance SaaS** (the few that exist) charge $500+/mo and are designed for legal teams, not for a media buyer running 30 creatives a day who needs an answer in 10 seconds.
-
-The pain I wanted to fix is specifically: **"I just wrote this ad, and I have 30 seconds to know if it's going to get me banned before I push it live."** Not "let me read 200 pages of Meta policy." Not "let me wait 24 hours for the legal team to get back to me." Just *give me the call, with reasons, right now.*
-
-The other thing I wanted: the rewrites shouldn't be neutered. Most compliance tools produce output that reads like a CYA memo. A real media buyer will throw that away and run the original. So tadan explicitly uses 8 distinct copywriting techniques (curiosity hooks, authority positioning, social proof, empowerment framing, etc.) and asks the optimizer to preserve the hook while changing the language patterns that trip the policy. The output is something a buyer will *actually use*, not something they have to ignore.
-
-### 3. What would you build next if this were your full-time job?
-
-In order of how much pain they remove and how fast I could ship them:
-
-**A. Creative iteration engine**: Today tadan scans *one* ad. The actual buyer workflow is: write 5 variants, scan all 5, find the 2 with the best hook-preservation / compliance trade-off, iterate. I would build a batch mode that scans an entire creative batch, ranks them, and suggests merges: "these two variants share 80% of the same hook. Here's a single variant that combines the best of both while staying compliant."
-
-**B. Account-level pre-flight check**: Before pushing a campaign live, tadan would scan the *entire* campaign (all creatives, all landing pages, all targeting parameters) and produce a single risk report. Right now we're at the ad level. The natural next unit is the campaign.
-
-**C. Live platform integration**: Connect to Meta Marketing API and Google Ads API. After a tadan scan, push the compliant variants directly into the ad account as drafts. This closes the loop: media buyer writes, tadan scores and rewrites, tadan pushes the safe version into the account ready for review. The buyer never has to leave the tool to act on the result.
-
-**D. Auto-monitor**: The buyer's job doesn't end at "this ad passed review." Platforms change policies. A phrase that was Yellow last month can become Red this month. A watchdog that re-scans the buyer's active ads on a schedule and alerts when something needs attention would save accounts that get retroactively banned.
-
-**E. A policy database that's not a static file**: Right now the policy rules are in `src/lib/policies/*.ts`, versioned with the code. I would back this with a real database table that can be updated without redeploying, sourced from a feed of official policy changes, and versioned per platform with a "last changed" date visible in the UI.
-
-Items A and B are 1–2 weeks of work each. C is a 1-month build. D is a 2-week build on top of C. E is 1 week of work plus ongoing maintenance.
-
----
 
 ## What tadan does in detail
 
