@@ -16,7 +16,7 @@
 
 ---
 
-## Built for the It's Today Media $5K Build Challenge
+## Built for the It's Today Media Build Challenge
 
 The contest brief asked three things. Here are the answers.
 
