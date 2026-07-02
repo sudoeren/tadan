@@ -121,6 +121,7 @@ For very short inputs (< 200 chars), RAG is skipped entirely. The full policy do
 | Embeddings | OpenRouter API (`text-embedding-3-small`, 1536d) |
 | Scraper | Cheerio + SSRF guard |
 | Tests | Vitest + Testing Library + Playwright |
+| Analytics | Self-hosted Umami |
 
 ### Engineering decisions worth calling out
 
