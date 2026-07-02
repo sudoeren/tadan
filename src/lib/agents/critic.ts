@@ -109,6 +109,15 @@ export async function analyzeContent(
         if (relevant.length > 0) {
           precomputedRag = relevant
           ragSucceeded = true
+        } else {
+          const fallback = await retrieveRelevantPolicies(content, platforms, {
+            topK: 15,
+            threshold: 0,
+          })
+          if (fallback.length > 0) {
+            precomputedRag = fallback
+            ragSucceeded = true
+          }
         }
       } catch {
         // RAG unavailable, fall through to full policy docs

@@ -165,7 +165,7 @@ describe("POST /api/analyze - input validation", () => {
       "buy now",
       ["meta", "google"],
       true,
-      undefined
+      []
     )
   })
 

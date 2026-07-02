@@ -45,9 +45,12 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
 export async function retrieveRelevantPolicies(
   query: string,
-  platforms?: string[]
+  platforms?: string[],
+  opts?: { topK?: number; threshold?: number }
 ): Promise<PolicyRule[]> {
   const queryEmb = await generateEmbedding(query)
+  const topK = opts?.topK ?? TOP_K
+  const threshold = opts?.threshold ?? SIMILARITY_THRESHOLD
 
   const conditions = platforms?.length
     ? inArray(platformPolicies.platform, platforms)
@@ -69,9 +72,9 @@ export async function retrieveRelevantPolicies(
       const similarity = cosineSimilarity(queryEmb, parseEmbedding(p.embedding))
       return { id: p.id, platform: p.platform, category: p.category, ruleText: p.ruleText, similarity }
     })
-    .filter((r) => r.similarity > SIMILARITY_THRESHOLD)
+    .filter((r) => r.similarity > threshold)
     .sort((a, b) => b.similarity - a.similarity)
-    .slice(0, TOP_K)
+    .slice(0, topK)
 
   return scored
 }

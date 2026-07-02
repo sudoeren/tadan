@@ -167,6 +167,8 @@ async function handleStream(
           log("scrape+rag", Date.now() - tScrape)
         } else {
           rawContent = content!.trim()
+          const ragResult = await retrieveRelevantPolicies(rawContent, platforms).catch(() => [])
+          precomputedRag = ragResult
         }
 
         send("progress", { stage: "analyzing", message: "Analyzing against platform policies..." })
@@ -316,6 +318,8 @@ async function runPipeline(
     log("scrape+rag", Date.now() - tScrape)
   } else {
     rawContent = content!.trim()
+    const ragResult = await retrieveRelevantPolicies(rawContent, platforms).catch(() => [])
+    precomputedRag = ragResult
   }
 
   const tCritic = Date.now()
