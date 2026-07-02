@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         headingCount: result.headings.length,
         buttonCount: result.buttonTexts.length,
         hasPrivacyPolicy: result.privacyPolicyUrl !== null,
-        hasBaitAndSwitch: result.hasBaitAndSwitch,
+        baitSwitch: result.baitSwitchEvidence,
       },
     })
   } catch (error) {

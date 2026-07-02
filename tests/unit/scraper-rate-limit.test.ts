@@ -16,7 +16,7 @@ describe("scraper ssrf guard (compile-time + doc)", () => {
       links: [{ text: "p", href: "/privacy" }],
       metaDescription: "m",
       privacyPolicyUrl: "/privacy",
-      hasBaitAndSwitch: false,
+      baitSwitchEvidence: { detected: false, promise: "", patterns: [], mismatchScore: 0 },
     })
     expect(out).toContain("PAGE TITLE: T")
     expect(out).toContain("PRIVACY POLICY URL: /privacy")

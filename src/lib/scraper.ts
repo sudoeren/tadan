@@ -1,5 +1,10 @@
 import * as cheerio from "cheerio"
 import { lookup } from "node:dns/promises"
+import {
+  detectBaitAndSwitch,
+  formatBaitSwitchEvidence,
+  type BaitSwitchEvidence,
+} from "@/lib/bait-switch"
 
 interface ScrapedPage {
   title: string
@@ -9,7 +14,7 @@ interface ScrapedPage {
   links: { text: string; href: string }[]
   metaDescription: string
   privacyPolicyUrl: string | null
-  hasBaitAndSwitch: boolean
+  baitSwitchEvidence: BaitSwitchEvidence
 }
 
 const MAX_RESPONSE_BYTES = 5 * 1024 * 1024
@@ -217,9 +222,13 @@ export async function scrapeLandingPage(url: string): Promise<ScrapedPage> {
   )
   const privacyPolicyUrl = privacyLink?.href || null
 
-  const hasBaitAndSwitch = title && bodyText
-    ? !bodyText.toLowerCase().includes(title.toLowerCase().slice(0, 30))
-    : false
+  const baitSwitchEvidence = detectBaitAndSwitch({
+    title,
+    headings,
+    bodyText,
+    buttonTexts,
+    metaDescription,
+  })
 
   return {
     title,
@@ -229,7 +238,7 @@ export async function scrapeLandingPage(url: string): Promise<ScrapedPage> {
     links,
     metaDescription,
     privacyPolicyUrl,
-    hasBaitAndSwitch,
+    baitSwitchEvidence,
   }
 }
 
@@ -244,7 +253,7 @@ export function formatScrapedContent(page: ScrapedPage): string {
   page.buttonTexts.forEach((b) => sections.push(`- "${b}"`))
   sections.push(`\nPRIVACY POLICY URL: ${page.privacyPolicyUrl || "NOT FOUND"}`)
   sections.push(
-    `BAIT-AND-SWITCH DETECTED: ${page.hasBaitAndSwitch ? "YES" : "No"}`
+    formatBaitSwitchEvidence(page.baitSwitchEvidence)
   )
   sections.push(`\nPAGE BODY (first 8K chars):\n${page.bodyText}`)
 

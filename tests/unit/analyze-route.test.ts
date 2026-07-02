@@ -105,7 +105,7 @@ beforeEach(() => {
     links: [],
     metaDescription: "",
     privacyPolicyUrl: null,
-    hasBaitAndSwitch: false,
+    baitSwitchEvidence: { detected: false, promise: "", patterns: [], mismatchScore: 0 },
   })
   mockedFormat.mockReturnValue("scraped content")
 })
@@ -261,7 +261,7 @@ describe("POST /api/analyze - URL input", () => {
       links: [],
       metaDescription: "m",
       privacyPolicyUrl: "/privacy",
-      hasBaitAndSwitch: false,
+      baitSwitchEvidence: { detected: false, promise: "", patterns: [], mismatchScore: 0 },
     })
     mockedFormat.mockReturnValue("formatted scraped content")
 
