@@ -4,13 +4,12 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import { useSession } from "@/lib/auth-client"
-import { isAdminEmail } from "@/lib/admin-shared"
 import { SignInRequired } from "@/components/sign-in-required"
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { data: session, isPending } = useSession()
-  const isAdmin = !!session?.user.email && isAdminEmail(session.user.email)
+  const isAdmin = !!session?.user && session.user.isAdmin
 
   useEffect(() => {
     if (isPending) return

@@ -1,8 +1,9 @@
+import "server-only"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
-import { isAdminEmail } from "@/lib/admin-shared"
-
-export { isAdminEmail } from "@/lib/admin-shared"
+// `isAdminEmail` is defined next to the auth config (single source of truth,
+// server-only) and re-exported here for server callers (API routes, etc.).
+export { isAdminEmail } from "@/lib/auth"
 
 export type AdminGuardResult =
   | { ok: true; userId: string; email: string }
@@ -18,7 +19,7 @@ export async function requireAdmin(): Promise<AdminGuardResult> {
   }
 
   const email = session.user.email
-  if (!isAdminEmail(email)) {
+  if (!session.user.isAdmin) {
     return { ok: false, status: 403, error: "Forbidden" }
   }
 
