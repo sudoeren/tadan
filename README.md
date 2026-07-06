@@ -320,7 +320,7 @@ Preview scraped content from a URL.
 
 ### POST /api/seed
 
-Trigger policy embedding seeding. Optional `SEED_API_KEY` env var guards the endpoint.
+Trigger policy embedding seeding. Requires `SEED_API_KEY` env var (passed as `Authorization: Bearer <key>`).
 
 ---
 

@@ -92,7 +92,7 @@ Types defined in `src/types/index.ts:8`. All 4 have policy files in `src/lib/pol
 `.env.local` — copy from `.env.example`. At minimum:
 - `DATABASE_URL`, `OPENROUTER_API_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
 - `RESEND_API_KEY` + `EMAIL_FROM_ADDRESS` for auth emails (OTP, password reset)
-- `SEED_API_KEY` — optional, guards `POST /api/seed`
+- `SEED_API_KEY` — required, guards `POST /api/seed`
 - `NEXT_PUBLIC_BETTER_AUTH_URL` — client-side auth base URL
 
 ## Files you might not expect
