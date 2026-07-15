@@ -335,4 +335,4 @@ Each policy file is sourced from the platform's official ad policy page and incl
 
 ## License
 
-[License](./LICENSE)
+[GNU AGPL-3.0](./LICENSE) — copyleft, network-use disclosure required.
