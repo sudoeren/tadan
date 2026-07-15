@@ -43,13 +43,7 @@ const CONTACTS = [
     href: "https://github.com/sudoeren/tadan",
     external: true,
   },
-  {
-    icon: GitHubIcon,
-    label: "GitHub",
-    value: "github.com/sudoeren",
-    href: "https://github.com/sudoeren",
-    external: true,
-  },
+
 ] as const
 
 export default function AboutPage() {

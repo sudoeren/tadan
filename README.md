@@ -2,24 +2,19 @@
   <img src="./public/logo.png" alt="tadan" width="120" />
 </p>
 
-<h1 align="center">tadan: AI-first ad compliance for media buyers</h1>
+<h1 align="center">tadan</h1>
 
 <p align="center">
-  <a href="https://tadan.erencakar.com">
-    <img src="https://img.shields.io/badge/LIVE_DEMO-tadan.erencakar.com-F97316?style=for-the-badge" alt="Live Demo" />
-  </a>
+  <em>AI-first ad compliance for media buyers — open source.</em>
 </p>
 
 <p align="center">
-  <em>Paste an ad or drop a landing page URL. Get a risk score, specific policy violations, and three safe rewrites in about 5 seconds.</em>
+  <a href="https://tadan.erencakar.com"><img src="https://img.shields.io/badge/LIVE_DEMO-tadan.erencakar.com-F97316?style=for-the-badge" alt="Live Demo" /></a>
 </p>
-
----
 
 <p align="center">
   <img src="./tadan.gif" alt="tadan demo" width="720" />
 </p>
-
 
 
 ## What tadan does in detail
