@@ -4,11 +4,15 @@ import { seedPolicyEmbeddings } from "@/lib/rag"
 export async function POST(request: NextRequest) {
   try {
     const seedKey = process.env.SEED_API_KEY
-    if (seedKey) {
-      const auth = request.headers.get("authorization")
-      if (auth !== `Bearer ${seedKey}`) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
+    if (!seedKey) {
+      return NextResponse.json(
+        { error: "SEED_API_KEY not configured" },
+        { status: 501 },
+      )
+    }
+    const auth = request.headers.get("authorization")
+    if (auth !== `Bearer ${seedKey}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const result = await seedPolicyEmbeddings()

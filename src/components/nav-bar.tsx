@@ -4,7 +4,6 @@ import { useState, useEffect, useSyncExternalStore } from "react"
 import Link from "next/link"
 import { useSession, signOut } from "@/lib/auth-client"
 import { hasAuthed, markHasAuthed } from "@/lib/auth-state"
-import { isAdminEmail } from "@/lib/admin-shared"
 import { ArrowUpRight, LayoutDashboard, Menu, X } from "lucide-react"
 import { Logo } from "@/components/logo"
 
@@ -27,7 +26,7 @@ export function NavBar({
     getServerHasAuthed
   )
   const isTransparent = variant === "transparent"
-  const isAdmin = isAdminEmail(session?.user?.email)
+  const isAdmin = !!session?.user && session.user.isAdmin
 
   useEffect(() => {
     if (session) {
