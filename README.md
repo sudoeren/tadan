@@ -16,6 +16,10 @@
 
 ---
 
+<p align="center">
+  <img src="./tadan.gif" alt="tadan demo" width="720" />
+</p>
+
 
 
 ## What tadan does in detail
