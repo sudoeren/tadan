@@ -38,6 +38,13 @@ const CONTACTS = [
   },
   {
     icon: GitHubIcon,
+    label: "Repository",
+    value: "github.com/sudoeren/tadan",
+    href: "https://github.com/sudoeren/tadan",
+    external: true,
+  },
+  {
+    icon: GitHubIcon,
     label: "GitHub",
     value: "github.com/sudoeren",
     href: "https://github.com/sudoeren",

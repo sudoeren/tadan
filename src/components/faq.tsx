@@ -5,6 +5,10 @@ import { cn } from "@/lib/utils"
 
 const ITEMS = [
   {
+    q: "Is tadan open source?",
+    a: "Yes. tadan is open source under the GNU AGPL-3.0 license. You can browse the code, submit issues, and contribute at github.com/sudoeren/tadan. Self-hosting is straightforward — the README covers the full setup.",
+  },
+  {
     q: "Which platforms do you support?",
     a: "Meta Ads (Facebook + Instagram), Google Ads, TikTok, and Taboola. Outbrain, X Ads, and LinkedIn are on the roadmap. The policy database is modular, so adding a new network is a single new file plus a one-line addition to the policy map.",
   },
@@ -38,7 +42,11 @@ const ITEMS = [
   },
   {
     q: "Is my data used to train models?",
-    a: "No. Your ad copy, landing pages, and scan history are never used for training. Embeddings live in your own database.",
+    a: "No. Your ad copy, landing pages, and scan history are never used for training. Embeddings live in your own database. Since tadan is open source, you can verify this yourself — or self-host and keep everything entirely on your own infrastructure.",
+  },
+  {
+    q: "Can I self-host tadan?",
+    a: "Yes. The repo includes a Docker Compose setup for PostgreSQL + pgvector, a predev script that auto-initializes the database, and a standalone Dockerfile for production. All you need is an OpenRouter API key. See the README for the full guide.",
   },
   {
     q: "Do you have a mobile app?",
