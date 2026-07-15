@@ -14,10 +14,6 @@
   <em>Paste an ad or drop a landing page URL. Get a risk score, specific policy violations, and three safe rewrites in about 5 seconds.</em>
 </p>
 
-<p align="center">
-  Built for <a href="https://www.itstoday.media"><strong>IT'S TODAY Media</strong></a>.
-</p>
-
 ---
 
 
